@@ -525,7 +525,7 @@ export function jsonSchemaToZod(schema: JSONSchema, name?: string): string {
 /**
  * Generate Zod schema code from JSON Schema
  */
-function generateZodSchemaCode(schema: JSONSchema, indent: string = ''): string {
+function generateZodSchemaCode(schema: JSONSchema, /* indent: string */ = ''): string {
   // Handle type
   if (schema.type) {
     if (schema.type === 'string') {
@@ -581,7 +581,7 @@ function generateZodSchemaCode(schema: JSONSchema, indent: string = ''): string 
 /**
  * Generate Zod string schema code
  */
-function generateZodStringCode(schema: JSONSchema, indent: string): string {
+function generateZodStringCode(schema: JSONSchema, /* indent: string */): string {
   let code = 'z.string()';
   
   // Add validations
@@ -631,7 +631,7 @@ function generateZodStringCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod number schema code
  */
-function generateZodNumberCode(schema: JSONSchema, indent: string): string {
+function generateZodNumberCode(schema: JSONSchema, /* indent: string */): string {
   let code = schema.type === 'integer' ? 'z.number().int()' : 'z.number()';
   
   // Add validations
@@ -683,7 +683,7 @@ function generateZodNumberCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod boolean schema code
  */
-function generateZodBooleanCode(schema: JSONSchema, indent: string): string {
+function generateZodBooleanCode(schema: JSONSchema, /* indent: string */): string {
   let code = 'z.boolean()';
   
   // Add description
@@ -702,7 +702,7 @@ function generateZodBooleanCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod array schema code
  */
-function generateZodArrayCode(schema: JSONSchema, indent: string): string {
+function generateZodArrayCode(schema: JSONSchema, /* indent: string */): string {
   let code = '';
   
   if (schema.items) {
@@ -745,7 +745,7 @@ function generateZodArrayCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod object schema code
  */
-function generateZodObjectCode(schema: JSONSchema, indent: string): string {
+function generateZodObjectCode(schema: JSONSchema, /* indent: string */): string {
   const properties = schema.properties || {};
   const required = schema.required || [];
   
@@ -783,7 +783,7 @@ function generateZodObjectCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod enum schema code
  */
-function generateZodEnumCode(schema: JSONSchema, indent: string): string {
+function generateZodEnumCode(schema: JSONSchema, /* indent: string */): string {
   if (!schema.enum || schema.enum.length === 0) {
     return 'z.any()';
   }

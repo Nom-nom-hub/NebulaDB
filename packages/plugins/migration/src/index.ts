@@ -102,7 +102,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
    */
   async function applyMigrations(): Promise<void> {
     // Get applied migrations
-    const appliedMigrations = await getAppliedMigrations();
+    // const appliedMigrations = await getAppliedMigrations();
     const appliedVersions = new Set(appliedMigrations.map(m => m.version));
     
     // Sort migrations by version
@@ -142,7 +142,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
    */
   async function revertMigrations(targetVersion?: number): Promise<void> {
     // Get applied migrations
-    const appliedMigrations = await getAppliedMigrations();
+    // const appliedMigrations = await getAppliedMigrations();
     
     // Sort migrations by version in descending order
     const migrationsToRevert = migrations

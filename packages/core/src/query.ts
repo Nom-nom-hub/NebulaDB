@@ -1,4 +1,4 @@
-import { Document, Query, QueryCondition, LogicalQuery } from './types';
+import { Document, Query, /* QueryCondition, */ LogicalQuery } from './types';
 
 /**
  * Matches a document against a query

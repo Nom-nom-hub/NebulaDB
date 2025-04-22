@@ -14,7 +14,7 @@ export async function generateAdapter(name: string, directory: string): Promise<
     // Format names
     const adapterName = kebabCase(name);
     const className = pascalCase(name) + 'Adapter';
-    const variableName = camelCase(name) + 'Adapter';
+    // const variableName = camelCase(name) + 'Adapter';
     
     // Create directory
     const adapterDir = path.resolve(process.cwd(), directory, adapterName);

@@ -11,7 +11,7 @@ import {
 } from './types';
 import { matchDocument, applyUpdate } from './optimized-query';
 // Import the enhanced indexing system
-import { EnhancedIndexManager, IndexDefinition, IndexType } from './enhanced-indexing';
+import { EnhancedIndexManager, IndexDefinition /*, IndexType */ } from './enhanced-indexing';
 // Import the memory manager
 import { MemoryManager } from './memory-manager';
 // Import concurrency controls
@@ -241,7 +241,7 @@ export class Collection implements ICollection {
     }
 
     // Find matching documents
-    const matchingDocs = this.documents.filter(doc => matchDocument(doc, processedQuery));
+    // const matchingDocs = this.documents.filter(doc => matchDocument(doc, processedQuery));
 
     // Update each matching document
     const updatedDocs: Document[] = [];
@@ -347,18 +347,18 @@ export class Collection implements ICollection {
     this.subscriptions.set(subscriptionId, { query, callback });
 
     // Initial callback with current matching documents
-    const matchingDocs = this.documents.filter(doc => matchDocument(doc, query));
+    // const matchingDocs = this.documents.filter(doc => matchDocument(doc, query));
     callback(matchingDocs);
 
     // Set up effect to track changes, but don't trigger it immediately
     // This prevents the double-call issue in the tests
     let isFirstRun = true;
     const dispose = effect(() => {
-      const docs = this.documentSignal.value;
+      // const docs = this.documentSignal.value;
       const subscription = this.subscriptions.get(subscriptionId);
 
       if (subscription && !isFirstRun) {
-        const matchingDocs = docs.filter(doc => matchDocument(doc, subscription.query));
+        // const matchingDocs = docs.filter(doc => matchDocument(doc, subscription.query));
         subscription.callback(matchingDocs);
       }
       isFirstRun = false;
@@ -456,7 +456,7 @@ export class Collection implements ICollection {
       // Optimize batch updates by processing them in a single operation when possible
       return this.lock.withWriteLock(async () => {
         // First, find all matching documents for all queries
-        const matchingDocsByQuery: Map<number, Document[]> = new Map();
+        // const matchingDocsByQuery: Map<number, Document[]> = new Map();
         const allMatchingDocs: Set<string> = new Set();
 
         // Process all queries in parallel to find matching documents
@@ -474,7 +474,7 @@ export class Collection implements ICollection {
           }
 
           // Find matching documents
-          const matchingDocs = this.documents.filter(doc => matchDocument(doc, processedQuery));
+          // const matchingDocs = this.documents.filter(doc => matchDocument(doc, processedQuery));
           matchingDocsByQuery.set(index, matchingDocs);
 
           // Track all matching document IDs
@@ -491,7 +491,7 @@ export class Collection implements ICollection {
 
         // Process each query-update pair
         for (let i = 0; i < queries.length; i++) {
-          const matchingDocs = matchingDocsByQuery.get(i) || [];
+          // const matchingDocs = matchingDocsByQuery.get(i) || [];
           const update = updates[i];
 
           for (const doc of matchingDocs) {
@@ -516,7 +516,7 @@ export class Collection implements ICollection {
 
         // Run through plugins' onAfterUpdate hooks
         for (let i = 0; i < queries.length; i++) {
-          const matchingDocs = matchingDocsByQuery.get(i) || [];
+          // const matchingDocs = matchingDocsByQuery.get(i) || [];
           if (matchingDocs.length > 0) {
             for (const plugin of this.plugins) {
               if (plugin.onAfterUpdate) {
@@ -552,7 +552,7 @@ export class Collection implements ICollection {
       // Optimize batch deletes by processing them in a single operation
       return this.lock.withWriteLock(async () => {
         // Process all queries in parallel to find matching documents
-        const matchingDocsByQuery: Document[][] = [];
+        // const matchingDocsByQuery: Document[][] = [];
         const allDocsToDelete: Set<string> = new Set();
 
         // Process queries in parallel

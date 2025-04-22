@@ -23,10 +23,10 @@ export interface IndexDefinition {
 /**
  * Index entry
  */
-interface IndexEntry {
-  key: string | number;
-  ids: Set<string>;
-}
+// interface IndexEntry {
+//   key: string | number;
+//   ids: Set<string>;
+// }
 
 /**
  * Index implementation
@@ -49,9 +49,9 @@ export class Index {
    */
   add(doc: Document): void {
     const key = this.getIndexKey(doc);
-    
+
     if (key === undefined) return;
-    
+
     if (this.type === IndexType.UNIQUE) {
       // Check if the key already exists
       if (this.uniqueValues.has(String(key))) {
@@ -60,16 +60,16 @@ export class Index {
           throw new Error(`Unique constraint violation for index ${this.name}: ${key}`);
         }
       }
-      
+
       // Add to unique values map
       this.uniqueValues.set(String(key), doc.id);
     }
-    
+
     // Add to entries map
     if (!this.entries.has(key)) {
       this.entries.set(key, new Set());
     }
-    
+
     this.entries.get(key)?.add(doc.id);
   }
 
@@ -78,14 +78,14 @@ export class Index {
    */
   remove(doc: Document): void {
     const key = this.getIndexKey(doc);
-    
+
     if (key === undefined) return;
-    
+
     // Remove from unique values map
     if (this.type === IndexType.UNIQUE) {
       this.uniqueValues.delete(String(key));
     }
-    
+
     // Remove from entries map
     const ids = this.entries.get(key);
     if (ids) {
@@ -110,11 +110,11 @@ export class Index {
   find(query: Query): Set<string> | null {
     // Check if the query can use this index
     const indexKey = this.getQueryIndexKey(query);
-    
+
     if (indexKey === null) {
       return null; // Query can't use this index
     }
-    
+
     // Return matching document IDs
     return this.entries.get(indexKey) || new Set();
   }
@@ -130,12 +130,12 @@ export class Index {
     } else {
       // Compound index
       const values = this.fields.map(field => this.getFieldValue(doc, field));
-      
+
       // If any value is undefined, the compound key is undefined
       if (values.some(v => v === undefined)) {
         return undefined;
       }
-      
+
       // Join values with a separator that won't appear in the values
       return values.join('|:|');
     }
@@ -148,17 +148,17 @@ export class Index {
     if (field.includes('.')) {
       const parts = field.split('.');
       let current = doc;
-      
+
       for (const part of parts) {
         if (current === undefined || current === null) {
           return undefined;
         }
         current = current[part];
       }
-      
+
       return current;
     }
-    
+
     return doc[field];
   }
 
@@ -169,35 +169,39 @@ export class Index {
     // For single field indexes
     if (this.fields.length === 1) {
       const field = this.fields[0];
-      
+
       // Check if the query is for this field
-      if (query[field] !== undefined) {
-        const condition = query[field];
-        
+      if (field in query) {
+        const condition = query[field as keyof typeof query];
+
         // Simple equality
         if (typeof condition !== 'object' || condition === null) {
           return condition;
         }
-        
+
         // Equality operator
         if (condition.$eq !== undefined) {
           return condition.$eq;
         }
       }
     }
-    
+
     // For compound indexes, all fields must be exact matches
     if (this.fields.length > 1) {
       const values: (string | number)[] = [];
-      
+
       for (const field of this.fields) {
-        const condition = query[field];
-        
+        if (!(field in query)) {
+          return null;
+        }
+
+        const condition = query[field as keyof typeof query];
+
         // Must be simple equality or $eq
         if (condition === undefined) {
           return null;
         }
-        
+
         if (typeof condition !== 'object' || condition === null) {
           values.push(condition);
         } else if (condition.$eq !== undefined) {
@@ -206,10 +210,10 @@ export class Index {
           return null;
         }
       }
-      
+
       return values.join('|:|');
     }
-    
+
     return null;
   }
 
@@ -227,7 +231,7 @@ export class Index {
  */
 export class IndexManager {
   private indexes: Map<string, Index> = new Map();
-  
+
   /**
    * Create a new index
    */
@@ -235,33 +239,33 @@ export class IndexManager {
     if (this.indexes.has(definition.name)) {
       throw new Error(`Index ${definition.name} already exists`);
     }
-    
+
     const index = new Index(definition);
     this.indexes.set(definition.name, index);
     return index;
   }
-  
+
   /**
    * Drop an index
    */
   dropIndex(name: string): boolean {
     return this.indexes.delete(name);
   }
-  
+
   /**
    * Get an index by name
    */
   getIndex(name: string): Index | undefined {
     return this.indexes.get(name);
   }
-  
+
   /**
    * Get all indexes
    */
   getAllIndexes(): Index[] {
     return Array.from(this.indexes.values());
   }
-  
+
   /**
    * Add a document to all indexes
    */
@@ -270,7 +274,7 @@ export class IndexManager {
       index.add(doc);
     }
   }
-  
+
   /**
    * Remove a document from all indexes
    */
@@ -279,7 +283,7 @@ export class IndexManager {
       index.remove(doc);
     }
   }
-  
+
   /**
    * Update a document in all indexes
    */
@@ -288,7 +292,7 @@ export class IndexManager {
       index.update(oldDoc, newDoc);
     }
   }
-  
+
   /**
    * Find documents matching a query using indexes
    */
@@ -297,24 +301,24 @@ export class IndexManager {
     if (!query || Object.keys(query).length === 0) {
       return allDocs;
     }
-    
+
     // Try to find an index that can be used for this query
     for (const index of this.indexes.values()) {
       const matchingIds = index.find(query);
-      
+
       if (matchingIds !== null) {
         // Use the index to filter documents
         const indexedResults = allDocs.filter(doc => matchingIds.has(doc.id));
-        
+
         // Further filter the results with the full query
         return indexedResults.filter(doc => matchDocument(doc, query));
       }
     }
-    
+
     // No suitable index found, fall back to full scan
     return allDocs.filter(doc => matchDocument(doc, query));
   }
-  
+
   /**
    * Clear all indexes
    */
@@ -323,13 +327,13 @@ export class IndexManager {
       index.clear();
     }
   }
-  
+
   /**
    * Rebuild all indexes from documents
    */
   rebuild(documents: Document[]): void {
     this.clear();
-    
+
     for (const doc of documents) {
       this.addDocument(doc);
     }

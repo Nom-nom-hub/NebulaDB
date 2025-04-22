@@ -1,0 +1,22 @@
+# Ignore benchmark files
+benchmark.js
+benchmarks/
+tests/benchmark/
+tests/memory/
+
+# Ignore example files
+examples/
+
+# Ignore JavaScript files in tests
+tests/**/*.js
+
+# Ignore build files
+dist/
+build/
+node_modules/
+
+# Ignore webpack config
+webpack.config.js
+
+# Ignore configuration files
+*.config.js

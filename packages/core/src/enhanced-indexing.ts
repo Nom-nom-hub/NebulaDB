@@ -312,7 +312,7 @@ export class EnhancedIndex {
       return null; // Query can't use this index
     }
 
-    const { field, operator, value } = queryInfo;
+    const { operator, value } = queryInfo;
 
     // Handle different operators
     switch (operator) {
@@ -359,8 +359,8 @@ export class EnhancedIndex {
       const field = this.fields[0];
 
       // Check if the query is for this field
-      if (query[field] !== undefined) {
-        const condition = query[field];
+      if (field in query) {
+        const condition = query[field as keyof typeof query];
 
         // Simple equality
         if (typeof condition !== 'object' || condition === null) {
@@ -398,8 +398,12 @@ export class EnhancedIndex {
     if (this.fields.length > 1) {
       const values: (string | number)[] = [];
 
-      for (const field of this.fields) {
-        const condition = query[field];
+      for (let i = 0; i < this.fields.length; i++) {
+        const fieldName = this.fields[i];
+        if (!(fieldName in query)) {
+          return null;
+        }
+        const condition = query[fieldName as keyof typeof query];
 
         // Must be simple equality or $eq
         if (condition === undefined) {
@@ -427,8 +431,8 @@ export class EnhancedIndex {
   private getIndexKeys(doc: Document): (string | number)[] {
     if (this.fields.length === 1) {
       // Single field index
-      const field = this.fields[0];
-      const value = this.getFieldValue(doc, field);
+      const fieldName = this.fields[0];
+      const value = this.getFieldValue(doc, fieldName);
 
       if (value === undefined) {
         return this.options.sparse ? [] : [null as any];
@@ -451,7 +455,9 @@ export class EnhancedIndex {
         return [];
       }
 
-      return [this.getCompoundKey(values)];
+      // Filter out null values and cast to (string | number)[] to satisfy TypeScript
+      const nonNullValues = values.filter(v => v !== null) as (string | number)[];
+      return [this.getCompoundKey(nonNullValues)];
     }
   }
 
@@ -658,7 +664,7 @@ export class EnhancedIndexManager {
     const bestIndex = this.findBestIndex(query);
 
     if (bestIndex) {
-      const { index, matchingIds } = bestIndex;
+      const { matchingIds } = bestIndex;
 
       // Use the index to filter documents
       const indexedResults: Document[] = [];
@@ -670,7 +676,7 @@ export class EnhancedIndexManager {
       }
 
       // Further filter the results with the full query
-      return indexedResults.filter(doc => matchDocument(doc, query));
+      return indexedResults.filter((doc: Document) => matchDocument(doc, query));
     }
 
     // No suitable index found, fall back to full scan
@@ -726,9 +732,11 @@ export class EnhancedIndexManager {
               let score = 1000000 / (matchingIds.size + 1);
 
               // Boost score for equality queries on this field
-              const condition = query[field];
-              if (typeof condition !== 'object' || (condition && '$eq' in condition)) {
-                score *= 1.5;
+              if (field in query) {
+                const condition = query[field as keyof typeof query];
+                if (typeof condition !== 'object' || (condition && '$eq' in condition)) {
+                  score *= 1.5;
+                }
               }
 
               if (score > bestScore) {
@@ -790,7 +798,7 @@ export class EnhancedIndexManager {
   /**
    * Analyze a collection and create indexes for frequently queried fields
    */
-  analyzeAndCreateIndexes(documents: Document[], queryHistory: Query[]): void {
+  analyzeAndCreateIndexes(_documents: Document[], queryHistory: Query[]): void {
     // Count field occurrences in queries
     const fieldCounts = new Map<string, number>();
 
