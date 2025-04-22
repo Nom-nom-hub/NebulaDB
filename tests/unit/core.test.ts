@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { createDb } from '../../packages/core/src';
 import { MemoryAdapter } from '../../packages/adapters/memory/src';
 

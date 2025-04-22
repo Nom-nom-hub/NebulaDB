@@ -24,7 +24,11 @@
         "**/devtools/**/*.ts",
         "**/devtools/**/*.js",
         "**/vscode-extension/**/*.ts",
-        "**/vscode-extension/**/*.js"
+        "**/vscode-extension/**/*.js",
+        "**/plugins/**/*.ts",
+        "**/plugins/**/*.js",
+        "**/plugin-sync/**/*.ts",
+        "**/plugin-sync/**/*.js"
       ],
       "rules": {
         "no-console": "off"

@@ -2,25 +2,25 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import chalk from 'chalk';
 import ora from 'ora';
-import { camelCase, pascalCase, kebabCase } from '../utils/string';
+import { pascalCase, kebabCase } from '../utils/string';
 
 /**
  * Generate a new adapter
  */
 export async function generateAdapter(name: string, directory: string): Promise<void> {
   const spinner = ora('Generating adapter...').start();
-  
+
   try {
     // Format names
     const adapterName = kebabCase(name);
     const className = pascalCase(name) + 'Adapter';
     // const variableName = camelCase(name) + 'Adapter';
-    
+
     // Create directory
     const adapterDir = path.resolve(process.cwd(), directory, adapterName);
     await fs.ensureDir(adapterDir);
     await fs.ensureDir(path.join(adapterDir, 'src'));
-    
+
     // Create package.json
     const packageJson = {
       name: `@nebula/adapter-${adapterName}`,
@@ -47,12 +47,12 @@ export async function generateAdapter(name: string, directory: string): Promise<
         '@nebula/core': '^0.1.0'
       }
     };
-    
+
     await fs.writeFile(
       path.join(adapterDir, 'package.json'),
       JSON.stringify(packageJson, null, 2)
     );
-    
+
     // Create tsconfig.json
     const tsConfig = {
       compilerOptions: {
@@ -70,12 +70,12 @@ export async function generateAdapter(name: string, directory: string): Promise<
       include: ['src'],
       exclude: ['node_modules', 'dist', '**/*.test.ts']
     };
-    
+
     await fs.writeFile(
       path.join(adapterDir, 'tsconfig.json'),
       JSON.stringify(tsConfig, null, 2)
     );
-    
+
     // Create adapter implementation
     const adapterImplementation = `import { Adapter, Document } from '@nebula/core';
 
@@ -122,27 +122,27 @@ export class ${className} implements Adapter {
     // Implement closing connection if needed
   }
 }`;
-    
+
     await fs.writeFile(
       path.join(adapterDir, 'src', 'index.ts'),
       adapterImplementation
     );
-    
+
     // Create test file
     const testImplementation = `import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ${className} } from './index';
 
 describe('${className}', () => {
   let adapter: ${className};
-  
+
   beforeEach(() => {
     adapter = new ${className}();
   });
-  
+
   afterEach(async () => {
     await adapter.close();
   });
-  
+
   it('should load and save data', async () => {
     // Test implementation
     const testData = {
@@ -151,19 +151,19 @@ describe('${className}', () => {
         { id: '2', name: 'Bob' }
       ]
     };
-    
+
     await adapter.save(testData);
     const loadedData = await adapter.load();
-    
+
     expect(loadedData).toEqual(testData);
   });
 });`;
-    
+
     await fs.writeFile(
       path.join(adapterDir, 'src', 'index.test.ts'),
       testImplementation
     );
-    
+
     // Create README.md
     const readme = `# ${name} Adapter for NebulaDB
 
@@ -203,12 +203,12 @@ new ${className}()
 
 MIT
 `;
-    
+
     await fs.writeFile(
       path.join(adapterDir, 'README.md'),
       readme
     );
-    
+
     spinner.succeed(`Adapter ${chalk.cyan(adapterName)} generated successfully!`);
     console.log(`\nTo use your new adapter:`);
     console.log(`1. cd ${directory}/${adapterName}`);
@@ -216,7 +216,7 @@ MIT
     console.log(`3. npm run build`);
     console.log(`\nThen import it in your project:`);
     console.log(`import { ${className} } from '@nebula/adapter-${adapterName}';`);
-    
+
   } catch (error) {
     spinner.fail(`Failed to generate adapter: ${error.message}`);
     throw error;
