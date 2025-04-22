@@ -1091,9 +1091,20 @@
             <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
           </div>
           <p>Install once. Build anywhere. It's that simple.</p>
+
+          <h5 class="mt-4">CDN Usage</h5>
+          <div class="code-container">
+            <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/@nebula-db/nebula-db@0.2.1/dist/index.min.js"&gt;&lt;/script&gt;</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+          </div>
+          <p>Or use the latest version:</p>
+          <div class="code-container">
+            <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/@nebula-db/nebula-db"&gt;&lt;/script&gt;</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+          </div>
         </div>
         <div class="col-lg-6" data-aos="fade-left">
-          <h5>Basic Example</h5>
+          <h5>ES Module Example</h5>
           <div class="code-container">
 <pre><code>import { createDatabase } from '@nebula-db/nebula-db';
 
@@ -1103,6 +1114,25 @@ const users = db.collection('users');
 await users.insert({ name: 'Alice', age: 30 });
 const result = await users.find({ age: { $gt: 20 } });
 console.log(result);</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+          </div>
+
+          <h5 class="mt-4">Browser Example</h5>
+          <div class="code-container">
+<pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/@nebula-db/nebula-db"&gt;&lt;/script&gt;
+&lt;script&gt;
+  // NebulaDB is available as a global variable
+  const db = NebulaDB.createDatabase();
+  const users = db.collection('users');
+
+  async function runExample() {
+    await users.insert({ name: 'Alice', age: 30 });
+    const result = await users.find({ age: { $gt: 20 } });
+    console.log(result);
+  }
+
+  runExample();
+&lt;/script&gt;</code></pre>
             <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
           </div>
         </div>
