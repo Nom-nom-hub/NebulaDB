@@ -18,6 +18,7 @@
       --primary: #6d28d9;
       --primary-light: #8b5cf6;
       --secondary: #10b981;
+      --secondary-light: #34d399;
       --dark: #111827;
       --darker: #0d1117;
       --light: #f3f4f6;
@@ -27,6 +28,8 @@
       --text: #e2e8f0;
       --text-muted: #9ca3af;
       --code-bg: #0d1117;
+      --accent-pink: #ec4899;
+      --accent-blue: #3b82f6;
     }
 
     html {
@@ -58,6 +61,32 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    /* Animated gradient background */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg,
+        rgba(236, 72, 153, 0.15) 0%,
+        rgba(59, 130, 246, 0.15) 25%,
+        rgba(16, 185, 129, 0.15) 50%,
+        rgba(139, 92, 246, 0.15) 75%,
+        rgba(236, 72, 153, 0.15) 100%);
+      background-size: 400% 400%;
+      animation: gradient-shift 15s ease infinite;
+      z-index: 0;
+      opacity: 0.7;
+    }
+
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .particles-container {
@@ -100,9 +129,11 @@
     /* CSS Logo Styles */
     .logo-container {
       position: relative;
-      width: 120px;
-      height: 120px;
+      width: 150px;
+      height: 150px;
       margin: 0 auto 25px;
+      z-index: 3;
+      filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.5));
     }
 
     .logo-nebula {
@@ -225,6 +256,93 @@
       z-index: 0;
     }
 
+    /* Animated data flow lines */
+    .data-flow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+
+    .data-line {
+      position: absolute;
+      height: 2px;
+      width: 100px;
+      background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+      animation: data-flow 8s linear infinite;
+      opacity: 0;
+    }
+
+    .data-line:nth-child(1) {
+      top: 20%;
+      left: -10%;
+      width: 150px;
+      animation-delay: 0s;
+    }
+
+    .data-line:nth-child(2) {
+      top: 40%;
+      left: -5%;
+      width: 100px;
+      animation-delay: 2s;
+    }
+
+    .data-line:nth-child(3) {
+      top: 60%;
+      left: -15%;
+      width: 200px;
+      animation-delay: 4s;
+    }
+
+    .data-line:nth-child(4) {
+      top: 80%;
+      left: -5%;
+      width: 120px;
+      animation-delay: 6s;
+    }
+
+    .data-line:nth-child(5) {
+      top: 30%;
+      right: -10%;
+      width: 180px;
+      animation: data-flow-reverse 10s linear infinite;
+      animation-delay: 1s;
+    }
+
+    .data-line:nth-child(6) {
+      top: 50%;
+      right: -5%;
+      width: 120px;
+      animation: data-flow-reverse 7s linear infinite;
+      animation-delay: 3s;
+    }
+
+    .data-line:nth-child(7) {
+      top: 70%;
+      right: -15%;
+      width: 150px;
+      animation: data-flow-reverse 9s linear infinite;
+      animation-delay: 5s;
+    }
+
+    @keyframes data-flow {
+      0% { transform: translateX(-100%); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(100vw); opacity: 0; }
+    }
+
+    @keyframes data-flow-reverse {
+      0% { transform: translateX(100%); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(-100vw); opacity: 0; }
+    }
+
     /* Navbar Logo */
     .navbar-brand {
       display: flex;
@@ -297,6 +415,28 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+
+    .feature-icon::before {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      animation: pulse-icon 3s infinite;
+    }
+
+    @keyframes pulse-icon {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+      100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
     }
 
     .card-body {
@@ -308,7 +448,7 @@
     }
     .card {
       border: none;
-      transition: all 0.3s ease;
+      transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       border-radius: 12px;
       overflow: hidden;
@@ -316,11 +456,80 @@
       border: 1px solid var(--card-border);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      position: relative;
     }
     .card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-6px) scale(1.02);
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
       border-color: var(--primary-light);
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(225deg,
+        rgba(139, 92, 246, 0) 0%,
+        rgba(139, 92, 246, 0) 50%,
+        rgba(139, 92, 246, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    /* Glitch text effect */
+    .glitch-text {
+      position: relative;
+      animation: glitch 5s infinite;
+      font-weight: 700;
+    }
+
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.8;
+    }
+
+    .glitch-text::before {
+      color: var(--accent-pink);
+      z-index: -1;
+      animation: glitch-effect 3s infinite;
+    }
+
+    .glitch-text::after {
+      color: var(--accent-blue);
+      z-index: -2;
+      animation: glitch-effect 2s infinite reverse;
+    }
+
+    @keyframes glitch-effect {
+      0% { transform: translate(0); }
+      20% { transform: translate(-3px, 3px); }
+      40% { transform: translate(-3px, -3px); }
+      60% { transform: translate(3px, 3px); }
+      80% { transform: translate(3px, -3px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 0.05em 0 0 var(--accent-pink), -0.05em -0.025em 0 var(--accent-blue); }
+      14% { text-shadow: 0.05em 0 0 var(--accent-pink), -0.05em -0.025em 0 var(--accent-blue); }
+      15% { text-shadow: -0.05em -0.025em 0 var(--accent-pink), 0.025em 0.025em 0 var(--accent-blue); }
+      49% { text-shadow: -0.05em -0.025em 0 var(--accent-pink), 0.025em 0.025em 0 var(--accent-blue); }
+      50% { text-shadow: 0.025em 0.05em 0 var(--accent-pink), 0.05em 0 0 var(--accent-blue); }
+      99% { text-shadow: 0.025em 0.05em 0 var(--accent-pink), 0.05em 0 0 var(--accent-blue); }
+      100% { text-shadow: 0.05em 0 0 var(--accent-pink), -0.05em -0.025em 0 var(--accent-blue); }
     }
 
     /* Glass morphism effect */
@@ -423,6 +632,9 @@
       cursor: pointer;
       transition: all 0.2s ease;
       z-index: 10;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .copy-btn:hover {
@@ -553,7 +765,7 @@
         </div>
         <div class="logo-db">DB</div>
       </div>
-      <h1 class="display-4">NebulaDB</h1>
+      <h1 class="display-4 glitch-text" data-text="NebulaDB">NebulaDB</h1>
       <p class="lead mt-3">Fast. Flexible. Serverless. The embedded database for the modern web and edge stack.</p>
       <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
         <a href="#getting-started" class="btn btn-light btn-lg">Get Started</a>
@@ -564,6 +776,15 @@
 
   <section id="features" class="py-5" style="background-color: var(--darker); position: relative; overflow: hidden;">
     <div class="tech-circuit"></div>
+    <div class="data-flow">
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+    </div>
     <div class="container">
       <h2 class="text-center" data-aos="fade-up">Why NebulaDB?</h2>
       <div class="row g-4">
@@ -753,6 +974,15 @@
 
   <section id="getting-started" class="py-5" style="background-color: var(--darker); position: relative; overflow: hidden;">
     <div class="tech-circuit"></div>
+    <div class="data-flow">
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+    </div>
     <div class="container">
       <h2 class="text-center" data-aos="fade-up">Getting Started</h2>
       <div class="row g-5">
@@ -820,6 +1050,15 @@ console.log(result);</code></pre>
 
   <section class="py-5 text-center" style="background-color: var(--darker); position: relative; overflow: hidden;">
     <div class="tech-circuit"></div>
+    <div class="data-flow">
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+      <div class="data-line"></div>
+    </div>
     <div class="container">
       <h2 class="mb-4" data-aos="fade-up">Ready to Get Started?</h2>
       <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">NebulaDB is open source and free to use. Try it today!</p>
