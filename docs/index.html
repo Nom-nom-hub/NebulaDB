@@ -157,6 +157,63 @@
       border-radius: 4px;
       color: var(--primary-light);
     }
+
+    .bg-light {
+      background-color: var(--dark) !important;
+    }
+
+    .text-dark {
+      color: var(--text) !important;
+    }
+
+    .table {
+      color: var(--text);
+      border-color: var(--card-border);
+    }
+
+    .table-light, .table-light th {
+      background-color: var(--card-bg) !important;
+      color: var(--text) !important;
+    }
+
+    .table-sm td, .table-sm th {
+      color: var(--text);
+      border-color: var(--card-border);
+    }
+
+    .text-muted, .small {
+      color: var(--text-muted) !important;
+    }
+
+    .text-primary, .text-primary span {
+      color: var(--primary-light) !important;
+    }
+
+    .text-success {
+      color: var(--secondary) !important;
+    }
+
+    .text-danger {
+      color: #ef4444 !important;
+    }
+
+    .text-warning {
+      color: #f59e0b !important;
+    }
+
+    .badge.bg-success {
+      background-color: var(--secondary) !important;
+    }
+
+    .badge.bg-warning {
+      background-color: #92400e !important;
+      color: var(--text) !important;
+    }
+
+    .badge.bg-danger {
+      background-color: #b91c1c !important;
+    }
+
     h2 {
       font-weight: 600;
       margin-bottom: 2rem;
@@ -255,7 +312,7 @@
           <thead class="table-light">
             <tr>
               <th style="width: 20%">Feature</th>
-              <th style="width: 20%" class="text-center"><span class="text-primary fw-bold">NebulaDB</span></th>
+              <th style="width: 20%" class="text-center"><span class="text-primary fw-bold" style="color: var(--primary-light) !important;">NebulaDB</span></th>
               <th style="width: 20%" class="text-center">LokiJS</th>
               <th style="width: 20%" class="text-center">PouchDB</th>
               <th style="width: 20%" class="text-center">Dexie.js</th>
@@ -264,66 +321,66 @@
           <tbody>
             <tr>
               <td>TypeScript-first</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
             <tr>
               <td>Reactive queries</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
             <tr>
               <td>Plugin architecture</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
             </tr>
             <tr>
               <td>Schema validation</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
             <tr>
               <td>Edge runtime support</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
             </tr>
             <tr>
               <td>Advanced indexing</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-minus text-warning"></i></td>
-              <td class="text-center"><i class="fas fa-minus text-warning"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
+              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
             <tr>
               <td>Query optimization</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-              <td class="text-center"><i class="fas fa-minus text-warning"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
             </tr>
             <tr>
               <td>Batch operations</td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-minus text-warning"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
-              <td class="text-center"><i class="fas fa-check text-success"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
             <tr>
               <td>Bundle size</td>
               <td class="text-center"><span class="badge bg-success">Small</span></td>
-              <td class="text-center"><span class="badge bg-warning text-dark">Medium</span></td>
+              <td class="text-center"><span class="badge bg-warning">Medium</span></td>
               <td class="text-center"><span class="badge bg-danger">Large</span></td>
-              <td class="text-center"><span class="badge bg-warning text-dark">Medium</span></td>
+              <td class="text-center"><span class="badge bg-warning">Medium</span></td>
             </tr>
           </tbody>
         </table>
@@ -340,7 +397,7 @@
                     <thead>
                       <tr>
                         <th>Operation (10,000 docs)</th>
-                        <th class="text-center"><span class="text-primary">NebulaDB</span></th>
+                        <th class="text-center"><span class="text-primary" style="color: var(--primary-light) !important;">NebulaDB</span></th>
                         <th class="text-center">LokiJS</th>
                         <th class="text-center">PouchDB</th>
                       </tr>
@@ -348,32 +405,32 @@
                     <tbody>
                       <tr>
                         <td>Batch Insert</td>
-                        <td class="text-center fw-bold">8.05ms</td>
+                        <td class="text-center fw-bold" style="color: var(--primary-light);">8.05ms</td>
                         <td class="text-center">42ms</td>
                         <td class="text-center">87ms</td>
                       </tr>
                       <tr>
                         <td>Find All</td>
-                        <td class="text-center fw-bold">0.02ms</td>
+                        <td class="text-center fw-bold" style="color: var(--primary-light);">0.02ms</td>
                         <td class="text-center">2ms</td>
                         <td class="text-center">5ms</td>
                       </tr>
                       <tr>
                         <td>Find with Query</td>
-                        <td class="text-center fw-bold">0.69ms</td>
+                        <td class="text-center fw-bold" style="color: var(--primary-light);">0.69ms</td>
                         <td class="text-center">8ms</td>
                         <td class="text-center">12ms</td>
                       </tr>
                       <tr>
                         <td>Batch Delete</td>
-                        <td class="text-center fw-bold">61.45ms</td>
+                        <td class="text-center fw-bold" style="color: var(--primary-light);">61.45ms</td>
                         <td class="text-center">95ms</td>
                         <td class="text-center">120ms</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <p class="text-center small py-2 mb-0 text-muted">Benchmarks run on MacBook Pro M1, Node.js v16.13.0</p>
+                <p class="text-center small py-2 mb-0" style="color: var(--text-muted) !important;">Benchmarks run on MacBook Pro M1, Node.js v16.13.0</p>
               </div>
             </div>
           </div>
@@ -382,7 +439,7 @@
     </div>
   </section>
 
-  <section id="getting-started" class="py-5 bg-light" style="background-color: var(--darker);">
+  <section id="getting-started" class="py-5" style="background-color: var(--darker);">
     <div class="container">
       <h2 class="text-center" data-aos="fade-up">Getting Started</h2>
       <div class="row g-5">
@@ -442,7 +499,7 @@ console.log(result);</code></pre>
     </div>
   </section>
 
-  <section class="py-5 bg-light text-center" style="background-color: var(--darker);">
+  <section class="py-5 text-center" style="background-color: var(--darker);">
     <div class="container">
       <h2 class="mb-4" data-aos="fade-up">Ready to Get Started?</h2>
       <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">NebulaDB is open source and free to use. Try it today!</p>
@@ -453,7 +510,7 @@ console.log(result);</code></pre>
     </div>
   </section>
 
-  <footer class="footer mt-0">
+  <footer class="footer mt-0" style="background-color: var(--dark); color: var(--text);">
     <div class="container">
       <div class="row">
         <div class="col-md-6 text-md-start">
@@ -462,8 +519,8 @@ console.log(result);</code></pre>
         </div>
         <div class="col-md-6 text-md-end">
           <div class="mb-3">
-            <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-sm btn-outline-secondary me-2" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-            <a href="https://www.npmjs.com/package/@nebula-db/nebula-db" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="fab fa-npm"></i> npm</a>
+            <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-sm btn-outline-light me-2" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://www.npmjs.com/package/@nebula-db/nebula-db" class="btn btn-sm btn-outline-light" target="_blank"><i class="fab fa-npm"></i> npm</a>
           </div>
           <p>© <span id="year"></span> NebulaDB. Released under the MIT License.</p>
         </div>
