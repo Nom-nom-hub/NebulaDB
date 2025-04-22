@@ -33,6 +33,15 @@ NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, emb
 - **Node.js 18.x or higher** (required for development and optimal performance)
 - npm 8.x or higher
 
+### Simple Installation (Recommended)
+
+```bash
+# Install the main package
+npm install @nebula-db/nebula-db
+```
+
+### Advanced Installation (For more control)
+
 ```bash
 # Install core package
 npm install @nebula-db/core
@@ -57,6 +66,29 @@ npm install @nebula-db/plugin-versioning
 > Note that this is only recommended for development and testing purposes. Production use should always use Node.js 18+.
 
 ## Quick Start
+
+### Simple Usage (Recommended)
+
+```typescript
+import { createDatabase } from '@nebula-db/nebula-db';
+
+// Create a database with in-memory storage (default)
+const db = createDatabase();
+
+// Create a database with localStorage (for browsers)
+const browserDb = createDatabase({ storage: 'localStorage' });
+
+// Create a database with file system storage (for Node.js)
+const nodeDb = createDatabase({
+  storage: 'fileSystem',
+  path: './my-database'
+});
+
+// Create a database with validation
+const validatedDb = createDatabase({ validation: true });
+```
+
+### Advanced Usage
 
 ```typescript
 import { createDb } from '@nebula-db/core';

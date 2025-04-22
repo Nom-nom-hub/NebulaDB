@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-sync",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Synchronization plugin for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -32,7 +32,7 @@
   "dependencies": {
     "socket.io-client": "^4.7.2",
     "uuid": "^9.0.1",
-    "@nebula-db/core": "^0.1.0"
+    "@nebula-db/core": "^0.2.0"
   },
   "repository": {
     "type": "git",

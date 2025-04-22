@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/devtools",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "DevTools for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,7 +29,7 @@
     "react-json-view": "^1.21.3",
     "react-router-dom": "^6.21.1",
     "socket.io-client": "^4.7.2",
-    "@nebula-db/core": "^0.1.0"
+    "@nebula-db/core": "^0.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
