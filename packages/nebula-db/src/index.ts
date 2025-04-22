@@ -1,6 +1,6 @@
 /**
  * NebulaDB - Fast, flexible, serverless embedded NoSQL database
- * 
+ *
  * This is the main entry point for NebulaDB. It re-exports all the core functionality
  * and commonly used adapters and plugins.
  */
@@ -16,6 +16,12 @@ export { FileSystemAdapter } from '@nebula-db/adapter-filesystem';
 
 // Export plugins
 export { createValidationPlugin } from '@nebula-db/plugin-validation';
+
+// Import all adapters and plugins for dynamic loading
+import { LocalStorageAdapter as LocalStorageAdapterImport } from '@nebula-db/adapter-localstorage';
+import { IndexedDBAdapter as IndexedDBAdapterImport } from '@nebula-db/adapter-indexeddb';
+import { FileSystemAdapter as FileSystemAdapterImport } from '@nebula-db/adapter-filesystem';
+import { createValidationPlugin as createValidationPluginImport } from '@nebula-db/plugin-validation';
 
 /**
  * Create a database with sensible defaults
@@ -35,12 +41,12 @@ export interface CreateDbOptions extends Partial<DbOptions> {
    * - 'fileSystem': Node.js file system
    */
   storage?: 'memory' | 'localStorage' | 'indexedDB' | 'fileSystem';
-  
+
   /**
    * Path for file system storage (only used with 'fileSystem' storage)
    */
   path?: string;
-  
+
   /**
    * Enable schema validation
    */
@@ -52,36 +58,35 @@ export interface CreateDbOptions extends Partial<DbOptions> {
  */
 export function createDatabase(options: CreateDbOptions = {}) {
   const { storage = 'memory', path, validation, ...coreOptions } = options;
-  
+
   // Set up adapter based on storage type
   let adapter;
   switch (storage) {
-    case 'localStorage':
-      const { LocalStorageAdapter } = require('@nebula-db/adapter-localstorage');
-      adapter = new LocalStorageAdapter();
+    case 'localStorage': {
+      adapter = new LocalStorageAdapterImport();
       break;
-    case 'indexedDB':
-      const { IndexedDBAdapter } = require('@nebula-db/adapter-indexeddb');
-      adapter = new IndexedDBAdapter();
+    }
+    case 'indexedDB': {
+      adapter = new IndexedDBAdapterImport();
       break;
-    case 'fileSystem':
-      const { FileSystemAdapter } = require('@nebula-db/adapter-filesystem');
-      adapter = new FileSystemAdapter(path || './data');
+    }
+    case 'fileSystem': {
+      adapter = new FileSystemAdapterImport(path || './data');
       break;
+    }
     case 'memory':
     default:
       adapter = new MemoryAdapter();
   }
-  
+
   // Set up plugins
   const plugins = [];
-  
+
   // Add validation plugin if requested
   if (validation) {
-    const { createValidationPlugin } = require('@nebula-db/plugin-validation');
-    plugins.push(createValidationPlugin());
+    plugins.push(createValidationPluginImport());
   }
-  
+
   // Create the database with the configured adapter and plugins
   return createCoreDb({
     adapter,
