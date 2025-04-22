@@ -1,0 +1,32 @@
+{
+  "name": "@nebula/plugin-logger",
+  "version": "0.1.0",
+  "description": "Logging plugin for NebulaDB",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "database",
+    "nosql",
+    "logger",
+    "plugin"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  },
+  "peerDependencies": {
+    "@nebula/core": "^0.1.0"
+  }
+}

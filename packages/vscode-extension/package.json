@@ -1,0 +1,99 @@
+{
+  "name": "nebula-db-vscode",
+  "displayName": "NebulaDB Tools",
+  "description": "Tools for working with NebulaDB in VS Code",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onCommand:nebula-db.showSchemaPreview",
+    "onCommand:nebula-db.openDevTools"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "nebula-db.showSchemaPreview",
+        "title": "NebulaDB: Show Schema Preview"
+      },
+      {
+        "command": "nebula-db.openDevTools",
+        "title": "NebulaDB: Open DevTools"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "nebula-db-explorer",
+          "title": "NebulaDB Explorer",
+          "icon": "resources/database.svg"
+        }
+      ]
+    },
+    "views": {
+      "nebula-db-explorer": [
+        {
+          "id": "nebula-db-schemas",
+          "name": "Schemas"
+        },
+        {
+          "id": "nebula-db-plugins",
+          "name": "Plugins"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceLangId == typescript || resourceLangId == javascript",
+          "command": "nebula-db.showSchemaPreview",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "NebulaDB",
+      "properties": {
+        "nebulaDB.devtools.port": {
+          "type": "number",
+          "default": 3333,
+          "description": "Port to use for NebulaDB DevTools"
+        },
+        "nebulaDB.schemaPreview.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable schema preview"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/node": "^20.11.5",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "eslint": "^8.55.0",
+    "glob": "^10.3.10",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@nebula/core": "^0.1.0"
+  }
+}

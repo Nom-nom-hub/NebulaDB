@@ -1,0 +1,36 @@
+{
+  "name": "@nebula/vite-plugin",
+  "version": "0.1.0",
+  "description": "Vite plugin for NebulaDB",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "vite-plugin",
+    "database",
+    "nosql",
+    "nebula"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vitest": "^1.2.1"
+  },
+  "peerDependencies": {
+    "vite": "^4.0.0 || ^5.0.0"
+  },
+  "dependencies": {
+    "@nebula/core": "^0.1.0"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "nebula-db",
+  "version": "0.2.0",
+  "description": "Fast. Flexible. Serverless. The embedded database for the modern stack.",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "packages/adapters/*",
+    "packages/plugins/*"
+  ],
+  "scripts": {
+    "build": "./scripts/build.sh",
+    "test": "./scripts/test.sh",
+    "test:watch": "cd tests && npm run test:watch",
+    "test:coverage": "cd tests && npm run test:coverage",
+    "benchmark": "node benchmark.js",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "docs": "cd docs && npm run build",
+    "example:node": "cd examples/node-demo && npm start",
+    "example:browser": "cd examples/browser-demo && npm run dev",
+    "website:dev": "cd website && npm run dev",
+    "website:build": "cd website && npm run build",
+    "website:preview": "cd website && npm run preview"
+  },
+  "keywords": [
+    "database",
+    "nosql",
+    "embedded",
+    "typescript",
+    "reactive",
+    "browser",
+    "node",
+    "edge"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  }
+}

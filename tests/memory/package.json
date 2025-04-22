@@ -1,0 +1,25 @@
+{
+  "name": "nebula-memory-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Memory leak tests for NebulaDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --expose-gc index.js",
+    "test:subscriptions": "node --expose-gc subscription-test.js",
+    "test:long-running": "node --expose-gc long-running-test.js"
+  },
+  "keywords": [
+    "memory",
+    "leak",
+    "test"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@nebula/core": "^0.1.0",
+    "@nebula/adapter-memory": "^0.1.0",
+    "heapdump": "^0.3.15",
+    "memwatch-next": "^0.3.0"
+  }
+}

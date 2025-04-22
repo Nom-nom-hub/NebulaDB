@@ -1,0 +1,44 @@
+{
+  "name": "nebula-db-benchmarks",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Benchmarks for NebulaDB",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "benchmark": "node dist/index.js",
+    "benchmark:insert": "node dist/insert.js",
+    "benchmark:query": "node dist/query.js",
+    "benchmark:update": "node dist/update.js",
+    "benchmark:memory": "node --expose-gc dist/memory.js"
+  },
+  "keywords": [
+    "benchmark",
+    "database",
+    "nosql"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@nebula/core": "^0.1.0",
+    "@nebula/adapter-memory": "^0.1.0",
+    "@nebula/adapter-indexeddb": "^0.1.0",
+    "@nebula/wasm": "^0.1.0",
+    "benchmark": "^2.1.4",
+    "chart.js": "^4.4.1",
+    "faker": "^5.5.3",
+    "lokijs": "^1.5.12",
+    "lowdb": "^6.1.1",
+    "pouchdb": "^8.0.1",
+    "pouchdb-adapter-memory": "^8.0.1",
+    "rxdb": "^14.17.1",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@types/benchmark": "^2.1.5",
+    "@types/faker": "^5.5.9",
+    "@types/node": "^20.11.5",
+    "@types/pouchdb": "^6.4.2",
+    "typescript": "^5.3.3"
+  }
+}

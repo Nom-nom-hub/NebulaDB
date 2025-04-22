@@ -1,0 +1,32 @@
+{
+  "name": "@nebula/core",
+  "version": "0.1.0",
+  "description": "Core package for NebulaDB",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "database",
+    "nosql",
+    "embedded",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "@preact/signals-core": "^1.5.1"
+  }
+}
