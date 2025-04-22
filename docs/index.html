@@ -1,289 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NebulaDB - Fast, Flexible, Serverless Database</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding-top: 60px;
-        }
-        .hero {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: white;
-            padding: 80px 0;
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 40px;
-        }
-        .logo {
-            max-width: 300px;
-            margin-bottom: 20px;
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #6e8efb;
-        }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-            margin-bottom: 30px;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .btn-primary {
-            background-color: #6e8efb;
-            border-color: #6e8efb;
-        }
-        .btn-primary:hover {
-            background-color: #5d7ce0;
-            border-color: #5d7ce0;
-        }
-        .footer {
-            background-color: #f8f9fa;
-            padding: 40px 0;
-            margin-top: 60px;
-        }
-        pre {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        code {
-            color: #6e8efb;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NebulaDB — Fast, Flexible, and Serverless. An embedded database optimized for modern development." />
+  <meta name="author" content="NebulaDB Team" />
+  <title>NebulaDB | Fast, Flexible, Serverless Database</title>
+  <link rel="icon" href="https://raw.githubusercontent.com/Nom-nom-hub/NebulaDB/main/assets/nebulalogo.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      color: #212529;
+      scroll-behavior: smooth;
+    }
+    .navbar-dark .navbar-brand {
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      color: #fff;
+      padding: 100px 0;
+      text-align: center;
+      border-radius: 0 0 30px 30px;
+    }
+    .hero .logo {
+      max-width: 150px;
+      margin-bottom: 25px;
+    }
+    .btn-lg {
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+    }
+    .feature-icon {
+      font-size: 2.2rem;
+      color: #6e8efb;
+      margin-bottom: 1rem;
+    }
+    .card {
+      border: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+    .footer {
+      background: #f8f9fa;
+      padding: 40px 0;
+      font-size: 0.9rem;
+      text-align: center;
+      color: #6c757d;
+    }
+    pre, code {
+      background-color: #f1f3f5;
+      padding: 12px;
+      border-radius: 6px;
+      display: block;
+    }
+    h2 {
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">NebulaDB</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#getting-started">Getting Started</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#documentation">Documentation</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
-                    </li>
-                </ul>
-            </div>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="#">NebulaDB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#getting-started">Getting Started</a></li>
+          <li class="nav-item"><a class="nav-link" href="#documentation">Documentation</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <img src="https://raw.githubusercontent.com/Nom-nom-hub/NebulaDB/main/assets/nebulalogo.png" alt="NebulaDB Logo" class="logo" />
+      <h1 class="display-4">NebulaDB</h1>
+      <p class="lead mt-3">Fast. Flexible. Serverless. The embedded database for the modern web and edge stack.</p>
+      <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+        <a href="#getting-started" class="btn btn-light btn-lg">Get Started</a>
+        <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-outline-light btn-lg" target="_blank">View on GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="features" class="py-5">
+    <div class="container">
+      <h2 class="text-center">Why NebulaDB?</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <div class="feature-icon">⚡</div>
+            <h4>Performance First</h4>
+            <p>Blazing-fast in-memory execution with advanced B-tree indexing and query optimization.</p>
+          </div>
         </div>
-    </nav>
-
-    <section class="hero text-center">
-        <div class="container">
-            <img src="https://raw.githubusercontent.com/Nom-nom-hub/NebulaDB/main/assets/nebulalogo.png" alt="NebulaDB Logo" class="logo">
-            <h1>NebulaDB</h1>
-            <p class="lead">Fast. Flexible. Serverless. The embedded database for the modern stack.</p>
-            <div class="d-flex justify-content-center gap-3 mt-4">
-                <a href="#getting-started" class="btn btn-light btn-lg">Get Started</a>
-                <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-outline-light btn-lg" target="_blank">View on GitHub</a>
-            </div>
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <div class="feature-icon">🌀</div>
+            <h4>Reactive Queries</h4>
+            <p>Live query support enables seamless reactivity in real-time apps and dashboards.</p>
+          </div>
         </div>
-    </section>
-
-    <section id="features" class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Features</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card h-100 p-4">
-                        <div class="text-center feature-icon">🚀</div>
-                        <h3 class="text-center">Blazing Fast</h3>
-                        <p>Optimized in-memory operations with advanced indexing and query caching for maximum performance.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 p-4">
-                        <div class="text-center feature-icon">🔄</div>
-                        <h3 class="text-center">Reactive</h3>
-                        <p>Live queries that update in real-time, perfect for reactive UIs and real-time applications.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 p-4">
-                        <div class="text-center feature-icon">📐</div>
-                        <h3 class="text-center">TypeScript-First</h3>
-                        <p>Built from the ground up with TypeScript, providing full type safety with your data.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <div class="card h-100 p-4">
-                        <div class="text-center feature-icon">🧩</div>
-                        <h3 class="text-center">Modular</h3>
-                        <p>Use only what you need with adapters and plugins. Customize and extend as needed.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 p-4">
-                        <div class="text-center feature-icon">🌐</div>
-                        <h3 class="text-center">Universal</h3>
-                        <p>Works in browsers, Node.js, and Edge environments. One database for all platforms.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 p-4">
-                        <div class="text-center feature-icon">📊</div>
-                        <h3 class="text-center">Optimized</h3>
-                        <p>B-tree indexing, batch operations, and adaptive concurrency control for optimal performance.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <div class="feature-icon">🔒</div>
+            <h4>Type-Safe</h4>
+            <p>TypeScript-native API delivers strong typing and developer confidence out-of-the-box.</p>
+          </div>
         </div>
-    </section>
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <div class="feature-icon">🧱</div>
+            <h4>Modular Core</h4>
+            <p>Drop-in adapters and plugin architecture lets you build exactly what you need—no bloat.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <div class="feature-icon">🌍</div>
+            <h4>Truly Cross-Platform</h4>
+            <p>Runs everywhere—from Node.js to browsers and edge environments like Cloudflare Workers.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <div class="feature-icon">📦</div>
+            <h4>One Package</h4>
+            <p>No dependencies, no nonsense. Just install and go—serverless simplicity.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section id="getting-started" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">Getting Started</h2>
-            <div class="row">
-                <div class="col-lg-6">
-                    <h3>Installation</h3>
-                    <pre><code>npm install @nebula-db/nebula-db</code></pre>
-                    <p>That's it! One package with everything you need to get started.</p>
-                </div>
-                <div class="col-lg-6">
-                    <h3>Basic Usage</h3>
-                    <pre><code>import { createDatabase } from '@nebula-db/nebula-db';
+  <section id="getting-started" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center">Getting Started</h2>
+      <div class="row g-5">
+        <div class="col-lg-6">
+          <h5>Installation</h5>
+          <pre><code>npm install @nebula-db/nebula-db</code></pre>
+          <p>Install once. Build anywhere. It's that simple.</p>
+        </div>
+        <div class="col-lg-6">
+          <h5>Basic Example</h5>
+<pre><code>import { createDatabase } from '@nebula-db/nebula-db';
 
-// Create a database with in-memory storage
 const db = createDatabase();
-
-// Create a collection
 const users = db.collection('users');
 
-// Insert a document
 await users.insert({ name: 'Alice', age: 30 });
-
-// Query documents
 const result = await users.find({ age: { $gt: 20 } });
 console.log(result);</code></pre>
-                </div>
-            </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section id="documentation" class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Documentation</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Core Concepts</h3>
-                            <p class="card-text">Learn about the fundamental concepts of NebulaDB and how to use it effectively.</p>
-                            <a href="README.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Adapters</h3>
-                            <p class="card-text">Explore the different storage adapters available for NebulaDB and how to use them.</p>
-                            <a href="adapters.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Plugins</h3>
-                            <p class="card-text">Discover the plugins available for NebulaDB and how they can enhance your database.</p>
-                            <a href="plugins.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
+  <section id="documentation" class="py-5">
+    <div class="container">
+      <h2 class="text-center">Documentation</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Core Concepts</h5>
+              <p class="card-text">Understand how NebulaDB is structured and how to use it efficiently.</p>
+              <a href="README.html" class="btn btn-primary">Read More</a>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Advanced Usage</h3>
-                            <p class="card-text">Dive deeper into NebulaDB's advanced features and capabilities.</p>
-                            <a href="advanced-usage.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">API Reference</h3>
-                            <p class="card-text">Comprehensive API documentation for NebulaDB.</p>
-                            <a href="api-reference.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title">Examples</h3>
-                            <p class="card-text">Real-world examples and use cases for NebulaDB.</p>
-                            <a href="examples.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    </section>
-
-    <section class="py-5 bg-light">
-        <div class="container text-center">
-            <h2 class="mb-4">Ready to Get Started?</h2>
-            <p class="lead mb-4">NebulaDB is open source and free to use. Try it today!</p>
-            <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-primary btn-lg" target="_blank">View on GitHub</a>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h3>NebulaDB</h3>
-                    <p>Fast, flexible, serverless embedded NoSQL database for modern applications.</p>
-                </div>
-                <div class="col-md-3">
-                    <h3>Links</h3>
-                    <ul class="list-unstyled">
-                        <li><a href="https://github.com/Nom-nom-hub/NebulaDB">GitHub</a></li>
-                        <li><a href="https://www.npmjs.com/package/@nebula-db/nebula-db">npm</a></li>
-                        <li><a href="README.html">Documentation</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h3>Community</h3>
-                    <ul class="list-unstyled">
-                        <li><a href="https://github.com/Nom-nom-hub/NebulaDB/issues">Issues</a></li>
-                        <li><a href="https://github.com/Nom-nom-hub/NebulaDB/discussions">Discussions</a></li>
-                        <li><a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/CONTRIBUTING.md">Contributing</a></li>
-                    </ul>
-                </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Adapters</h5>
+              <p class="card-text">Learn about storage adapters and how to extend NebulaDB's capabilities.</p>
+              <a href="adapters.html" class="btn btn-primary">Read More</a>
             </div>
-            <hr>
-            <div class="text-center">
-                <p>&copy; 2023 NebulaDB. Released under the MIT License.</p>
-            </div>
+          </div>
         </div>
-    </footer>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Plugins</h5>
+              <p class="card-text">Explore the plugin system to enhance NebulaDB with new features.</p>
+              <a href="plugins.html" class="btn btn-primary">Read More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <footer class="footer mt-5">
+    <div class="container">
+      <p>© <span id="year"></span> NebulaDB. Built for the future. Open-source on <a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
