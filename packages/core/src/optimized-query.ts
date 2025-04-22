@@ -5,27 +5,27 @@ import { Document, Query, LogicalQuery } from './types';
  */
 export function deepEqual(a: any, b: any): boolean {
   if (a === b) return true;
-  
+
   if (a === null || b === null || a === undefined || b === undefined) {
     return a === b;
   }
-  
+
   if (typeof a !== typeof b) return false;
-  
+
   if (typeof a === 'object') {
     if (Array.isArray(a) && Array.isArray(b)) {
       if (a.length !== b.length) return false;
       return a.every((item, index) => deepEqual(item, b[index]));
     }
-    
+
     const keysA = Object.keys(a);
     const keysB = Object.keys(b);
-    
+
     if (keysA.length !== keysB.length) return false;
-    
+
     return keysA.every(key => keysB.includes(key) && deepEqual(a[key], b[key]));
   }
-  
+
   return false;
 }
 
@@ -37,12 +37,12 @@ export function matchDocument(doc: Document, query: Query): boolean {
   if (Object.keys(query).length === 0) {
     return true;
   }
-  
+
   // Check if it's a logical query
   if ('$and' in query || '$or' in query || '$not' in query) {
     return matchLogicalQuery(doc, query as LogicalQuery);
   }
-  
+
   // Check each field in the query
   return Object.entries(query).every(([field, condition]) => {
     // Short-circuit if field doesn't exist in document
@@ -53,7 +53,7 @@ export function matchDocument(doc: Document, query: Query): boolean {
       }
       return false;
     }
-    
+
     return matchField(doc, field, condition);
   });
 }
@@ -113,7 +113,7 @@ function matchField(doc: Document, field: string, condition: any): boolean {
   if (field.includes('.')) {
     const [first, ...rest] = field.split('.');
     const nestedDoc = doc[first];
-    
+
     if (nestedDoc === undefined) {
       // Special case for $exists operator
       if (typeof condition === 'object' && condition !== null && '$exists' in condition) {
@@ -121,7 +121,7 @@ function matchField(doc: Document, field: string, condition: any): boolean {
       }
       return false;
     }
-    
+
     return matchField(nestedDoc, rest.join('.'), condition);
   }
 
@@ -178,7 +178,7 @@ function matchOperator(value: any, operator: string, operand: any): boolean {
           }
           return false;
         }
-        
+
         // Check if value is in operand
         for (const item of operand) {
           if (deepEqual(value, item)) {
@@ -201,7 +201,7 @@ function matchOperator(value: any, operator: string, operand: any): boolean {
           }
           return true;
         }
-        
+
         // Check that value is not in operand
         for (const item of operand) {
           if (deepEqual(value, item)) {
@@ -233,7 +233,7 @@ function matchOperator(value: any, operator: string, operand: any): boolean {
  */
 export function applyUpdate(doc: Document, update: any): Document {
   const result = { ...doc };
-  
+
   for (const [operator, fields] of Object.entries(update)) {
     switch (operator) {
       case '$set':
@@ -268,7 +268,7 @@ export function applyUpdate(doc: Document, update: any): Document {
         break;
     }
   }
-  
+
   return result;
 }
 
@@ -281,7 +281,7 @@ function applySetOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -289,7 +289,7 @@ function applySetOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       current[parts[parts.length - 1]] = value;
     } else {
       doc[field] = value;
@@ -306,7 +306,7 @@ function applyUnsetOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -314,7 +314,7 @@ function applyUnsetOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       delete current[parts[parts.length - 1]];
     } else {
       delete doc[field];
@@ -331,7 +331,7 @@ function applyIncOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -339,18 +339,18 @@ function applyIncOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       const lastPart = parts[parts.length - 1];
       if (typeof current[lastPart] === 'number') {
-        current[lastPart] += value;
+        current[lastPart] += value as number;
       } else {
-        current[lastPart] = value;
+        current[lastPart] = value as number;
       }
     } else {
       if (typeof doc[field] === 'number') {
-        doc[field] += value;
+        doc[field] += value as number;
       } else {
-        doc[field] = value;
+        doc[field] = value as number;
       }
     }
   }
@@ -365,7 +365,7 @@ function applyPushOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -373,7 +373,7 @@ function applyPushOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       const lastPart = parts[parts.length - 1];
       if (!Array.isArray(current[lastPart])) {
         current[lastPart] = [];
@@ -397,7 +397,7 @@ function applyPullOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -405,7 +405,7 @@ function applyPullOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       const lastPart = parts[parts.length - 1];
       if (Array.isArray(current[lastPart])) {
         current[lastPart] = current[lastPart].filter(item => !deepEqual(item, value));
@@ -427,7 +427,7 @@ function applyAddToSetOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -435,21 +435,21 @@ function applyAddToSetOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       const lastPart = parts[parts.length - 1];
       if (!Array.isArray(current[lastPart])) {
         current[lastPart] = [];
       }
-      
-      if (!current[lastPart].some(item => deepEqual(item, value))) {
+
+      if (!current[lastPart].some((item: any) => deepEqual(item, value))) {
         current[lastPart].push(value);
       }
     } else {
       if (!Array.isArray(doc[field])) {
         doc[field] = [];
       }
-      
-      if (!doc[field].some(item => deepEqual(item, value))) {
+
+      if (!doc[field].some((item: any) => deepEqual(item, value))) {
         doc[field].push(value);
       }
     }
@@ -477,7 +477,7 @@ function applyMulOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -485,16 +485,16 @@ function applyMulOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       const lastPart = parts[parts.length - 1];
       if (typeof current[lastPart] === 'number') {
-        current[lastPart] *= value;
+        current[lastPart] *= value as number;
       } else {
         current[lastPart] = 0;
       }
     } else {
       if (typeof doc[field] === 'number') {
-        doc[field] *= value;
+        doc[field] *= value as number;
       } else {
         doc[field] = 0;
       }
@@ -511,7 +511,7 @@ function applyMinOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -519,13 +519,13 @@ function applyMinOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       const lastPart = parts[parts.length - 1];
-      if (current[lastPart] === undefined || current[lastPart] > value) {
+      if (current[lastPart] === undefined || (typeof current[lastPart] === 'number' && current[lastPart] > (value as number))) {
         current[lastPart] = value;
       }
     } else {
-      if (doc[field] === undefined || doc[field] > value) {
+      if (doc[field] === undefined || (typeof doc[field] === 'number' && doc[field] > (value as number))) {
         doc[field] = value;
       }
     }
@@ -541,7 +541,7 @@ function applyMaxOperation(doc: Document, fields: any): void {
       // Handle nested fields
       const parts = field.split('.');
       let current = doc;
-      
+
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         if (current[part] === undefined || current[part] === null) {
@@ -549,13 +549,13 @@ function applyMaxOperation(doc: Document, fields: any): void {
         }
         current = current[part];
       }
-      
+
       const lastPart = parts[parts.length - 1];
-      if (current[lastPart] === undefined || current[lastPart] < value) {
+      if (current[lastPart] === undefined || (typeof current[lastPart] === 'number' && current[lastPart] < (value as number))) {
         current[lastPart] = value;
       }
     } else {
-      if (doc[field] === undefined || doc[field] < value) {
+      if (doc[field] === undefined || (typeof doc[field] === 'number' && doc[field] < (value as number))) {
         doc[field] = value;
       }
     }
