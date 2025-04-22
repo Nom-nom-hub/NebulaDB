@@ -51,6 +51,11 @@ export interface CreateDbOptions extends Partial<DbOptions> {
    * Enable schema validation
    */
   validation?: boolean;
+
+  /**
+   * Validation schemas (only used when validation is true)
+   */
+  validationSchemas?: Record<string, any>;
 }
 
 /**
@@ -84,7 +89,10 @@ export function createDatabase(options: CreateDbOptions = {}) {
 
   // Add validation plugin if requested
   if (validation) {
-    plugins.push(createValidationPluginImport());
+    plugins.push(createValidationPluginImport({
+      schemas: options.validationSchemas || {},
+      strict: false
+    }));
   }
 
   // Create the database with the configured adapter and plugins

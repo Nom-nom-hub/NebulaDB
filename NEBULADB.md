@@ -5,7 +5,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/badge/npm-v0.1.0-blue)](https://www.npmjs.com/package/@nebula-db/nebula-db)
+[![npm version](https://img.shields.io/badge/npm-v0.2.1-blue)](https://www.npmjs.com/package/@nebula-db/nebula-db)
 </div>
 
 **Fast. Flexible. Serverless. The embedded database for the modern stack.**
@@ -64,7 +64,7 @@ const db = createDatabase();
 const browserDb = createDatabase({ storage: 'localStorage' });
 
 // Create a database with file system storage (for Node.js)
-const nodeDb = createDatabase({ 
+const nodeDb = createDatabase({
   storage: 'fileSystem',
   path: './my-database'
 });
