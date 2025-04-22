@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createDb } from '../../packages/core/src';
 import { MemoryAdapter } from '../../packages/adapters/memory/src';
-import { createValidationPlugin, ValidationError } from '../../packages/plugins/validation/src';
+import { createValidationPlugin } from '../../packages/plugins/validation/src';
 import { z } from 'zod';
 
 describe('ValidationPlugin', () => {

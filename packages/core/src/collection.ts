@@ -11,11 +11,13 @@ import {
 } from './types';
 import { matchDocument, applyUpdate } from './optimized-query';
 // Import the enhanced indexing system
-import { EnhancedIndexManager, IndexDefinition /*, IndexType */ } from './enhanced-indexing';
+import { EnhancedIndexManager, IndexDefinition as EnhancedIndexDefinition, IndexType } from './enhanced-indexing';
+import { IndexDefinition } from './types';
 // Import the memory manager
 import { MemoryManager } from './memory-manager';
 // Import concurrency controls
 import { ReadWriteLock, TaskQueue } from './concurrency';
+import { AdaptiveConcurrencyControl, AdaptiveConcurrencyOptions } from './adaptive-concurrency';
 // Import query cache
 import { QueryCache } from './query-cache';
 // Import document compression
@@ -347,7 +349,7 @@ export class Collection implements ICollection {
     this.subscriptions.set(subscriptionId, { query, callback });
 
     // Initial callback with current matching documents
-    // const matchingDocs = this.documents.filter(doc => matchDocument(doc, query));
+    const matchingDocs = this.documents.filter(doc => matchDocument(doc, query));
     callback(matchingDocs);
 
     // Set up effect to track changes, but don't trigger it immediately
@@ -358,7 +360,8 @@ export class Collection implements ICollection {
       const subscription = this.subscriptions.get(subscriptionId);
 
       if (subscription && !isFirstRun) {
-        // const matchingDocs = docs.filter(doc => matchDocument(doc, subscription.query));
+        const docs = this.documentSignal.value;
+        const matchingDocs = docs.filter(doc => matchDocument(doc, subscription.query));
         subscription.callback(matchingDocs);
       }
       isFirstRun = false;
@@ -456,7 +459,7 @@ export class Collection implements ICollection {
       // Optimize batch updates by processing them in a single operation when possible
       return this.lock.withWriteLock(async () => {
         // First, find all matching documents for all queries
-        // const matchingDocsByQuery: Map<number, Document[]> = new Map();
+        const matchingDocsByQuery: Map<number, Document[]> = new Map();
         const allMatchingDocs: Set<string> = new Set();
 
         // Process all queries in parallel to find matching documents
@@ -474,7 +477,7 @@ export class Collection implements ICollection {
           }
 
           // Find matching documents
-          // const matchingDocs = this.documents.filter(doc => matchDocument(doc, processedQuery));
+          const matchingDocs = this.documents.filter(doc => matchDocument(doc, processedQuery));
           matchingDocsByQuery.set(index, matchingDocs);
 
           // Track all matching document IDs
@@ -491,7 +494,7 @@ export class Collection implements ICollection {
 
         // Process each query-update pair
         for (let i = 0; i < queries.length; i++) {
-          // const matchingDocs = matchingDocsByQuery.get(i) || [];
+          const matchingDocs = matchingDocsByQuery.get(i) || [];
           const update = updates[i];
 
           for (const doc of matchingDocs) {
@@ -516,7 +519,7 @@ export class Collection implements ICollection {
 
         // Run through plugins' onAfterUpdate hooks
         for (let i = 0; i < queries.length; i++) {
-          // const matchingDocs = matchingDocsByQuery.get(i) || [];
+          const matchingDocs = matchingDocsByQuery.get(i) || [];
           if (matchingDocs.length > 0) {
             for (const plugin of this.plugins) {
               if (plugin.onAfterUpdate) {
@@ -552,7 +555,7 @@ export class Collection implements ICollection {
       // Optimize batch deletes by processing them in a single operation
       return this.lock.withWriteLock(async () => {
         // Process all queries in parallel to find matching documents
-        // const matchingDocsByQuery: Document[][] = [];
+        const matchingDocsByQuery: Document[][] = [];
         const allDocsToDelete: Set<string> = new Set();
 
         // Process queries in parallel
@@ -614,7 +617,17 @@ export class Collection implements ICollection {
    * Create an index on the collection
    */
   createIndex(definition: IndexDefinition): void {
-    this.indexManager.createIndex(definition);
+    // Convert from types.IndexDefinition to enhanced-indexing.IndexDefinition
+    const enhancedDefinition: EnhancedIndexDefinition = {
+      name: definition.name,
+      fields: definition.fields,
+      type: definition.type === 'single' ? IndexType.SINGLE :
+            definition.type === 'compound' ? IndexType.COMPOUND :
+            definition.type === 'unique' ? IndexType.UNIQUE :
+            definition.type === 'text' ? IndexType.TEXT : IndexType.SINGLE
+    };
+
+    this.indexManager.createIndex(enhancedDefinition);
 
     // Build the index with existing documents
     if (this.documents.length > 0) {
@@ -633,11 +646,33 @@ export class Collection implements ICollection {
    * Get all indexes on the collection
    */
   getIndexes(): IndexDefinition[] {
-    return this.indexManager.getAllIndexes().map(index => ({
-      name: index.name,
-      fields: index.fields,
-      type: index.type
-    }));
+    return this.indexManager.getAllIndexes().map(index => {
+      // Convert from enhanced-indexing.IndexType to types.IndexDefinition type
+      let type: 'single' | 'compound' | 'unique' | 'text';
+
+      switch (index.type) {
+        case IndexType.SINGLE:
+          type = 'single';
+          break;
+        case IndexType.COMPOUND:
+          type = 'compound';
+          break;
+        case IndexType.UNIQUE:
+          type = 'unique';
+          break;
+        case IndexType.TEXT:
+          type = 'text';
+          break;
+        default:
+          type = 'single';
+      }
+
+      return {
+        name: index.name,
+        fields: index.fields,
+        type: type
+      };
+    });
   }
 
   /**
@@ -675,15 +710,15 @@ export class Collection implements ICollection {
   /**
    * Configure adaptive concurrency
    */
-  setAdaptiveConcurrencyOptions(options: Partial<AdaptiveConcurrencyOptions>): void {
-    if (!options.enabled && this.adaptiveConcurrency) {
+  setAdaptiveConcurrencyOptions(options: Partial<AdaptiveConcurrencyOptions> & { enabled?: boolean }): void {
+    if (options.enabled === false && this.adaptiveConcurrency) {
       // Disable adaptive concurrency
       this.adaptiveConcurrency = null;
       this.taskQueue = new TaskQueue(4); // Reset to fixed concurrency
       return;
     }
 
-    if (options.enabled && !this.adaptiveConcurrency) {
+    if (options.enabled === true && !this.adaptiveConcurrency) {
       // Enable adaptive concurrency
       this.adaptiveConcurrency = new AdaptiveConcurrencyControl(options);
     } else if (this.adaptiveConcurrency) {
