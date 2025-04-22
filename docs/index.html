@@ -96,6 +96,14 @@
       background-clip: text;
       color: transparent;
     }
+
+    .card-body {
+      color: var(--text) !important;
+    }
+
+    .card-title, .card-text {
+      color: var(--text) !important;
+    }
     .card {
       border: none;
       transition: all 0.3s ease;
@@ -166,19 +174,21 @@
       color: var(--text) !important;
     }
 
-    .table {
-      color: var(--text);
-      border-color: var(--card-border);
+    .table, .table td, .table th {
+      color: var(--text) !important;
+      border-color: var(--card-border) !important;
+      background-color: var(--card-bg) !important;
     }
 
-    .table-light, .table-light th {
+    .table-light, .table-light th, thead, th {
       background-color: var(--card-bg) !important;
       color: var(--text) !important;
     }
 
     .table-sm td, .table-sm th {
-      color: var(--text);
-      border-color: var(--card-border);
+      color: var(--text) !important;
+      border-color: var(--card-border) !important;
+      background-color: var(--card-bg) !important;
     }
 
     .text-muted, .small {
@@ -256,59 +266,59 @@
       <h2 class="text-center" data-aos="fade-up">Why NebulaDB?</h2>
       <div class="row g-4">
         <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100" style="color: var(--text) !important;">
             <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-            <h4>Performance First</h4>
-            <p>Blazing-fast in-memory execution with advanced B-tree indexing and query optimization.</p>
+            <h4 style="color: var(--text) !important;">Performance First</h4>
+            <p style="color: var(--text) !important;">Blazing-fast in-memory execution with advanced B-tree indexing and query optimization.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200" style="color: var(--text) !important;">
             <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
-            <h4>Reactive Queries</h4>
-            <p>Live query support enables seamless reactivity in real-time apps and dashboards.</p>
+            <h4 style="color: var(--text) !important;">Reactive Queries</h4>
+            <p style="color: var(--text) !important;">Live query support enables seamless reactivity in real-time apps and dashboards.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300" style="color: var(--text) !important;">
             <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-            <h4>Type-Safe</h4>
-            <p>TypeScript-native API delivers strong typing and developer confidence out-of-the-box.</p>
+            <h4 style="color: var(--text) !important;">Type-Safe</h4>
+            <p style="color: var(--text) !important;">TypeScript-native API delivers strong typing and developer confidence out-of-the-box.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100" style="color: var(--text) !important;">
             <div class="feature-icon"><i class="fas fa-cubes"></i></div>
-            <h4>Modular Core</h4>
-            <p>Drop-in adapters and plugin architecture lets you build exactly what you need—no bloat.</p>
+            <h4 style="color: var(--text) !important;">Modular Core</h4>
+            <p style="color: var(--text) !important;">Drop-in adapters and plugin architecture lets you build exactly what you need—no bloat.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200" style="color: var(--text) !important;">
             <div class="feature-icon"><i class="fas fa-globe"></i></div>
-            <h4>Truly Cross-Platform</h4>
-            <p>Runs everywhere—from Node.js to browsers and edge environments like Cloudflare Workers.</p>
+            <h4 style="color: var(--text) !important;">Truly Cross-Platform</h4>
+            <p style="color: var(--text) !important;">Runs everywhere—from Node.js to browsers and edge environments like Cloudflare Workers.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300" style="color: var(--text) !important;">
             <div class="feature-icon"><i class="fas fa-box"></i></div>
-            <h4>One Package</h4>
-            <p>No dependencies, no nonsense. Just install and go—serverless simplicity.</p>
+            <h4 style="color: var(--text) !important;">One Package</h4>
+            <p style="color: var(--text) !important;">No dependencies, no nonsense. Just install and go—serverless simplicity.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="comparison" class="py-5" style="background-color: var(--dark);">
-    <div class="position-absolute w-100" style="height: 100px; background: linear-gradient(to bottom, var(--darker), var(--dark)); top: 0; left: 0; z-index: -1;"></div>
+  <section id="comparison" class="py-5" style="background-color: var(--dark) !important;">
+
     <div class="container">
       <h2 class="text-center" data-aos="fade-up">Why Choose NebulaDB?</h2>
       <p class="text-center mb-5" data-aos="fade-up" data-aos-delay="100">See how NebulaDB compares to other embedded databases</p>
 
       <div class="table-responsive shadow-sm rounded overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-        <table class="table table-bordered mb-0">
+        <table class="table table-bordered mb-0" style="background-color: var(--card-bg) !important;">
           <thead class="table-light">
             <tr>
               <th style="width: 20%">Feature</th>
@@ -393,7 +403,7 @@
             <div class="card" data-aos="fade-up" data-aos-delay="100">
               <div class="card-body p-0">
                 <div class="table-responsive">
-                  <table class="table table-sm">
+                  <table class="table table-sm" style="background-color: var(--card-bg) !important;">
                     <thead>
                       <tr>
                         <th>Operation (10,000 docs)</th>
@@ -470,27 +480,27 @@ console.log(result);</code></pre>
       <div class="row g-4">
         <div class="col-md-4">
           <div class="card h-100" data-aos="fade-up" data-aos-delay="100">
-            <div class="card-body">
-              <h5 class="card-title">Core Concepts</h5>
-              <p class="card-text">Understand how NebulaDB is structured and how to use it efficiently.</p>
+            <div class="card-body" style="background-color: var(--card-bg) !important;">
+              <h5 class="card-title" style="color: var(--text);">Core Concepts</h5>
+              <p class="card-text" style="color: var(--text);">Understand how NebulaDB is structured and how to use it efficiently.</p>
               <a href="README.html" class="btn btn-primary">Read More</a>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card h-100" data-aos="fade-up" data-aos-delay="200">
-            <div class="card-body">
-              <h5 class="card-title">Adapters</h5>
-              <p class="card-text">Learn about storage adapters and how to extend NebulaDB's capabilities.</p>
+            <div class="card-body" style="background-color: var(--card-bg) !important;">
+              <h5 class="card-title" style="color: var(--text);">Adapters</h5>
+              <p class="card-text" style="color: var(--text);">Learn about storage adapters and how to extend NebulaDB's capabilities.</p>
               <a href="adapters.html" class="btn btn-primary">Read More</a>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card h-100" data-aos="fade-up" data-aos-delay="300">
-            <div class="card-body">
-              <h5 class="card-title">Plugins</h5>
-              <p class="card-text">Explore the plugin system to enhance NebulaDB with new features.</p>
+            <div class="card-body" style="background-color: var(--card-bg) !important;">
+              <h5 class="card-title" style="color: var(--text);">Plugins</h5>
+              <p class="card-text" style="color: var(--text);">Explore the plugin system to enhance NebulaDB with new features.</p>
               <a href="plugins.html" class="btn btn-primary">Read More</a>
             </div>
           </div>
