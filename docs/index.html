@@ -324,6 +324,10 @@
       display: block;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
       border: 1px solid var(--card-border);
+      margin-bottom: 0;
+      position: relative;
+      overflow-x: auto;
+      user-select: all;
     }
     pre code {
       color: var(--text);
@@ -335,6 +339,34 @@
       padding: 3px 6px;
       border-radius: 4px;
       color: var(--primary-light);
+    }
+
+    .code-container {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: rgba(109, 40, 217, 0.2);
+      color: var(--text);
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .copy-btn:hover {
+      background-color: rgba(109, 40, 217, 0.4);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.95);
     }
 
     .bg-light {
@@ -659,11 +691,15 @@
       <div class="row g-5">
         <div class="col-lg-6" data-aos="fade-right">
           <h5>Installation</h5>
-          <pre><code>npm install @nebula-db/nebula-db</code></pre>
+          <div class="code-container">
+            <pre><code>npm install @nebula-db/nebula-db</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+          </div>
           <p>Install once. Build anywhere. It's that simple.</p>
         </div>
         <div class="col-lg-6" data-aos="fade-left">
           <h5>Basic Example</h5>
+          <div class="code-container">
 <pre><code>import { createDatabase } from '@nebula-db/nebula-db';
 
 const db = createDatabase();
@@ -672,6 +708,8 @@ const users = db.collection('users');
 await users.insert({ name: 'Alice', age: 30 });
 const result = await users.find({ age: { $gt: 20 } });
 console.log(result);</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+          </div>
         </div>
       </div>
     </div>
@@ -745,6 +783,24 @@ console.log(result);</code></pre>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Copy code function
+    function copyCode(button) {
+      const pre = button.parentElement.querySelector('pre');
+      const code = pre.textContent;
+
+      navigator.clipboard.writeText(code).then(() => {
+        // Change button icon to checkmark temporarily
+        const icon = button.querySelector('i');
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
+
+        setTimeout(() => {
+          icon.classList.remove('fa-check');
+          icon.classList.add('fa-copy');
+        }, 2000);
+      });
+    }
 
     // Fix for smooth scrolling
     document.addEventListener('DOMContentLoaded', function() {
