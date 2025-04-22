@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>Examples</h1>
+<p>This document provides examples of how to use NebulaDB in different scenarios.</p>
+<h2>Basic CRUD Operations</h2>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+
+// Create a database
+const db = createDb({ adapter: new MemoryAdapter() });
+const users = db.collection(&#39;users&#39;);
+
+// Create (Insert)
+const alice = await users.insert({
+  name: &#39;Alice&#39;,
+  age: 30,
+  email: &#39;alice@example.com&#39;
+});
+
+console.log(&#39;Inserted user:&#39;, alice);
+
+// Read (Find)
+const allUsers = await users.find();
+console.log(&#39;All users:&#39;, allUsers);
+
+const user = await users.findOne({ name: &#39;Alice&#39; });
+console.log(&#39;Found user:&#39;, user);
+
+// Update
+await users.update(
+  { id: alice.id },
+  { $set: { age: 31 } }
+);
+
+const updatedUser = await users.findOne({ id: alice.id });
+console.log(&#39;Updated user:&#39;, updatedUser);
+
+// Delete
+await users.delete({ id: alice.id });
+
+const remainingUsers = await users.find();
+console.log(&#39;Remaining users:&#39;, remainingUsers);
+</code></pre>
+<h2>Todo List Application</h2>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { LocalStorageAdapter } from &#39;@nebula/adapter-localstorage&#39;;
+
+// Create a database with localStorage persistence
+const db = createDb({
+  adapter: new LocalStorageAdapter(&#39;todo-app&#39;)
+});
+
+const todos = db.collection(&#39;todos&#39;);
+
+// Add a new todo
+async function addTodo(title) {
+  return await todos.insert({
+    title,
+    completed: false,
+    createdAt: new Date().toISOString()
+  });
+}
+
+// Toggle todo completion status
+async function toggleTodo(id) {
+  const todo = await todos.findOne({ id });
+  if (todo) {
+    await todos.update(
+      { id },
+      { $set: { completed: !todo.completed } }
+    );
+  }
+}
+
+// Delete a todo
+async function deleteTodo(id) {
+  await todos.delete({ id });
+}
+
+// Get all todos
+async function getAllTodos() {
+  return await todos.find();
+}
+
+// Get active todos
+async function getActiveTodos() {
+  return await todos.find({ completed: false });
+}
+
+// Get completed todos
+async function getCompletedTodos() {
+  return await todos.find({ completed: true });
+}
+
+// Clear completed todos
+async function clearCompletedTodos() {
+  await todos.delete({ completed: true });
+}
+
+// Example usage
+async function run() {
+  // Add some todos
+  await addTodo(&#39;Learn NebulaDB&#39;);
+  await addTodo(&#39;Build a todo app&#39;);
+  await addTodo(&#39;Write documentation&#39;);
+  
+  // Display all todos
+  console.log(&#39;All todos:&#39;, await getAllTodos());
+  
+  // Toggle a todo
+  const firstTodo = (await getAllTodos())[0];
+  await toggleTodo(firstTodo.id);
+  
+  // Display active and completed todos
+  console.log(&#39;Active todos:&#39;, await getActiveTodos());
+  console.log(&#39;Completed todos:&#39;, await getCompletedTodos());
+  
+  // Clear completed todos
+  await clearCompletedTodos();
+  
+  // Display remaining todos
+  console.log(&#39;Remaining todos:&#39;, await getAllTodos());
+}
+
+run();
+</code></pre>
+<h2>Blog Application</h2>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import path from &#39;path&#39;;
+
+// Create a database with file system persistence
+const db = createDb({
+  adapter: new FileSystemAdapter(path.join(__dirname, &#39;blog-data.json&#39;))
+});
+
+// Define collections
+const users = db.collection(&#39;users&#39;);
+const posts = db.collection(&#39;posts&#39;);
+const comments = db.collection(&#39;comments&#39;);
+
+// User functions
+async function createUser(userData) {
+  return await users.insert({
+    ...userData,
+    createdAt: new Date().toISOString()
+  });
+}
+
+async function getUserById(id) {
+  return await users.findOne({ id });
+}
+
+// Post functions
+async function createPost(userId, postData) {
+  return await posts.insert({
+    ...postData,
+    userId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  });
+}
+
+async function updatePost(id, postData) {
+  await posts.update(
+    { id },
+    {
+      $set: {
+        ...postData,
+        updatedAt: new Date().toISOString()
+      }
+    }
+  );
+  return await posts.findOne({ id });
+}
+
+async function deletePost(id) {
+  // Delete the post
+  await posts.delete({ id });
+  
+  // Delete associated comments
+  await comments.delete({ postId: id });
+}
+
+async function getPostById(id) {
+  return await posts.findOne({ id });
+}
+
+async function getPostsByUser(userId) {
+  return await posts.find({ userId });
+}
+
+async function getAllPosts() {
+  return await posts.find();
+}
+
+// Comment functions
+async function createComment(userId, postId, content) {
+  return await comments.insert({
+    userId,
+    postId,
+    content,
+    createdAt: new Date().toISOString()
+  });
+}
+
+async function getCommentsByPost(postId) {
+  return await comments.find({ postId });
+}
+
+// Get post with author and comments
+async function getPostWithDetails(id) {
+  const post = await getPostById(id);
+  if (!post) return null;
+  
+  const author = await getUserById(post.userId);
+  const postComments = await getCommentsByPost(id);
+  
+  // Get comment authors
+  const commentUserIds = [...new Set(postComments.map(c =&gt; c.userId))];
+  const commentAuthors = await Promise.all(
+    commentUserIds.map(id =&gt; getUserById(id))
+  );
+  
+  // Map user IDs to user objects
+  const userMap = commentAuthors.reduce((map, user) =&gt; {
+    map[user.id] = user;
+    return map;
+  }, {});
+  
+  // Add author to each comment
+  const commentsWithAuthors = postComments.map(comment =&gt; ({
+    ...comment,
+    author: userMap[comment.userId]
+  }));
+  
+  return {
+    ...post,
+    author,
+    comments: commentsWithAuthors
+  };
+}
+
+// Example usage
+async function run() {
+  // Create users
+  const alice = await createUser({
+    username: &#39;alice&#39;,
+    email: &#39;alice@example.com&#39;,
+    name: &#39;Alice Johnson&#39;
+  });
+  
+  const bob = await createUser({
+    username: &#39;bob&#39;,
+    email: &#39;bob@example.com&#39;,
+    name: &#39;Bob Smith&#39;
+  });
+  
+  // Create posts
+  const post1 = await createPost(alice.id, {
+    title: &#39;Introduction to NebulaDB&#39;,
+    content: &#39;NebulaDB is a flexible embedded database...&#39;
+  });
+  
+  const post2 = await createPost(bob.id, {
+    title: &#39;Building Apps with NebulaDB&#39;,
+    content: &#39;In this tutorial, we will build a simple app...&#39;
+  });
+  
+  // Add comments
+  await createComment(bob.id, post1.id, &#39;Great introduction!&#39;);
+  await createComment(alice.id, post2.id, &#39;Nice tutorial, very helpful.&#39;);
+  
+  // Get post with details
+  const postWithDetails = await getPostWithDetails(post1.id);
+  console.log(JSON.stringify(postWithDetails, null, 2));
+  
+  // Save the database
+  await db.save();
+}
+
+run();
+</code></pre>
+<h2>Real-time Chat Application</h2>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+
+// Create a database
+const db = createDb({ adapter: new MemoryAdapter() });
+
+// Define collections
+const users = db.collection(&#39;users&#39;);
+const rooms = db.collection(&#39;rooms&#39;);
+const messages = db.collection(&#39;messages&#39;);
+
+// User functions
+async function createUser(username) {
+  return await users.insert({
+    username,
+    online: true,
+    lastSeen: new Date().toISOString()
+  });
+}
+
+async function setUserStatus(userId, online) {
+  await users.update(
+    { id: userId },
+    {
+      $set: {
+        online,
+        lastSeen: new Date().toISOString()
+      }
+    }
+  );
+}
+
+// Room functions
+async function createRoom(name, createdBy) {
+  return await rooms.insert({
+    name,
+    createdBy,
+    createdAt: new Date().toISOString(),
+    participants: [createdBy]
+  });
+}
+
+async function joinRoom(roomId, userId) {
+  const room = await rooms.findOne({ id: roomId });
+  if (!room) throw new Error(&#39;Room not found&#39;);
+  
+  if (!room.participants.includes(userId)) {
+    await rooms.update(
+      { id: roomId },
+      { $push: { participants: userId } }
+    );
+  }
+}
+
+async function leaveRoom(roomId, userId) {
+  const room = await rooms.findOne({ id: roomId });
+  if (!room) throw new Error(&#39;Room not found&#39;);
+  
+  await rooms.update(
+    { id: roomId },
+    {
+      $set: {
+        participants: room.participants.filter(id =&gt; id !== userId)
+      }
+    }
+  );
+}
+
+// Message functions
+async function sendMessage(roomId, userId, content) {
+  return await messages.insert({
+    roomId,
+    userId,
+    content,
+    timestamp: new Date().toISOString(),
+    read: [userId]
+  });
+}
+
+async function markMessageAsRead(messageId, userId) {
+  const message = await messages.findOne({ id: messageId });
+  if (!message) throw new Error(&#39;Message not found&#39;);
+  
+  if (!message.read.includes(userId)) {
+    await messages.update(
+      { id: messageId },
+      { $push: { read: userId } }
+    );
+  }
+}
+
+async function getRoomMessages(roomId) {
+  return await messages.find({ roomId });
+}
+
+// Subscribe to new messages in a room
+function subscribeToRoomMessages(roomId, callback) {
+  return messages.subscribe(
+    { roomId },
+    (roomMessages) =&gt; {
+      // Sort messages by timestamp
+      const sortedMessages = [...roomMessages].sort(
+        (a, b) =&gt; new Date(a.timestamp) - new Date(b.timestamp)
+      );
+      callback(sortedMessages);
+    }
+  );
+}
+
+// Example usage
+async function run() {
+  // Create users
+  const alice = await createUser(&#39;alice&#39;);
+  const bob = await createUser(&#39;bob&#39;);
+  
+  // Create a room
+  const room = await createRoom(&#39;General&#39;, alice.id);
+  
+  // Bob joins the room
+  await joinRoom(room.id, bob.id);
+  
+  // Subscribe to messages
+  const unsubscribe = subscribeToRoomMessages(room.id, (messages) =&gt; {
+    console.log(&#39;New messages:&#39;, messages);
+  });
+  
+  // Send messages
+  await sendMessage(room.id, alice.id, &#39;Hello, Bob!&#39;);
+  await sendMessage(room.id, bob.id, &#39;Hi Alice, how are you?&#39;);
+  await sendMessage(room.id, alice.id, &#39;I\&#39;m doing well, thanks!&#39;);
+  
+  // Mark messages as read
+  const messages = await getRoomMessages(room.id);
+  for (const message of messages) {
+    if (message.userId !== bob.id) {
+      await markMessageAsRead(message.id, bob.id);
+    }
+  }
+  
+  // Bob goes offline
+  await setUserStatus(bob.id, false);
+  
+  // Unsubscribe from messages
+  unsubscribe();
+}
+
+run();
+</code></pre>
+<h2>E-commerce Inventory Management</h2>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import path from &#39;path&#39;;
+
+// Create a database
+const db = createDb({
+  adapter: new FileSystemAdapter(path.join(__dirname, &#39;inventory-data.json&#39;))
+});
+
+// Define collections
+const products = db.collection(&#39;products&#39;);
+const categories = db.collection(&#39;categories&#39;);
+const inventory = db.collection(&#39;inventory&#39;);
+const orders = db.collection(&#39;orders&#39;);
+
+// Product functions
+async function createProduct(productData) {
+  return await products.insert({
+    ...productData,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  });
+}
+
+async function updateProduct(id, productData) {
+  await products.update(
+    { id },
+    {
+      $set: {
+        ...productData,
+        updatedAt: new Date().toISOString()
+      }
+    }
+  );
+  return await products.findOne({ id });
+}
+
+async function getProductById(id) {
+  return await products.findOne({ id });
+}
+
+async function getProductsByCategory(categoryId) {
+  return await products.find({ categoryId });
+}
+
+// Category functions
+async function createCategory(name) {
+  return await categories.insert({
+    name,
+    createdAt: new Date().toISOString()
+  });
+}
+
+async function getAllCategories() {
+  return await categories.find();
+}
+
+// Inventory functions
+async function updateInventory(productId, quantity, location = &#39;main&#39;) {
+  const item = await inventory.findOne({ productId, location });
+  
+  if (item) {
+    await inventory.update(
+      { id: item.id },
+      {
+        $set: {
+          quantity,
+          updatedAt: new Date().toISOString()
+        }
+      }
+    );
+    return await inventory.findOne({ id: item.id });
+  } else {
+    return await inventory.insert({
+      productId,
+      location,
+      quantity,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+  }
+}
+
+async function getProductInventory(productId) {
+  return await inventory.find({ productId });
+}
+
+async function checkAvailability(productId, quantity, location = &#39;main&#39;) {
+  const item = await inventory.findOne({ productId, location });
+  return item &amp;&amp; item.quantity &gt;= quantity;
+}
+
+// Order functions
+async function createOrder(orderData) {
+  // Check inventory for all items
+  for (const item of orderData.items) {
+    const available = await checkAvailability(item.productId, item.quantity);
+    if (!available) {
+      throw new Error(`Product ${item.productId} is not available in the requested quantity`);
+    }
+  }
+  
+  // Create the order
+  const order = await orders.insert({
+    ...orderData,
+    status: &#39;pending&#39;,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  });
+  
+  // Update inventory
+  for (const item of orderData.items) {
+    const inventoryItem = await inventory.findOne({ productId: item.productId });
+    await updateInventory(
+      item.productId,
+      inventoryItem.quantity - item.quantity
+    );
+  }
+  
+  return order;
+}
+
+async function updateOrderStatus(id, status) {
+  await orders.update(
+    { id },
+    {
+      $set: {
+        status,
+        updatedAt: new Date().toISOString()
+      }
+    }
+  );
+  return await orders.findOne({ id });
+}
+
+async function getOrderById(id) {
+  return await orders.findOne({ id });
+}
+
+async function getOrdersByStatus(status) {
+  return await orders.find({ status });
+}
+
+// Example usage
+async function run() {
+  // Create categories
+  const electronics = await createCategory(&#39;Electronics&#39;);
+  const clothing = await createCategory(&#39;Clothing&#39;);
+  
+  // Create products
+  const laptop = await createProduct({
+    name: &#39;Laptop Pro&#39;,
+    description: &#39;Powerful laptop for professionals&#39;,
+    price: 1299.99,
+    categoryId: electronics.id,
+    sku: &#39;LP-2023-001&#39;
+  });
+  
+  const tshirt = await createProduct({
+    name: &#39;Cotton T-Shirt&#39;,
+    description: &#39;Comfortable cotton t-shirt&#39;,
+    price: 19.99,
+    categoryId: clothing.id,
+    sku: &#39;TS-2023-001&#39;
+  });
+  
+  // Update inventory
+  await updateInventory(laptop.id, 10);
+  await updateInventory(tshirt.id, 100);
+  
+  // Create an order
+  const order = await createOrder({
+    customer: {
+      name: &#39;John Doe&#39;,
+      email: &#39;john@example.com&#39;,
+      address: &#39;123 Main St&#39;
+    },
+    items: [
+      { productId: laptop.id, quantity: 1, price: laptop.price },
+      { productId: tshirt.id, quantity: 2, price: tshirt.price }
+    ],
+    total: laptop.price + (tshirt.price * 2)
+  });
+  
+  // Check inventory after order
+  const laptopInventory = await getProductInventory(laptop.id);
+  console.log(&#39;Laptop inventory after order:&#39;, laptopInventory);
+  
+  // Update order status
+  await updateOrderStatus(order.id, &#39;shipped&#39;);
+  
+  // Get all shipped orders
+  const shippedOrders = await getOrdersByStatus(&#39;shipped&#39;);
+  console.log(&#39;Shipped orders:&#39;, shippedOrders);
+  
+  // Save the database
+  await db.save();
+}
+
+run();
+</code></pre>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

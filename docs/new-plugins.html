@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Plugins Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>New Plugins Guide</h1>
+<p>This guide covers the additional plugins available for NebulaDB.</p>
+<h2>Cache Plugin</h2>
+<p>The Cache Plugin improves query performance by caching query results.</p>
+<h3>Installation</h3>
+<pre><code class="language-bash">npm install @nebula/plugin-cache
+</code></pre>
+<h3>Usage</h3>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { createCachePlugin } from &#39;@nebula/plugin-cache&#39;;
+
+// Create the cache plugin
+const cachePlugin = createCachePlugin({
+  maxCacheSize: 100, // Maximum number of cached queries per collection
+  ttl: 60000, // Cache TTL in milliseconds (1 minute)
+  excludeCollections: [&#39;logs&#39;], // Collections to exclude from caching
+  cacheEmptyResults: true // Whether to cache empty results
+});
+
+// Create a database with the cache plugin
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [cachePlugin]
+});
+
+// Use the database normally - queries will be automatically cached
+const users = db.collection(&#39;users&#39;);
+const result1 = await users.find({ age: { $gt: 30 } }); // This query is executed
+const result2 = await users.find({ age: { $gt: 30 } }); // This query uses the cache
+</code></pre>
+<h3>How It Works</h3>
+<ol>
+<li>When a query is executed, the plugin checks if the same query has been cached</li>
+<li>If a cache hit occurs, the cached results are returned without executing the query</li>
+<li>If a cache miss occurs, the query is executed and the results are cached</li>
+<li>When data in a collection changes (insert, update, delete), the cache for that collection is invalidated</li>
+<li>Cache entries expire after the configured TTL</li>
+</ol>
+<h3>Benefits</h3>
+<ul>
+<li><strong>Improved Performance</strong>: Frequently executed queries return results faster</li>
+<li><strong>Reduced Load</strong>: Less processing required for repeated queries</li>
+<li><strong>Configurable</strong>: Customize caching behavior per your application&#39;s needs</li>
+</ul>
+<h3>Considerations</h3>
+<ul>
+<li><strong>Memory Usage</strong>: Caching consumes additional memory</li>
+<li><strong>Stale Data</strong>: If TTL is too high, cached results might become stale</li>
+<li><strong>Write-Heavy Workloads</strong>: Less beneficial for write-heavy workloads</li>
+</ul>
+<h2>Logger Plugin</h2>
+<p>The Logger Plugin provides detailed logging of database operations.</p>
+<h3>Installation</h3>
+<pre><code class="language-bash">npm install @nebula/plugin-logger
+</code></pre>
+<h3>Usage</h3>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { createLoggerPlugin, LogLevel } from &#39;@nebula/plugin-logger&#39;;
+
+// Create the logger plugin
+const loggerPlugin = createLoggerPlugin({
+  level: LogLevel.DEBUG, // Minimum log level
+  logQueryParams: true, // Log query parameters
+  logDocuments: false, // Don&#39;t log document contents
+  logPerformance: true // Log performance metrics
+});
+
+// Create a database with the logger plugin
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [loggerPlugin]
+});
+
+// Use the database - operations will be logged
+const users = db.collection(&#39;users&#39;);
+await users.insert({ name: &#39;Alice&#39;, age: 30 });
+// [NebulaDB] Inserted document into users with ID: 1234-5678-90ab-cdef
+
+await users.find({ age: { $gt: 25 } });
+// [NebulaDB] Query operation on users took 1.23ms
+</code></pre>
+<h3>Custom Logger</h3>
+<p>You can provide a custom logger implementation:</p>
+<pre><code class="language-typescript">import { createLoggerPlugin, Logger } from &#39;@nebula/plugin-logger&#39;;
+
+// Create a custom logger
+class MyCustomLogger implements Logger {
+  debug(message: string, ...args: any[]): void {
+    // Custom debug implementation
+  }
+  
+  info(message: string, ...args: any[]): void {
+    // Custom info implementation
+  }
+  
+  warn(message: string, ...args: any[]): void {
+    // Custom warn implementation
+  }
+  
+  error(message: string, ...args: any[]): void {
+    // Custom error implementation
+  }
+}
+
+// Use the custom logger
+const loggerPlugin = createLoggerPlugin({
+  logger: new MyCustomLogger()
+});
+</code></pre>
+<h3>Log Levels</h3>
+<ul>
+<li><strong>DEBUG</strong>: Detailed information for debugging</li>
+<li><strong>INFO</strong>: General information about operations</li>
+<li><strong>WARN</strong>: Warnings that don&#39;t prevent operation</li>
+<li><strong>ERROR</strong>: Errors that might prevent operation</li>
+</ul>
+<h2>Migration Plugin</h2>
+<p>The Migration Plugin helps manage schema changes and data migrations.</p>
+<h3>Installation</h3>
+<pre><code class="language-bash">npm install @nebula/plugin-migration
+</code></pre>
+<h3>Usage</h3>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { createMigrationPlugin } from &#39;@nebula/plugin-migration&#39;;
+
+// Define migrations
+const migrations = [
+  {
+    version: 1,
+    name: &#39;Add email to users&#39;,
+    async up(db) {
+      const users = db.collection(&#39;users&#39;);
+      const allUsers = await users.find();
+      
+      for (const user of allUsers) {
+        if (!user.email) {
+          await users.update(
+            { id: user.id },
+            { $set: { email: `${user.name.toLowerCase()}@example.com` } }
+          );
+        }
+      }
+    },
+    async down(db) {
+      const users = db.collection(&#39;users&#39;);
+      await users.update(
+        {},
+        { $unset: { email: true } }
+      );
+    }
+  },
+  {
+    version: 2,
+    name: &#39;Add createdAt to posts&#39;,
+    async up(db) {
+      const posts = db.collection(&#39;posts&#39;);
+      const allPosts = await posts.find();
+      
+      for (const post of allPosts) {
+        if (!post.createdAt) {
+          await posts.update(
+            { id: post.id },
+            { $set: { createdAt: new Date().toISOString() } }
+          );
+        }
+      }
+    }
+  }
+];
+
+// Create the migration plugin
+const migrationPlugin = createMigrationPlugin({
+  migrations,
+  migrationCollection: &#39;_migrations&#39;, // Collection to store migration history
+  autoApply: true, // Apply migrations automatically on startup
+  throwOnError: true, // Throw an error if a migration fails
+  logger: console.log // Custom logger function
+});
+
+// Create a database with the migration plugin
+const db = createDb({
+  adapter: new FileSystemAdapter(&#39;data.json&#39;),
+  plugins: [migrationPlugin]
+});
+
+// Migrations will be applied automatically on startup
+// You can also apply or revert migrations manually:
+
+// Apply pending migrations
+await migrationPlugin.applyMigrations();
+
+// Revert all migrations
+await migrationPlugin.revertMigrations();
+
+// Revert to a specific version
+await migrationPlugin.revertMigrations(1); // Revert to version 1
+</code></pre>
+<h3>Migration Structure</h3>
+<p>Each migration should have:</p>
+<ul>
+<li><strong>version</strong>: A unique number identifying the migration</li>
+<li><strong>name</strong>: A descriptive name</li>
+<li><strong>up</strong>: Function to apply the migration</li>
+<li><strong>down</strong> (optional): Function to revert the migration</li>
+</ul>
+<h3>Benefits</h3>
+<ul>
+<li><strong>Versioned Changes</strong>: Track and apply changes in order</li>
+<li><strong>Reversible</strong>: Revert changes if needed</li>
+<li><strong>Automated</strong>: Apply migrations automatically on startup</li>
+<li><strong>Tracked</strong>: Keep a history of applied migrations</li>
+</ul>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

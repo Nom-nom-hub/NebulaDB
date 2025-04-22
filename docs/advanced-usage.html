@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Usage Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>Advanced Usage Guide</h1>
+<p>This guide covers advanced usage patterns and techniques for NebulaDB.</p>
+<h2>Optimizing Performance</h2>
+<h3>Indexing</h3>
+<p>NebulaDB now includes a powerful built-in indexing system with B-tree implementation for efficient queries:</p>
+<pre><code class="language-typescript">// Create a collection with indexes
+const users = db.collection(&#39;users&#39;, {
+  indexes: [
+    // Single field indexes
+    { name: &#39;email_idx&#39;, fields: [&#39;email&#39;], type: &#39;unique&#39; },
+    { name: &#39;age_idx&#39;, fields: [&#39;age&#39;], type: &#39;single&#39; },
+
+    // Compound index for queries that filter on both fields
+    { name: &#39;name_age_idx&#39;, fields: [&#39;name&#39;, &#39;age&#39;], type: &#39;compound&#39; },
+
+    // Partial index for active users only
+    {
+      name: &#39;active_users_idx&#39;,
+      fields: [&#39;lastActive&#39;],
+      type: &#39;single&#39;,
+      options: {
+        partial: { filter: { active: true } }
+      }
+    },
+
+    // Index with expiry (for TTL collections)
+    {
+      name: &#39;session_expiry_idx&#39;,
+      fields: [&#39;createdAt&#39;],
+      type: &#39;single&#39;,
+      options: {
+        expireAfterSeconds: 3600 // Expire after 1 hour
+      }
+    }
+  ]
+});
+
+// Queries will automatically use the appropriate index
+async function findUserByEmail(email) {
+  // Uses email_idx automatically
+  return await users.findOne({ email });
+}
+
+async function findUsersByAge(age) {
+  // Uses age_idx automatically
+  return await users.find({ age });
+}
+
+async function findUsersByNameAndAge(name, age) {
+  // Uses name_age_idx automatically
+  return await users.find({ name, age });
+}
+
+async function findActiveUsers() {
+  // Uses active_users_idx automatically
+  return await users.find({ active: true });
+}
+</code></pre>
+<h3>Batch Operations</h3>
+<p>NebulaDB now includes built-in batch operations for better performance with large datasets:</p>
+<pre><code class="language-typescript">// Instead of this
+for (const item of items) {
+  await collection.insert(item);
+}
+
+// Or this
+const promises = items.map(item =&gt; collection.insert(item));
+await Promise.all(promises);
+
+// Use the built-in batch operations
+await collection.insertBatch(items);
+
+// Batch updates
+await collection.updateBatch(
+  [{ id: &#39;1&#39; }, { id: &#39;2&#39; }, { id: &#39;3&#39; }],
+  [{ $set: { processed: true } }, { $set: { processed: false } }, { $inc: { count: 1 } }]
+);
+
+// Batch deletes
+await collection.deleteBatch([{ id: &#39;1&#39; }, { id: &#39;2&#39; }]);
+</code></pre>
+<h3>Selective Loading</h3>
+<p>If you have large collections, consider loading only what you need:</p>
+<pre><code class="language-typescript">// Custom adapter that loads collections on demand
+class SelectiveAdapter extends FileSystemAdapter {
+  private loadedCollections = new Set();
+
+  async loadCollection(name) {
+    // Load just one collection from disk
+    const data = await super.load();
+    return data[name] || [];
+  }
+
+  async load() {
+    // Only load collections that have been accessed
+    const data = {};
+    for (const name of this.loadedCollections) {
+      data[name] = await this.loadCollection(name);
+    }
+    return data;
+  }
+
+  markCollectionAccessed(name) {
+    this.loadedCollections.add(name);
+  }
+}
+
+// Usage
+const adapter = new SelectiveAdapter(&#39;data.json&#39;);
+const db = createDb({ adapter });
+
+// Override collection method to track access
+const originalCollection = db.collection;
+db.collection = function(name, options) {
+  adapter.markCollectionAccessed(name);
+  return originalCollection.call(this, name, options);
+};
+</code></pre>
+<h2>Working with Relationships</h2>
+<p>NebulaDB doesn&#39;t have built-in relationships, but you can implement them:</p>
+<h3>One-to-Many Relationships</h3>
+<pre><code class="language-typescript">// Define collections
+const users = db.collection(&#39;users&#39;);
+const posts = db.collection(&#39;posts&#39;);
+
+// Create a user
+const user = await users.insert({
+  name: &#39;Alice&#39;,
+  email: &#39;alice@example.com&#39;
+});
+
+// Create posts with user reference
+await posts.insert({
+  title: &#39;First Post&#39;,
+  content: &#39;Hello world!&#39;,
+  userId: user.id // Reference to user
+});
+
+await posts.insert({
+  title: &#39;Second Post&#39;,
+  content: &#39;Another post&#39;,
+  userId: user.id
+});
+
+// Query posts by user
+const userPosts = await posts.find({ userId: user.id });
+</code></pre>
+<h3>Many-to-Many Relationships</h3>
+<pre><code class="language-typescript">// Define collections
+const users = db.collection(&#39;users&#39;);
+const tags = db.collection(&#39;tags&#39;);
+const userTags = db.collection(&#39;userTags&#39;); // Junction table
+
+// Create users and tags
+const alice = await users.insert({ name: &#39;Alice&#39; });
+const bob = await users.insert({ name: &#39;Bob&#39; });
+
+const tagDev = await tags.insert({ name: &#39;developer&#39; });
+const tagAdmin = await tags.insert({ name: &#39;admin&#39; });
+
+// Create relationships
+await userTags.insert({ userId: alice.id, tagId: tagDev.id });
+await userTags.insert({ userId: alice.id, tagId: tagAdmin.id });
+await userTags.insert({ userId: bob.id, tagId: tagDev.id });
+
+// Query users with a specific tag
+async function getUsersByTag(tagId) {
+  const relationships = await userTags.find({ tagId });
+  const userIds = relationships.map(rel =&gt; rel.userId);
+  return await users.find({ id: { $in: userIds } });
+}
+
+// Query tags for a specific user
+async function getTagsForUser(userId) {
+  const relationships = await userTags.find({ userId });
+  const tagIds = relationships.map(rel =&gt; rel.tagId);
+  return await tags.find({ id: { $in: tagIds } });
+}
+</code></pre>
+<h2>Transactions</h2>
+<p>NebulaDB doesn&#39;t have built-in transactions, but you can implement a simple version:</p>
+<pre><code class="language-typescript">async function transaction(operations) {
+  // Save the current state
+  const snapshot = {};
+  for (const [collectionName, collection] of db.collections.entries()) {
+    if (collection instanceof Collection) {
+      snapshot[collectionName] = collection.getAll();
+    }
+  }
+
+  try {
+    // Execute operations
+    const result = await operations();
+
+    // Save changes
+    await db.save();
+
+    return result;
+  } catch (error) {
+    // Restore from snapshot on error
+    for (const [collectionName, docs] of Object.entries(snapshot)) {
+      const collection = db.collection(collectionName);
+      if (collection instanceof Collection) {
+        collection.setAll(docs);
+      }
+    }
+
+    throw error;
+  }
+}
+
+// Usage
+await transaction(async () =&gt; {
+  // All operations here will be rolled back if any fails
+  await users.insert({ name: &#39;Alice&#39; });
+  await posts.insert({ title: &#39;Post&#39;, userId: &#39;invalid-id&#39; }); // This will fail
+});
+</code></pre>
+<h2>Migrations</h2>
+<p>For schema migrations, you can create a plugin:</p>
+<pre><code class="language-typescript">function createMigrationPlugin(migrations) {
+  return {
+    name: &#39;migration&#39;,
+
+    async onInit(db) {
+      // Get or create the migrations collection
+      const migrationsCollection = db.collection(&#39;_migrations&#39;);
+
+      // Get applied migrations
+      const applied = await migrationsCollection.find();
+      const appliedVersions = new Set(applied.map(m =&gt; m.version));
+
+      // Sort migrations by version
+      const pendingMigrations = migrations
+        .filter(m =&gt; !appliedVersions.has(m.version))
+        .sort((a, b) =&gt; a.version - b.version);
+
+      // Apply pending migrations
+      for (const migration of pendingMigrations) {
+        console.log(`Applying migration: ${migration.name} (${migration.version})`);
+
+        try {
+          await migration.up(db);
+
+          // Mark migration as applied
+          await migrationsCollection.insert({
+            id: `migration-${migration.version}`,
+            version: migration.version,
+            name: migration.name,
+            appliedAt: new Date().toISOString()
+          });
+
+          console.log(`Migration applied: ${migration.name}`);
+        } catch (error) {
+          console.error(`Migration failed: ${migration.name}`, error);
+          throw error;
+        }
+      }
+    }
+  };
+}
+
+// Usage
+const migrations = [
+  {
+    version: 1,
+    name: &#39;Add email to users&#39;,
+    async up(db) {
+      const users = db.collection(&#39;users&#39;);
+      const allUsers = await users.find();
+
+      for (const user of allUsers) {
+        if (!user.email) {
+          await users.update(
+            { id: user.id },
+            { $set: { email: `${user.name.toLowerCase()}@example.com` } }
+          );
+        }
+      }
+    }
+  },
+  {
+    version: 2,
+    name: &#39;Add createdAt to posts&#39;,
+    async up(db) {
+      const posts = db.collection(&#39;posts&#39;);
+      const allPosts = await posts.find();
+
+      for (const post of allPosts) {
+        if (!post.createdAt) {
+          await posts.update(
+            { id: post.id },
+            { $set: { createdAt: new Date().toISOString() } }
+          );
+        }
+      }
+    }
+  }
+];
+
+const db = createDb({
+  adapter: new FileSystemAdapter(&#39;data.json&#39;),
+  plugins: [createMigrationPlugin(migrations)]
+});
+</code></pre>
+<h2>Working with Large Datasets</h2>
+<p>NebulaDB includes several features for efficiently working with large datasets:</p>
+<h3>Memory Management</h3>
+<pre><code class="language-typescript">// Configure document compression for large documents
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  compression: {
+    enabled: true,
+    threshold: 1024,  // Compress documents larger than 1KB
+    level: 6,         // Compression level (1-9)
+    fields: [&#39;content&#39;, &#39;description&#39;]  // Only compress these fields
+  }
+});
+
+// Process documents in chunks to avoid memory issues
+await users.processInChunks(async (docs) =&gt; {
+  // Process each chunk of documents (default chunk size is 1000)
+  for (const doc of docs) {
+    // Process each document
+    console.log(doc.name);
+  }
+  return docs;
+}, 500); // Custom chunk size
+</code></pre>
+<h3>Pagination</h3>
+<pre><code class="language-typescript">async function getPage(collection, query, page, pageSize) {
+  // Get all matching documents - uses indexes automatically
+  const allDocs = await collection.find(query);
+
+  // Calculate start and end indices
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+
+  // Return the page
+  return allDocs.slice(start, end);
+}
+
+// Usage
+const page1 = await getPage(users, { active: true }, 1, 10);
+const page2 = await getPage(users, { active: true }, 2, 10);
+</code></pre>
+<h3>Streaming</h3>
+<p>For processing large datasets without loading everything into memory:</p>
+<pre><code class="language-typescript">async function* streamCollection(collection, query, batchSize = 100) {
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const batch = await getPage(collection, query, page, batchSize);
+
+    if (batch.length === 0) {
+      hasMore = false;
+    } else {
+      for (const doc of batch) {
+        yield doc;
+      }
+      page++;
+    }
+  }
+}
+
+// Usage
+async function processLargeCollection() {
+  for await (const doc of streamCollection(users, { active: true })) {
+    // Process each document one at a time
+    console.log(doc.name);
+  }
+}
+</code></pre>
+<h3>Optimizing Memory Usage</h3>
+<pre><code class="language-typescript">// Optimize memory usage
+users.optimize(); // Compact memory structures and rebalance indexes
+
+// Get memory usage statistics
+const stats = db.getStats();
+console.log(`Documents: ${stats.documentCount}`);
+console.log(`Memory usage: ${stats.memoryUsage} bytes`);
+</code></pre>
+<h2>Encryption at Rest</h2>
+<p>For sensitive data, you can encrypt the entire database:</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import crypto from &#39;crypto&#39;;
+
+class EncryptedFileSystemAdapter extends FileSystemAdapter {
+  private encryptionKey: Buffer;
+
+  constructor(filePath: string, encryptionKey: string) {
+    super(filePath);
+    // Create a key from the password
+    this.encryptionKey = crypto.scryptSync(encryptionKey, &#39;salt&#39;, 32);
+  }
+
+  private encrypt(data: string): string {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(&#39;aes-256-cbc&#39;, this.encryptionKey, iv);
+    let encrypted = cipher.update(data, &#39;utf8&#39;, &#39;hex&#39;);
+    encrypted += cipher.final(&#39;hex&#39;);
+    return iv.toString(&#39;hex&#39;) + &#39;:&#39; + encrypted;
+  }
+
+  private decrypt(data: string): string {
+    const [ivHex, encryptedData] = data.split(&#39;:&#39;);
+    const iv = Buffer.from(ivHex, &#39;hex&#39;);
+    const decipher = crypto.createDecipheriv(&#39;aes-256-cbc&#39;, this.encryptionKey, iv);
+    let decrypted = decipher.update(encryptedData, &#39;hex&#39;, &#39;utf8&#39;);
+    decrypted += decipher.final(&#39;utf8&#39;);
+    return decrypted;
+  }
+
+  async save(data: Record&lt;string, any[]&gt;): Promise&lt;void&gt; {
+    const jsonData = JSON.stringify(data);
+    const encryptedData = this.encrypt(jsonData);
+    await super.save({ data: encryptedData });
+  }
+
+  async load(): Promise&lt;Record&lt;string, any[]&gt;&gt; {
+    try {
+      const encryptedData = await super.load();
+      if (!encryptedData.data) return {};
+
+      const jsonData = this.decrypt(encryptedData.data);
+      return JSON.parse(jsonData);
+    } catch (error) {
+      console.error(&#39;Failed to decrypt data:&#39;, error);
+      return {};
+    }
+  }
+}
+
+// Usage
+const db = createDb({
+  adapter: new EncryptedFileSystemAdapter(&#39;data.json&#39;, &#39;your-secret-password&#39;)
+});
+</code></pre>
+<h2>Custom Query Operators</h2>
+<p>You can extend NebulaDB with custom query operators:</p>
+<pre><code class="language-typescript">import { matchDocument } from &#39;@nebula/core&#39;;
+
+// Add a custom operator for text search
+const originalMatchOperator = matchOperator;
+function matchOperator(value, operator, operand) {
+  if (operator === &#39;$text&#39;) {
+    if (typeof value !== &#39;string&#39; || typeof operand !== &#39;string&#39;) {
+      return false;
+    }
+    return value.toLowerCase().includes(operand.toLowerCase());
+  }
+
+  return originalMatchOperator(value, operator, operand);
+}
+
+// Replace the original function
+// Note: This is a hack and would require modifying the source code
+// A better approach would be to make the query engine extensible
+
+// Usage
+const results = await users.find({
+  bio: { $text: &#39;developer&#39; }
+});
+</code></pre>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

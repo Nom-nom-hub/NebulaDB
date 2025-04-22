@@ -59,5 +59,8 @@
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "marked": "^15.0.9"
   }
 }

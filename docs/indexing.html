@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indexing Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>Indexing Guide</h1>
+<p>NebulaDB supports indexing to improve query performance. This guide explains how to use indexes effectively.</p>
+<h2>Understanding Indexes</h2>
+<p>Indexes in NebulaDB are data structures that improve the speed of data retrieval operations. They work by creating a reference to the data based on specific fields, allowing the database to find documents without scanning the entire collection.</p>
+<h3>Index Types</h3>
+<p>NebulaDB supports several types of indexes:</p>
+<ul>
+<li><strong>Single Field</strong>: Index on a single field</li>
+<li><strong>Compound</strong>: Index on multiple fields</li>
+<li><strong>Unique</strong>: Index that enforces uniqueness of values</li>
+<li><strong>Text</strong>: Index optimized for text searches</li>
+</ul>
+<h2>Creating Indexes</h2>
+<p>You can create indexes when defining a collection or later using the <code>createIndex</code> method:</p>
+<h3>When Creating a Collection</h3>
+<pre><code class="language-typescript">import { createDb, IndexType } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+
+const db = createDb({ adapter: new MemoryAdapter() });
+
+// Create a collection with indexes
+const users = db.collection(&#39;users&#39;, {
+  indexes: [
+    {
+      name: &#39;email_idx&#39;,
+      fields: [&#39;email&#39;],
+      type: IndexType.UNIQUE
+    },
+    {
+      name: &#39;name_age_idx&#39;,
+      fields: [&#39;name&#39;, &#39;age&#39;],
+      type: IndexType.COMPOUND
+    }
+  ]
+});
+</code></pre>
+<h3>After Collection Creation</h3>
+<pre><code class="language-typescript">import { IndexType } from &#39;@nebula/core&#39;;
+
+// Create a single field index
+users.createIndex({
+  name: &#39;age_idx&#39;,
+  fields: [&#39;age&#39;],
+  type: IndexType.SINGLE
+});
+
+// Create a unique index
+users.createIndex({
+  name: &#39;username_idx&#39;,
+  fields: [&#39;username&#39;],
+  type: IndexType.UNIQUE
+});
+
+// Create a compound index
+users.createIndex({
+  name: &#39;location_idx&#39;,
+  fields: [&#39;country&#39;, &#39;city&#39;],
+  type: IndexType.COMPOUND
+});
+</code></pre>
+<h2>Using Indexes</h2>
+<p>NebulaDB automatically uses indexes when processing queries. The query engine analyzes the query and determines if an index can be used to improve performance.</p>
+<p>For an index to be used, the query must include the indexed fields with equality conditions:</p>
+<pre><code class="language-typescript">// Will use the &#39;email_idx&#39; index
+const user = await users.findOne({ email: &#39;alice@example.com&#39; });
+
+// Will use the &#39;name_age_idx&#39; compound index
+const results = await users.find({ 
+  name: &#39;Alice&#39;, 
+  age: 30 
+});
+
+// Will NOT use the &#39;name_age_idx&#39; index (range query on age)
+const results = await users.find({ 
+  name: &#39;Alice&#39;, 
+  age: { $gt: 25 } 
+});
+</code></pre>
+<h2>Managing Indexes</h2>
+<h3>Listing Indexes</h3>
+<pre><code class="language-typescript">const indexes = users.getIndexes();
+console.log(indexes);
+// [
+//   { name: &#39;email_idx&#39;, fields: [&#39;email&#39;], type: &#39;unique&#39; },
+//   { name: &#39;name_age_idx&#39;, fields: [&#39;name&#39;, &#39;age&#39;], type: &#39;compound&#39; },
+//   { name: &#39;age_idx&#39;, fields: [&#39;age&#39;], type: &#39;single&#39; }
+// ]
+</code></pre>
+<h3>Dropping Indexes</h3>
+<pre><code class="language-typescript">// Drop an index by name
+users.dropIndex(&#39;age_idx&#39;);
+</code></pre>
+<h2>Index Performance Considerations</h2>
+<h3>When to Use Indexes</h3>
+<ul>
+<li><strong>High Read-to-Write Ratio</strong>: Indexes are most beneficial when you read data more often than you write it</li>
+<li><strong>Large Collections</strong>: Indexes provide more benefit as collection size grows</li>
+<li><strong>Frequent Queries on Specific Fields</strong>: Index fields that are frequently used in queries</li>
+<li><strong>Sorting Operations</strong>: Indexes can improve the performance of sorting</li>
+</ul>
+<h3>When to Avoid Indexes</h3>
+<ul>
+<li><strong>Small Collections</strong>: For small collections, a full scan might be faster than using an index</li>
+<li><strong>High Write-to-Read Ratio</strong>: Indexes slow down write operations</li>
+<li><strong>Rarely Queried Fields</strong>: Don&#39;t index fields that are rarely used in queries</li>
+<li><strong>Highly Volatile Data</strong>: If data changes frequently, maintaining indexes can be expensive</li>
+</ul>
+<h2>Index Limitations</h2>
+<ul>
+<li><strong>Memory Usage</strong>: Indexes consume additional memory</li>
+<li><strong>Write Performance</strong>: Indexes slow down insert, update, and delete operations</li>
+<li><strong>Range Queries</strong>: Current implementation only optimizes equality queries</li>
+<li><strong>Complex Queries</strong>: Queries with <code>$or</code>, <code>$not</code>, etc. may not fully utilize indexes</li>
+</ul>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Index Selectively</strong>: Only create indexes that will be used frequently</li>
+<li><strong>Use Compound Indexes Wisely</strong>: Order fields from most selective to least selective</li>
+<li><strong>Monitor Performance</strong>: Test queries with and without indexes to ensure they&#39;re helping</li>
+<li><strong>Avoid Over-Indexing</strong>: Too many indexes can degrade write performance</li>
+<li><strong>Consider Collection Size</strong>: For very small collections, indexes might not be necessary</li>
+</ol>
+<h2>Example: Optimizing a Query</h2>
+<pre><code class="language-typescript">// Create a collection with 10,000 documents
+const products = db.collection(&#39;products&#39;);
+
+// Add 10,000 products
+for (let i = 0; i &lt; 10000; i++) {
+  await products.insert({
+    name: `Product ${i}`,
+    category: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;][i % 3],
+    price: Math.floor(Math.random() * 1000),
+    inStock: Math.random() &gt; 0.5
+  });
+}
+
+// Query without index
+console.time(&#39;Without index&#39;);
+const resultsWithoutIndex = await products.find({ category: &#39;B&#39;, inStock: true });
+console.timeEnd(&#39;Without index&#39;);
+
+// Create an index
+products.createIndex({
+  name: &#39;category_stock_idx&#39;,
+  fields: [&#39;category&#39;, &#39;inStock&#39;],
+  type: IndexType.COMPOUND
+});
+
+// Query with index
+console.time(&#39;With index&#39;);
+const resultsWithIndex = await products.find({ category: &#39;B&#39;, inStock: true });
+console.timeEnd(&#39;With index&#39;);
+</code></pre>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

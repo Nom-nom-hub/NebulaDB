@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>API Reference</h1>
+<p>This document provides detailed information about the NebulaDB API.</p>
+<h2>Core API</h2>
+<h3><code>createDb(options)</code></h3>
+<p>Creates a new database instance.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>options</code>: <code>DbOptions</code> - Configuration options for the database<ul>
+<li><code>adapter</code>: <code>Adapter</code> - Storage adapter to use</li>
+<li><code>plugins?</code>: <code>Plugin[]</code> - Optional array of plugins</li>
+</ul>
+</li>
+</ul>
+<p><strong>Returns:</strong> <code>IDatabase</code> - A database instance</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+
+const db = createDb({ adapter: new MemoryAdapter() });
+</code></pre>
+<h3><code>IDatabase</code></h3>
+<p>Interface for database operations.</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><code>collections</code>: <code>Map&lt;string, ICollection&gt;</code> - Map of collections in the database</li>
+<li><code>adapter</code>: <code>Adapter</code> - The storage adapter used by the database</li>
+<li><code>plugins</code>: <code>Plugin[]</code> - Array of plugins used by the database</li>
+</ul>
+<p><strong>Methods:</strong></p>
+<ul>
+<li><code>collection(name: string, options?: CollectionOptions): ICollection</code> - Get or create a collection</li>
+<li><code>save(): Promise&lt;void&gt;</code> - Save the database state using the adapter</li>
+</ul>
+<h3><code>ICollection</code></h3>
+<p>Interface for collection operations.</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><code>name</code>: <code>string</code> - The name of the collection</li>
+</ul>
+<p><strong>Methods:</strong></p>
+<ul>
+<li><code>insert(doc: Omit&lt;Document, &#39;id&#39;&gt; &amp; { id?: string }): Promise&lt;Document&gt;</code> - Insert a document</li>
+<li><code>find(query?: Query): Promise&lt;Document[]&gt;</code> - Find documents matching a query</li>
+<li><code>findOne(query: Query): Promise&lt;Document | null&gt;</code> - Find a single document matching a query</li>
+<li><code>update(query: Query, update: UpdateOperation): Promise&lt;number&gt;</code> - Update documents matching a query</li>
+<li><code>delete(query: Query): Promise&lt;number&gt;</code> - Delete documents matching a query</li>
+<li><code>subscribe(query: Query, callback: SubscriptionCallback): () =&gt; void</code> - Subscribe to changes in documents matching a query</li>
+</ul>
+<h2>Query Operators</h2>
+<p>NebulaDB supports the following query operators:</p>
+<h3>Comparison Operators</h3>
+<ul>
+<li><code>$eq</code>: Equal to</li>
+<li><code>$ne</code>: Not equal to</li>
+<li><code>$gt</code>: Greater than</li>
+<li><code>$gte</code>: Greater than or equal to</li>
+<li><code>$lt</code>: Less than</li>
+<li><code>$lte</code>: Less than or equal to</li>
+<li><code>$in</code>: In array</li>
+<li><code>$nin</code>: Not in array</li>
+<li><code>$regex</code>: Matches regular expression</li>
+<li><code>$exists</code>: Field exists</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-typescript">// Equal to
+await collection.find({ age: 30 }); // Shorthand for { age: { $eq: 30 } }
+
+// Greater than
+await collection.find({ age: { $gt: 25 } });
+
+// In array
+await collection.find({ status: { $in: [&#39;active&#39;, &#39;pending&#39;] } });
+
+// Field exists
+await collection.find({ email: { $exists: true } });
+</code></pre>
+<h3>Logical Operators</h3>
+<ul>
+<li><code>$and</code>: Logical AND</li>
+<li><code>$or</code>: Logical OR</li>
+<li><code>$not</code>: Logical NOT</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-typescript">// AND
+await collection.find({
+  $and: [
+    { age: { $gt: 25 } },
+    { status: &#39;active&#39; }
+  ]
+});
+
+// OR
+await collection.find({
+  $or: [
+    { status: &#39;active&#39; },
+    { age: { $gt: 30 } }
+  ]
+});
+
+// NOT
+await collection.find({
+  $not: [
+    { status: &#39;inactive&#39; }
+  ]
+});
+</code></pre>
+<h2>Update Operators</h2>
+<p>NebulaDB supports the following update operators:</p>
+<ul>
+<li><code>$set</code>: Set field values</li>
+<li><code>$unset</code>: Remove fields</li>
+<li><code>$inc</code>: Increment field values</li>
+<li><code>$push</code>: Add items to arrays</li>
+<li><code>$pull</code>: Remove items from arrays</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-typescript">// Set fields
+await collection.update(
+  { id: &#39;1&#39; },
+  { $set: { name: &#39;New Name&#39;, age: 31 } }
+);
+
+// Unset fields
+await collection.update(
+  { id: &#39;1&#39; },
+  { $unset: { temporary: true } }
+);
+
+// Increment fields
+await collection.update(
+  { id: &#39;1&#39; },
+  { $inc: { age: 1, count: 5 } }
+);
+
+// Push to arrays
+await collection.update(
+  { id: &#39;1&#39; },
+  { $push: { tags: &#39;new-tag&#39; } }
+);
+
+// Pull from arrays
+await collection.update(
+  { id: &#39;1&#39; },
+  { $pull: { tags: &#39;old-tag&#39; } }
+);
+</code></pre>
+<h2>Types</h2>
+<h3><code>Document</code></h3>
+<pre><code class="language-typescript">type Document = {
+  id: string;
+  [key: string]: any;
+};
+</code></pre>
+<h3><code>Query</code></h3>
+<pre><code class="language-typescript">type Query = {
+  [key: string]: QueryCondition | any;
+} | LogicalQuery;
+</code></pre>
+<h3><code>UpdateOperation</code></h3>
+<pre><code class="language-typescript">type UpdateOperation = {
+  [K in UpdateOperator]?: {
+    [key: string]: any;
+  };
+};
+</code></pre>
+<h3><code>CollectionOptions</code></h3>
+<pre><code class="language-typescript">interface CollectionOptions {
+  schema?: any; // Optional schema for validation
+}
+</code></pre>
+<h3><code>DbOptions</code></h3>
+<pre><code class="language-typescript">interface DbOptions {
+  adapter: Adapter;
+  plugins?: Plugin[];
+}
+</code></pre>
+<h3><code>Adapter</code></h3>
+<pre><code class="language-typescript">interface Adapter {
+  load(): Promise&lt;Record&lt;string, Document[]&gt;&gt;;
+  save(data: Record&lt;string, Document[]&gt;): Promise&lt;void&gt;;
+}
+</code></pre>
+<h3><code>Plugin</code></h3>
+<pre><code class="language-typescript">interface Plugin {
+  name: string;
+  onInit?(db: any): void;
+  onCollectionCreate?(collection: any): void;
+  onBeforeInsert?(collection: string, doc: Document): Document | Promise&lt;Document&gt;;
+  onAfterInsert?(collection: string, doc: Document): void;
+  onBeforeUpdate?(collection: string, query: Query, update: UpdateOperation): [Query, UpdateOperation] | Promise&lt;[Query, UpdateOperation]&gt;;
+  onAfterUpdate?(collection: string, query: Query, update: UpdateOperation, affectedDocs: Document[]): void;
+  onBeforeDelete?(collection: string, query: Query): Query | Promise&lt;Query&gt;;
+  onAfterDelete?(collection: string, query: Query, deletedDocs: Document[]): void;
+  onBeforeQuery?(collection: string, query: Query): Query | Promise&lt;Query&gt;;
+  onAfterQuery?(collection: string, query: Query, results: Document[]): Document[] | Promise&lt;Document[]&gt;;
+}
+</code></pre>
+<h3><code>SubscriptionCallback</code></h3>
+<pre><code class="language-typescript">type SubscriptionCallback = (docs: Document[]) =&gt; void;
+</code></pre>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

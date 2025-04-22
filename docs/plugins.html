@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugins Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>Plugins Guide</h1>
+<p>NebulaDB&#39;s plugin system allows you to extend its functionality with custom behaviors. Plugins can intercept and modify database operations at various points in the lifecycle.</p>
+<h2>Available Plugins</h2>
+<p>NebulaDB comes with several built-in plugins:</p>
+<h3>Validation Plugin</h3>
+<p>The Validation Plugin uses <a href="https://github.com/colinhacks/zod">Zod</a> to validate documents before they&#39;re inserted or updated.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { createValidationPlugin } from &#39;@nebula/plugin-validation&#39;;
+import { z } from &#39;zod&#39;;
+
+// Define schemas for your collections
+const userSchema = z.object({
+  id: z.string(),
+  name: z.string().min(2).max(50),
+  email: z.string().email().optional(),
+  age: z.number().int().positive().optional()
+});
+
+// Create the validation plugin
+const validationPlugin = createValidationPlugin({
+  schemas: {
+    users: userSchema
+  },
+  strict: false // Set to true to require schemas for all collections
+});
+
+// Create a database with the validation plugin
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [validationPlugin]
+});
+
+// This will validate against the schema
+const users = db.collection(&#39;users&#39;);
+await users.insert({ name: &#39;Alice&#39;, email: &#39;alice@example.com&#39; }); // Valid
+await users.insert({ name: &#39;B&#39;, email: &#39;not-an-email&#39; }); // Error: Validation failed
+</code></pre>
+<h3>Encryption Plugin</h3>
+<p>The Encryption Plugin encrypts sensitive data before saving it and decrypts it when loading.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { createEncryptionPlugin } from &#39;@nebula/plugin-encryption&#39;;
+
+// Create the encryption plugin
+const encryptionPlugin = createEncryptionPlugin({
+  encryptionKey: &#39;your-secret-key&#39;,
+  fields: {
+    users: [&#39;email&#39;, &#39;password&#39;, &#39;ssn&#39;] // Fields to encrypt in the users collection
+  },
+  encryptAll: false // Set to true to encrypt all string fields except &#39;id&#39;
+});
+
+// Create a database with the encryption plugin
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [encryptionPlugin]
+});
+
+// The specified fields will be automatically encrypted/decrypted
+const users = db.collection(&#39;users&#39;);
+await users.insert({
+  name: &#39;Alice&#39;,
+  email: &#39;alice@example.com&#39;, // Will be encrypted
+  password: &#39;secret123&#39; // Will be encrypted
+});
+</code></pre>
+<h3>Versioning Plugin</h3>
+<p>The Versioning Plugin tracks document versions and maintains a history of changes.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { createVersioningPlugin } from &#39;@nebula/plugin-versioning&#39;;
+
+// Create the versioning plugin
+const versioningPlugin = createVersioningPlugin({
+  versionField: &#39;_version&#39;, // Field to store version number
+  timestampField: &#39;_updatedAt&#39;, // Field to store update timestamp
+  historyCollectionSuffix: &#39;_history&#39;, // Suffix for history collections
+  maxVersions: 10 // Maximum number of versions to keep (0 = unlimited)
+});
+
+// Create a database with the versioning plugin
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [versioningPlugin]
+});
+
+// Documents will automatically track versions
+const users = db.collection(&#39;users&#39;);
+const user = await users.insert({ name: &#39;Alice&#39; }); // _version: 1
+await users.update({ id: user.id }, { $set: { name: &#39;Alicia&#39; } }); // _version: 2
+
+// Access history
+const userHistory = db.collection(&#39;users_history&#39;);
+const versions = await userHistory.find({ _originalId: user.id });
+console.log(versions); // All versions of the document
+</code></pre>
+<h2>Creating Custom Plugins</h2>
+<p>You can create your own plugins by implementing the <code>Plugin</code> interface:</p>
+<pre><code class="language-typescript">import { Plugin, Document, Query, UpdateOperation } from &#39;@nebula/core&#39;;
+
+// Create a logging plugin
+const loggingPlugin: Plugin = {
+  name: &#39;logging&#39;,
+  
+  onInit(db) {
+    console.log(&#39;Database initialized&#39;);
+  },
+  
+  onCollectionCreate(collection) {
+    console.log(`Collection created: ${collection.name}`);
+  },
+  
+  async onBeforeInsert(collection, doc) {
+    console.log(`Inserting into ${collection}:`, doc);
+    return doc;
+  },
+  
+  onAfterInsert(collection, doc) {
+    console.log(`Inserted into ${collection}:`, doc);
+  },
+  
+  async onBeforeUpdate(collection, query, update) {
+    console.log(`Updating in ${collection}:`, { query, update });
+    return [query, update];
+  },
+  
+  onAfterUpdate(collection, query, update, affectedDocs) {
+    console.log(`Updated in ${collection}:`, { query, update, affectedDocs });
+  },
+  
+  async onBeforeDelete(collection, query) {
+    console.log(`Deleting from ${collection}:`, query);
+    return query;
+  },
+  
+  onAfterDelete(collection, query, deletedDocs) {
+    console.log(`Deleted from ${collection}:`, { query, deletedDocs });
+  },
+  
+  async onBeforeQuery(collection, query) {
+    console.log(`Querying ${collection}:`, query);
+    return query;
+  },
+  
+  async onAfterQuery(collection, query, results) {
+    console.log(`Query results from ${collection}:`, { query, count: results.length });
+    return results;
+  }
+};
+
+// Use your custom plugin
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [loggingPlugin]
+});
+</code></pre>
+<h3>Example: Timestamps Plugin</h3>
+<p>Here&#39;s an example of a custom plugin that adds creation and update timestamps to documents:</p>
+<pre><code class="language-typescript">import { Plugin, Document } from &#39;@nebula/core&#39;;
+
+export function createTimestampsPlugin(options = {}): Plugin {
+  const {
+    createdAtField = &#39;createdAt&#39;,
+    updatedAtField = &#39;updatedAt&#39;
+  } = options;
+  
+  return {
+    name: &#39;timestamps&#39;,
+    
+    async onBeforeInsert(collection, doc) {
+      const now = new Date().toISOString();
+      return {
+        ...doc,
+        [createdAtField]: now,
+        [updatedAtField]: now
+      };
+    },
+    
+    async onBeforeUpdate(collection, query, update) {
+      const now = new Date().toISOString();
+      
+      // Create or update the $set operation
+      const newUpdate = { ...update };
+      if (!newUpdate.$set) {
+        newUpdate.$set = {};
+      }
+      
+      newUpdate.$set[updatedAtField] = now;
+      
+      return [query, newUpdate];
+    }
+  };
+}
+</code></pre>
+<h2>Combining Plugins</h2>
+<p>You can use multiple plugins together. The plugins are executed in the order they are provided:</p>
+<pre><code class="language-typescript">const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [
+    createTimestampsPlugin(),
+    createValidationPlugin({ schemas }),
+    createEncryptionPlugin({ encryptionKey }),
+    loggingPlugin
+  ]
+});
+</code></pre>
+<h2>Best Practices</h2>
+<h3>Plugin Order</h3>
+<p>The order of plugins matters. For example:</p>
+<ol>
+<li>Put validation plugins early to reject invalid documents before processing</li>
+<li>Put transformation plugins (like timestamps) before validation</li>
+<li>Put encryption plugins after validation but before saving</li>
+<li>Put logging plugins at the beginning or end depending on whether you want to log raw or processed data</li>
+</ol>
+<h3>Error Handling</h3>
+<p>Plugins should handle errors gracefully and not break the application:</p>
+<pre><code class="language-typescript">async onBeforeInsert(collection, doc) {
+  try {
+    // Do something that might fail
+    return processedDoc;
+  } catch (error) {
+    console.error(&#39;Plugin error:&#39;, error);
+    // Return the original document to continue the operation
+    return doc;
+  }
+}
+</code></pre>
+<h3>Performance Considerations</h3>
+<p>Be mindful of performance, especially in hooks that run frequently:</p>
+<ul>
+<li>Keep plugin operations lightweight</li>
+<li>Use async operations judiciously</li>
+<li>Consider caching results for expensive operations</li>
+</ul>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

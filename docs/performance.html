@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Optimization Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>Performance Optimization Guide</h1>
+<p>This guide provides strategies for optimizing the performance of NebulaDB in your applications.</p>
+<h2>Understanding NebulaDB Performance</h2>
+<p>NebulaDB is designed to be fast by default, with in-memory operations and efficient data structures. However, as your data grows or your application becomes more complex, you may need to optimize for specific use cases.</p>
+<h2>Key Performance Factors</h2>
+<p>Several factors affect NebulaDB&#39;s performance:</p>
+<ol>
+<li><strong>Data Size</strong>: The number of documents in a collection</li>
+<li><strong>Query Complexity</strong>: The complexity of your queries</li>
+<li><strong>Indexing</strong>: Whether appropriate indexes are in place</li>
+<li><strong>Adapter Choice</strong>: The storage adapter being used</li>
+<li><strong>Plugin Overhead</strong>: The number and complexity of plugins</li>
+</ol>
+<h2>Measuring Performance</h2>
+<p>Before optimizing, establish a baseline by measuring current performance:</p>
+<pre><code class="language-typescript">// Measure query performance
+console.time(&#39;Query&#39;);
+const results = await collection.find({ /* your query */ });
+console.timeEnd(&#39;Query&#39;);
+
+// Measure insert performance
+console.time(&#39;Insert&#39;);
+await collection.insert({ /* your document */ });
+console.timeEnd(&#39;Insert&#39;);
+
+// Measure update performance
+console.time(&#39;Update&#39;);
+await collection.update({ /* query */ }, { /* update */ });
+console.timeEnd(&#39;Update&#39;);
+
+// Measure delete performance
+console.time(&#39;Delete&#39;);
+await collection.delete({ /* query */ });
+console.timeEnd(&#39;Delete&#39;);
+</code></pre>
+<p>For more comprehensive benchmarking, use the benchmarking tools in the <code>benchmarks</code> directory.</p>
+<h2>Optimization Strategies</h2>
+<h3>1. Use Indexes</h3>
+<p>Indexes are the most effective way to improve query performance:</p>
+<pre><code class="language-typescript">// Create an index on frequently queried fields
+collection.createIndex({
+  name: &#39;email_idx&#39;,
+  fields: [&#39;email&#39;],
+  type: &#39;unique&#39;
+});
+
+// Create a compound index for queries that filter on multiple fields
+collection.createIndex({
+  name: &#39;user_location_idx&#39;,
+  fields: [&#39;country&#39;, &#39;city&#39;],
+  type: &#39;compound&#39;
+});
+</code></pre>
+<p>Guidelines for effective indexing:</p>
+<ul>
+<li>Index fields that are frequently used in queries</li>
+<li>For compound indexes, order fields from most selective to least selective</li>
+<li>Don&#39;t over-index - each index adds overhead to write operations</li>
+<li>Monitor index usage to ensure they&#39;re being utilized</li>
+</ul>
+<h3>2. Optimize Query Patterns</h3>
+<p>Write efficient queries:</p>
+<pre><code class="language-typescript">// GOOD: Specific query that can use an index
+await users.find({ email: &#39;user@example.com&#39; });
+
+// AVOID: Complex queries that can&#39;t use indexes efficiently
+await users.find({
+  $or: [
+    { name: { $regex: &#39;^A&#39; } },
+    { age: { $gt: 30 } }
+  ]
+});
+</code></pre>
+<p>Tips for efficient queries:</p>
+<ul>
+<li>Use equality conditions when possible</li>
+<li>Limit the use of complex logical operators like <code>$or</code></li>
+<li>Avoid regular expressions when possible</li>
+<li>Use projection to limit the fields returned</li>
+</ul>
+<h3>3. Batch Operations</h3>
+<p>For bulk operations, use batching:</p>
+<pre><code class="language-typescript">// Instead of this
+for (const item of items) {
+  await collection.insert(item);
+}
+
+// Do this
+const promises = items.map(item =&gt; collection.insert(item));
+await Promise.all(promises);
+</code></pre>
+<h3>4. Choose the Right Adapter</h3>
+<p>Different adapters have different performance characteristics:</p>
+<ul>
+<li><strong>MemoryAdapter</strong>: Fastest, but no persistence</li>
+<li><strong>LocalStorageAdapter</strong>: Fast for small datasets, limited storage</li>
+<li><strong>IndexedDBAdapter</strong>: Good for larger browser datasets</li>
+<li><strong>FileSystemAdapter</strong>: Good for Node.js applications</li>
+<li><strong>SQLiteAdapter</strong>: Better for larger datasets with complex queries</li>
+<li><strong>RedisAdapter</strong>: Good for high-throughput applications</li>
+</ul>
+<h3>5. Use the Cache Plugin</h3>
+<p>The Cache Plugin can significantly improve performance for read-heavy workloads:</p>
+<pre><code class="language-typescript">import { createCachePlugin } from &#39;@nebula/plugin-cache&#39;;
+
+const cachePlugin = createCachePlugin({
+  maxCacheSize: 100,
+  ttl: 60000 // 1 minute
+});
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [cachePlugin]
+});
+</code></pre>
+<h3>6. Minimize Plugin Overhead</h3>
+<p>Plugins add functionality but can impact performance:</p>
+<ul>
+<li>Only use plugins you need</li>
+<li>Configure plugins appropriately</li>
+<li>Place performance-critical plugins (like caching) early in the plugin chain</li>
+</ul>
+<h3>7. Optimize Document Structure</h3>
+<p>Document structure affects performance:</p>
+<ul>
+<li>Keep documents small and focused</li>
+<li>Avoid deeply nested structures</li>
+<li>Consider denormalization for frequently accessed data</li>
+<li>Use appropriate data types</li>
+</ul>
+<h3>8. Pagination for Large Result Sets</h3>
+<p>When dealing with large result sets, use pagination:</p>
+<pre><code class="language-typescript">async function getPage(collection, query, page, pageSize) {
+  // Get all matching documents
+  const allDocs = await collection.find(query);
+  
+  // Calculate start and end indices
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  
+  // Return the page
+  return allDocs.slice(start, end);
+}
+
+// Usage
+const page1 = await getPage(users, { active: true }, 1, 10);
+</code></pre>
+<h3>9. Subscription Optimization</h3>
+<p>Optimize reactive subscriptions:</p>
+<ul>
+<li>Be specific with subscription queries</li>
+<li>Limit the number of active subscriptions</li>
+<li>Unsubscribe when no longer needed</li>
+</ul>
+<pre><code class="language-typescript">// Create a subscription
+const unsubscribe = collection.subscribe(query, callback);
+
+// Later, when no longer needed
+unsubscribe();
+</code></pre>
+<h3>10. Memory Management</h3>
+<p>For large datasets, be mindful of memory usage:</p>
+<ul>
+<li>Consider using a persistent adapter for large datasets</li>
+<li>Implement pagination for large result sets</li>
+<li>Use projection to limit returned fields</li>
+<li>Release references to large objects when no longer needed</li>
+</ul>
+<h2>Advanced Optimization Techniques</h2>
+<h3>Custom Adapters</h3>
+<p>For specific performance requirements, consider creating a custom adapter:</p>
+<pre><code class="language-typescript">class OptimizedAdapter implements Adapter {
+  // Implement with optimizations specific to your use case
+}
+</code></pre>
+<h3>Sharding</h3>
+<p>For very large datasets, consider sharding:</p>
+<pre><code class="language-typescript">// Create multiple databases for different data subsets
+const userDb = createDb({ adapter: new MemoryAdapter() });
+const productDb = createDb({ adapter: new MemoryAdapter() });
+const orderDb = createDb({ adapter: new MemoryAdapter() });
+</code></pre>
+<h3>Worker Threads</h3>
+<p>For CPU-intensive operations, consider using worker threads:</p>
+<pre><code class="language-typescript">// In main thread
+const worker = new Worker(&#39;worker.js&#39;);
+worker.postMessage({ action: &#39;query&#39;, collection: &#39;users&#39;, query: { /* complex query */ } });
+worker.onmessage = (e) =&gt; {
+  const results = e.data;
+  // Process results
+};
+
+// In worker.js
+self.onmessage = async (e) =&gt; {
+  const { action, collection, query } = e.data;
+  if (action === &#39;query&#39;) {
+    const db = createDb({ adapter: new MemoryAdapter() });
+    const results = await db.collection(collection).find(query);
+    self.postMessage(results);
+  }
+};
+</code></pre>
+<h2>Performance Monitoring</h2>
+<p>Continuously monitor performance:</p>
+<ul>
+<li>Track query execution times</li>
+<li>Monitor memory usage</li>
+<li>Identify slow queries</li>
+<li>Regularly review and optimize indexes</li>
+</ul>
+<h2>Case Studies</h2>
+<h3>Case Study 1: Optimizing a Todo App</h3>
+<p><strong>Before Optimization:</strong></p>
+<ul>
+<li>1,000 todos</li>
+<li>No indexes</li>
+<li>Full collection scan for queries</li>
+<li>Query time: ~50ms</li>
+</ul>
+<p><strong>After Optimization:</strong></p>
+<ul>
+<li>Added index on <code>completed</code> field</li>
+<li>Added index on <code>dueDate</code> field</li>
+<li>Query time: ~5ms (10x improvement)</li>
+</ul>
+<h3>Case Study 2: Large Dataset Management</h3>
+<p><strong>Before Optimization:</strong></p>
+<ul>
+<li>100,000 records</li>
+<li>MemoryAdapter</li>
+<li>All data loaded at once</li>
+<li>High memory usage</li>
+<li>Slow initial load</li>
+</ul>
+<p><strong>After Optimization:</strong></p>
+<ul>
+<li>Switched to SQLiteAdapter</li>
+<li>Implemented pagination</li>
+<li>Added appropriate indexes</li>
+<li>Reduced memory usage by 80%</li>
+<li>Improved initial load time by 60%</li>
+</ul>
+<h2>Conclusion</h2>
+<p>Performance optimization is an iterative process. Start with the simplest optimizations (like adding indexes) and measure the impact before moving to more complex strategies. Remember that premature optimization can lead to unnecessary complexity, so optimize based on actual performance measurements rather than assumptions.</p>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

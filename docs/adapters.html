@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adapters Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>Adapters Guide</h1>
+<p>NebulaDB uses adapters to handle data persistence. This modular approach allows you to choose the storage mechanism that best fits your application&#39;s needs.</p>
+<h2>Available Adapters</h2>
+<p>NebulaDB comes with several built-in adapters:</p>
+<h3>Memory Adapter</h3>
+<p>The Memory Adapter stores data in memory only. Data is lost when the application restarts.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+
+const db = createDb({
+  adapter: new MemoryAdapter()
+});
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Testing and development</li>
+<li>Temporary data storage</li>
+<li>Applications where persistence isn&#39;t required</li>
+<li>In-memory caching</li>
+</ul>
+<h3>LocalStorage Adapter</h3>
+<p>The LocalStorage Adapter persists data to the browser&#39;s localStorage.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { LocalStorageAdapter } from &#39;@nebula/adapter-localstorage&#39;;
+
+const db = createDb({
+  adapter: new LocalStorageAdapter(&#39;my-app-data&#39;)
+});
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Simple browser applications</li>
+<li>Offline-capable web apps</li>
+<li>Persisting user preferences</li>
+<li>Small to medium datasets (localStorage has size limitations)</li>
+</ul>
+<h3>IndexedDB Adapter</h3>
+<p>The IndexedDB Adapter persists data to the browser&#39;s IndexedDB, which can handle larger datasets.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { IndexedDBAdapter } from &#39;@nebula/adapter-indexeddb&#39;;
+
+const db = createDb({
+  adapter: new IndexedDBAdapter(&#39;my-app-db&#39;, &#39;collections&#39;, 1)
+});
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Browser applications with larger data requirements</li>
+<li>Offline-first web applications</li>
+<li>Complex data structures</li>
+<li>Applications requiring better performance than localStorage</li>
+</ul>
+<h3>FileSystem Adapter</h3>
+<p>The FileSystem Adapter persists data to the file system in Node.js environments.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import path from &#39;path&#39;;
+
+const db = createDb({
+  adapter: new FileSystemAdapter(path.join(__dirname, &#39;data.json&#39;))
+});
+</code></pre>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Node.js applications</li>
+<li>Command-line tools</li>
+<li>Server-side applications</li>
+<li>Desktop applications with Electron</li>
+</ul>
+<h2>Creating Custom Adapters</h2>
+<p>You can create your own adapters by implementing the <code>Adapter</code> interface:</p>
+<pre><code class="language-typescript">import { Adapter, Document } from &#39;@nebula/core&#39;;
+
+class CustomAdapter implements Adapter {
+  async load(): Promise&lt;Record&lt;string, Document[]&gt;&gt; {
+    // Load data from your storage mechanism
+    // Return an object where keys are collection names and values are arrays of documents
+    return {
+      users: [
+        { id: &#39;1&#39;, name: &#39;Alice&#39; },
+        { id: &#39;2&#39;, name: &#39;Bob&#39; }
+      ],
+      posts: [
+        { id: &#39;1&#39;, title: &#39;Hello World&#39; }
+      ]
+    };
+  }
+
+  async save(data: Record&lt;string, Document[]&gt;): Promise&lt;void&gt; {
+    // Save data to your storage mechanism
+    // &#39;data&#39; is an object where keys are collection names and values are arrays of documents
+    console.log(&#39;Saving data:&#39;, data);
+  }
+}
+
+// Use your custom adapter
+const db = createDb({
+  adapter: new CustomAdapter()
+});
+</code></pre>
+<h3>Example: Redis Adapter</h3>
+<p>Here&#39;s an example of a custom adapter that uses Redis for storage:</p>
+<pre><code class="language-typescript">import { Adapter, Document } from &#39;@nebula/core&#39;;
+import Redis from &#39;ioredis&#39;;
+
+export class RedisAdapter implements Adapter {
+  private redis: Redis;
+  private key: string;
+
+  constructor(redisOptions: Redis.RedisOptions = {}, key: string = &#39;nebula-db&#39;) {
+    this.redis = new Redis(redisOptions);
+    this.key = key;
+  }
+
+  async load(): Promise&lt;Record&lt;string, Document[]&gt;&gt; {
+    try {
+      const data = await this.redis.get(this.key);
+      return data ? JSON.parse(data) : {};
+    } catch (error) {
+      console.error(&#39;Failed to load data from Redis:&#39;, error);
+      return {};
+    }
+  }
+
+  async save(data: Record&lt;string, Document[]&gt;): Promise&lt;void&gt; {
+    try {
+      await this.redis.set(this.key, JSON.stringify(data));
+    } catch (error) {
+      console.error(&#39;Failed to save data to Redis:&#39;, error);
+      throw error;
+    }
+  }
+
+  async close(): Promise&lt;void&gt; {
+    await this.redis.quit();
+  }
+}
+</code></pre>
+<h2>Best Practices</h2>
+<h3>Choosing the Right Adapter</h3>
+<ul>
+<li><strong>Browser applications</strong>: Use <code>LocalStorageAdapter</code> for simple apps or <code>IndexedDBAdapter</code> for more complex ones</li>
+<li><strong>Node.js applications</strong>: Use <code>FileSystemAdapter</code> or a custom adapter for your database</li>
+<li><strong>Testing</strong>: Use <code>MemoryAdapter</code> for fast, isolated tests</li>
+</ul>
+<h3>Error Handling</h3>
+<p>Always handle errors that might occur during loading or saving:</p>
+<pre><code class="language-typescript">try {
+  await db.save();
+  console.log(&#39;Data saved successfully&#39;);
+} catch (error) {
+  console.error(&#39;Failed to save data:&#39;, error);
+  // Handle the error appropriately
+}
+</code></pre>
+<h3>Adapter Lifecycle</h3>
+<p>Some adapters might need cleanup when your application shuts down:</p>
+<pre><code class="language-typescript">// Example with a custom adapter that has a close method
+const customAdapter = new CustomAdapter();
+const db = createDb({ adapter: customAdapter });
+
+// When your application is shutting down
+process.on(&#39;SIGINT&#39;, async () =&gt; {
+  await db.save(); // Save any pending changes
+  await customAdapter.close(); // Close connections
+  process.exit(0);
+});
+</code></pre>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

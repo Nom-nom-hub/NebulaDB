@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NebulaDB Documentation - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>NebulaDB Documentation</h1>
+<p>Welcome to the NebulaDB documentation. This guide will help you get started with NebulaDB and explore its features.</p>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#core-concepts">Core Concepts</a></li>
+<li><a href="#performance-optimizations">Performance Optimizations</a></li>
+<li><a href="#api-reference">API Reference</a></li>
+<li><a href="#adapters">Adapters</a></li>
+<li><a href="#plugins">Plugins</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#advanced-usage">Advanced Usage</a></li>
+</ol>
+<h2>Introduction</h2>
+<p>NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database that runs in the browser, Node.js, and Edge environments. It features advanced indexing, optimized query processing, modular adapters for persistence, reactive live queries, extensibility via plugins, and blazing-fast in-memory operations with adaptive concurrency control.</p>
+<h3>Key Features</h3>
+<ul>
+<li><strong>Embedded</strong>: Runs directly in your application, no server required</li>
+<li><strong>High Performance</strong>: Advanced indexing, query optimization, and adaptive concurrency</li>
+<li><strong>TypeScript-First</strong>: Full type safety with your data</li>
+<li><strong>Reactive</strong>: Live queries that update in real-time</li>
+<li><strong>Flexible</strong>: Schema-optional with validation when you need it</li>
+<li><strong>Modular</strong>: Use only what you need with adapters and plugins</li>
+<li><strong>Universal</strong>: Works in browsers, Node.js, and Edge environments</li>
+<li><strong>Scalable</strong>: Efficient memory management and document compression for large datasets</li>
+<li><strong>Optimized</strong>: Batch operations and parallel processing for better performance</li>
+</ul>
+<h2>Installation</h2>
+<pre><code class="language-bash"># Install core package
+npm install @nebula/core
+
+# Install adapters as needed
+npm install @nebula/adapter-memory
+npm install @nebula/adapter-localstorage
+npm install @nebula/adapter-indexeddb
+npm install @nebula/adapter-filesystem
+
+# Install plugins as needed
+npm install @nebula/plugin-encryption
+npm install @nebula/plugin-validation
+npm install @nebula/plugin-versioning
+</code></pre>
+<h2>Core Concepts</h2>
+<h3>Database</h3>
+<p>The database is the main entry point to NebulaDB. It manages collections and provides methods for persistence.</p>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  // Enable performance optimizations
+  queryCache: { enabled: true, maxSize: 100 },
+  compression: { enabled: true, threshold: 1024 },
+  concurrency: { enabled: true, initialConcurrency: 4 }
+});
+</code></pre>
+<h3>Collections</h3>
+<p>Collections are containers for documents. They provide methods for CRUD operations.</p>
+<pre><code class="language-typescript">// Create a collection with indexes for better performance
+const users = db.collection(&#39;users&#39;, {
+  indexes: [
+    { name: &#39;id_idx&#39;, fields: [&#39;id&#39;], type: &#39;unique&#39; },
+    { name: &#39;age_idx&#39;, fields: [&#39;age&#39;], type: &#39;single&#39; }
+  ]
+});
+</code></pre>
+<h3>Documents</h3>
+<p>Documents are JSON objects with a unique <code>id</code> field.</p>
+<pre><code class="language-typescript">const user = {
+  id: &#39;1&#39;,
+  name: &#39;Alice&#39;,
+  age: 30,
+  email: &#39;alice@example.com&#39;
+};
+</code></pre>
+<h3>Queries</h3>
+<p>Queries are used to filter documents in a collection. NebulaDB supports a MongoDB-like query syntax.</p>
+<pre><code class="language-typescript">// Find users over 25
+const results = await users.find({ age: { $gt: 25 } });
+
+// Find users with a specific name
+const alice = await users.findOne({ name: &#39;Alice&#39; });
+
+// Complex queries
+const results = await users.find({
+  $and: [
+    { age: { $gt: 25 } },
+    { tags: { $in: [&#39;developer&#39;] } }
+  ]
+});
+</code></pre>
+<h3>Updates</h3>
+<p>Updates modify documents in a collection. NebulaDB supports update operators like <code>$set</code>, <code>$unset</code>, <code>$inc</code>, etc.</p>
+<pre><code class="language-typescript">// Update a user&#39;s age
+await users.update(
+  { id: &#39;1&#39; },
+  { $set: { age: 31 } }
+);
+
+// Increment a counter
+await users.update(
+  { id: &#39;1&#39; },
+  { $inc: { loginCount: 1 } }
+);
+</code></pre>
+<h3>Reactivity</h3>
+<p>NebulaDB supports reactive queries that update in real-time when data changes.</p>
+<pre><code class="language-typescript">// Subscribe to changes in users over 30
+const unsubscribe = users.subscribe(
+  { age: { $gt: 30 } },
+  (results) =&gt; {
+    console.log(&#39;Users over 30:&#39;, results);
+  }
+);
+
+// Later, unsubscribe when no longer needed
+unsubscribe();
+</code></pre>
+<h2>Performance Optimizations</h2>
+<p>NebulaDB includes several performance optimizations to ensure fast and efficient operation, even with large datasets:</p>
+<h3>Advanced Indexing</h3>
+<ul>
+<li><strong>B-tree Implementation</strong>: Efficient range queries and sorting</li>
+<li><strong>Compound Indexes</strong>: Optimize queries on multiple fields</li>
+<li><strong>Partial Indexes</strong>: Index only documents that match a filter</li>
+<li><strong>Automatic Index Selection</strong>: Chooses the best index for each query</li>
+</ul>
+<pre><code class="language-typescript">// Create a collection with indexes
+const users = db.collection(&#39;users&#39;, {
+  indexes: [
+    { name: &#39;id_idx&#39;, fields: [&#39;id&#39;], type: &#39;unique&#39; },
+    { name: &#39;age_idx&#39;, fields: [&#39;age&#39;], type: &#39;single&#39; },
+    { name: &#39;name_age_idx&#39;, fields: [&#39;name&#39;, &#39;age&#39;], type: &#39;compound&#39; },
+    {
+      name: &#39;active_users_idx&#39;,
+      fields: [&#39;lastActive&#39;],
+      type: &#39;single&#39;,
+      options: {
+        partial: { filter: { active: true } }
+      }
+    }
+  ]
+});
+</code></pre>
+<h3>Query Optimization</h3>
+<ul>
+<li><strong>Query Caching</strong>: Automatically caches query results</li>
+<li><strong>Short-circuit Evaluation</strong>: Stops evaluating as soon as possible</li>
+<li><strong>Query Planning</strong>: Analyzes queries to determine the best execution path</li>
+</ul>
+<pre><code class="language-typescript">// Configure query cache
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  queryCache: {
+    enabled: true,
+    maxSize: 100,  // Cache up to 100 queries
+    ttlMs: 30000   // Cache entries expire after 30 seconds
+  }
+});
+</code></pre>
+<h3>Batch Operations</h3>
+<ul>
+<li><strong>Parallel Processing</strong>: Process multiple operations concurrently</li>
+<li><strong>Reduced Overhead</strong>: Minimize signal updates and index rebuilds</li>
+</ul>
+<pre><code class="language-typescript">// Batch insert
+await users.insertBatch([
+  { id: &#39;1&#39;, name: &#39;Alice&#39;, age: 30 },
+  { id: &#39;2&#39;, name: &#39;Bob&#39;, age: 25 },
+  { id: &#39;3&#39;, name: &#39;Charlie&#39;, age: 35 }
+]);
+
+// Batch update
+await users.updateBatch(
+  [{ id: &#39;1&#39; }, { id: &#39;2&#39; }],
+  [{ $set: { active: true } }, { $set: { active: false } }]
+);
+
+// Batch delete
+await users.deleteBatch([{ id: &#39;3&#39; }]);
+</code></pre>
+<h3>Memory Management</h3>
+<ul>
+<li><strong>Document Compression</strong>: Automatically compresses large documents</li>
+<li><strong>Chunked Processing</strong>: Process large datasets in manageable chunks</li>
+<li><strong>Memory-efficient Indexes</strong>: Optimized data structures for indexes</li>
+</ul>
+<pre><code class="language-typescript">// Configure document compression
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  compression: {
+    enabled: true,
+    threshold: 1024,  // Compress documents larger than 1KB
+    level: 6          // Compression level (1-9)
+  }
+});
+
+// Process large datasets in chunks
+await users.processInChunks(async (docs) =&gt; {
+  // Process each chunk of documents
+  return docs.map(doc =&gt; ({ ...doc, processed: true }));
+});
+</code></pre>
+<h3>Adaptive Concurrency</h3>
+<ul>
+<li><strong>Automatic Tuning</strong>: Adjusts concurrency based on system performance</li>
+<li><strong>Workload Analysis</strong>: Monitors operation latency to optimize throughput</li>
+</ul>
+<pre><code class="language-typescript">// Configure adaptive concurrency
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  concurrency: {
+    enabled: true,
+    initialConcurrency: 4,  // Start with 4 concurrent operations
+    minConcurrency: 1,      // Minimum concurrency level
+    maxConcurrency: 16,     // Maximum concurrency level
+    targetLatency: 50       // Target latency in ms
+  }
+});
+</code></pre>
+<h2>API Reference</h2>
+<p>For detailed API documentation, see the <a href="./api-reference.md">API Reference</a>.</p>
+<h2>Adapters</h2>
+<p>NebulaDB supports multiple storage adapters:</p>
+<ul>
+<li><strong>MemoryAdapter</strong>: In-memory storage (no persistence)</li>
+<li><strong>LocalStorageAdapter</strong>: Browser localStorage persistence</li>
+<li><strong>IndexedDBAdapter</strong>: Browser IndexedDB persistence</li>
+<li><strong>FileSystemAdapter</strong>: Node.js file system persistence</li>
+</ul>
+<p>For more information, see the <a href="./adapters.md">Adapters Guide</a>.</p>
+<h2>Plugins</h2>
+<p>NebulaDB can be extended with plugins:</p>
+<ul>
+<li><strong>ValidationPlugin</strong>: Schema validation using Zod</li>
+<li><strong>EncryptionPlugin</strong>: Field-level encryption</li>
+<li><strong>VersioningPlugin</strong>: Document versioning and history</li>
+</ul>
+<p>For more information, see the <a href="./plugins.md">Plugins Guide</a>.</p>
+<h2>Examples</h2>
+<p>For example applications, see the <a href="./examples.md">Examples</a>.</p>
+<h2>Advanced Usage</h2>
+<p>For advanced usage scenarios, see the <a href="./advanced-usage.md">Advanced Usage Guide</a>.</p>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

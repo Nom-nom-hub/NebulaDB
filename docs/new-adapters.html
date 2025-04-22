@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Adapters Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>New Adapters Guide</h1>
+<p>This guide covers the additional storage adapters available for NebulaDB.</p>
+<h2>SQLite Adapter</h2>
+<p>The SQLite Adapter persists data to a SQLite database file, providing a robust storage solution for Node.js applications.</p>
+<h3>Installation</h3>
+<pre><code class="language-bash">npm install @nebula/adapter-sqlite
+</code></pre>
+<h3>Usage</h3>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { SQLiteAdapter } from &#39;@nebula/adapter-sqlite&#39;;
+import path from &#39;path&#39;;
+
+// Create a database with SQLite adapter
+const db = createDb({
+  adapter: new SQLiteAdapter(path.join(__dirname, &#39;data.sqlite&#39;))
+});
+
+// Use the database normally
+const users = db.collection(&#39;users&#39;);
+await users.insert({ name: &#39;Alice&#39;, age: 30 });
+</code></pre>
+<h3>Options</h3>
+<p>The SQLite adapter accepts the following options:</p>
+<pre><code class="language-typescript">// With options
+const adapter = new SQLiteAdapter(
+  &#39;data.sqlite&#39;, // Database file path
+  {
+    readonly: false, // Open database in read-only mode
+    fileMustExist: false, // Throw error if database doesn&#39;t exist
+    timeout: 5000, // Timeout for acquiring a database lock (ms)
+    verbose: console.log // Function for SQLite&#39;s verbose mode
+  }
+);
+</code></pre>
+<h3>Benefits</h3>
+<ul>
+<li><strong>Persistent Storage</strong>: Data is stored in a SQLite database file</li>
+<li><strong>Transactional</strong>: All operations are wrapped in transactions</li>
+<li><strong>Reliable</strong>: SQLite is known for its reliability and durability</li>
+<li><strong>Portable</strong>: SQLite database files can be easily backed up or moved</li>
+</ul>
+<h3>Considerations</h3>
+<ul>
+<li><strong>Node.js Only</strong>: This adapter only works in Node.js environments</li>
+<li><strong>Performance</strong>: For very large datasets, consider using a dedicated database</li>
+<li><strong>Concurrency</strong>: SQLite has limitations with concurrent write operations</li>
+</ul>
+<h2>Redis Adapter</h2>
+<p>The Redis Adapter persists data to a Redis server, providing a fast and scalable storage solution.</p>
+<h3>Installation</h3>
+<pre><code class="language-bash">npm install @nebula/adapter-redis
+</code></pre>
+<h3>Usage</h3>
+<pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
+import { RedisAdapter } from &#39;@nebula/adapter-redis&#39;;
+
+// Create a database with Redis adapter
+const db = createDb({
+  adapter: new RedisAdapter(
+    {
+      host: &#39;localhost&#39;,
+      port: 6379,
+      password: &#39;your-password&#39;
+    },
+    &#39;nebula:&#39; // Key prefix
+  )
+});
+
+// Use the database normally
+const users = db.collection(&#39;users&#39;);
+await users.insert({ name: &#39;Alice&#39;, age: 30 });
+
+// Don&#39;t forget to close the connection when done
+await db.adapter.close();
+</code></pre>
+<h3>Redis Connection Options</h3>
+<p>The Redis adapter accepts all options supported by ioredis:</p>
+<pre><code class="language-typescript">// With more options
+const adapter = new RedisAdapter({
+  host: &#39;redis-server&#39;,
+  port: 6379,
+  password: &#39;your-password&#39;,
+  db: 0, // Redis database index
+  keyPrefix: &#39;app:&#39;, // Key prefix for all Redis keys
+  retryStrategy: (times) =&gt; Math.min(times * 50, 2000), // Retry strategy
+  connectTimeout: 10000, // Connection timeout
+  maxRetriesPerRequest: 3 // Max retries per request
+});
+</code></pre>
+<h3>Benefits</h3>
+<ul>
+<li><strong>Speed</strong>: Redis is an in-memory database with excellent performance</li>
+<li><strong>Scalability</strong>: Can handle large datasets and high throughput</li>
+<li><strong>Persistence</strong>: Redis offers various persistence options</li>
+<li><strong>Distributed</strong>: Can be used in a distributed environment</li>
+</ul>
+<h3>Considerations</h3>
+<ul>
+<li><strong>Memory Usage</strong>: Redis keeps all data in memory</li>
+<li><strong>External Dependency</strong>: Requires a Redis server</li>
+<li><strong>Network Latency</strong>: Performance depends on network conditions</li>
+<li><strong>Connection Management</strong>: Need to manage Redis connections</li>
+</ul>
+<h2>Comparing Adapters</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Memory</th>
+<th>LocalStorage</th>
+<th>IndexedDB</th>
+<th>FileSystem</th>
+<th>SQLite</th>
+<th>Redis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Persistence</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Browser Support</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Node.js Support</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Edge Support</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Transaction Support</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Scalability</td>
+<td>Low</td>
+<td>Low</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>Very Fast</td>
+<td>Fast</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Fast</td>
+<td>Very Fast</td>
+</tr>
+<tr>
+<td>Size Limit</td>
+<td>Memory</td>
+<td>~5MB</td>
+<td>Large</td>
+<td>Disk</td>
+<td>Disk</td>
+<td>Memory</td>
+</tr>
+<tr>
+<td>External Dependencies</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>Redis Server</td>
+</tr>
+</tbody></table>
+<h2>Choosing the Right Adapter</h2>
+<ul>
+<li><strong>Memory Adapter</strong>: For testing, temporary data, or in-memory caching</li>
+<li><strong>LocalStorage Adapter</strong>: For simple browser applications with small datasets</li>
+<li><strong>IndexedDB Adapter</strong>: For browser applications with larger datasets</li>
+<li><strong>FileSystem Adapter</strong>: For simple Node.js applications</li>
+<li><strong>SQLite Adapter</strong>: For Node.js applications requiring reliable storage</li>
+<li><strong>Redis Adapter</strong>: For applications requiring high performance and scalability</li>
+</ul>
+<h2>Creating Custom Adapters</h2>
+<p>You can create your own adapters by implementing the <code>Adapter</code> interface:</p>
+<pre><code class="language-typescript">import { Adapter, Document } from &#39;@nebula/core&#39;;
+
+class CustomAdapter implements Adapter {
+  async load(): Promise&lt;Record&lt;string, Document[]&gt;&gt; {
+    // Load data from your storage mechanism
+    // Return an object where keys are collection names and values are arrays of documents
+  }
+
+  async save(data: Record&lt;string, Document[]&gt;): Promise&lt;void&gt; {
+    // Save data to your storage mechanism
+    // &#39;data&#39; is an object where keys are collection names and values are arrays of documents
+  }
+}
+</code></pre>
+<h3>Example: MongoDB Adapter</h3>
+<pre><code class="language-typescript">import { Adapter, Document } from &#39;@nebula/core&#39;;
+import { MongoClient, Db } from &#39;mongodb&#39;;
+
+export class MongoDBAdapter implements Adapter {
+  private client: MongoClient;
+  private db: Db | null = null;
+  private dbName: string;
+  
+  constructor(uri: string, dbName: string) {
+    this.client = new MongoClient(uri);
+    this.dbName = dbName;
+  }
+  
+  private async connect(): Promise&lt;Db&gt; {
+    if (!this.db) {
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+    }
+    return this.db;
+  }
+  
+  async load(): Promise&lt;Record&lt;string, Document[]&gt;&gt; {
+    const db = await this.connect();
+    const result: Record&lt;string, Document[]&gt; = {};
+    
+    // Get all collections
+    const collections = await db.listCollections().toArray();
+    
+    // For each collection, get all documents
+    for (const collection of collections) {
+      const collectionName = collection.name;
+      if (collectionName.startsWith(&#39;system.&#39;)) continue;
+      
+      const docs = await db.collection(collectionName).find().toArray();
+      result[collectionName] = docs.map(doc =&gt; {
+        const { _id, ...rest } = doc;
+        return { id: _id.toString(), ...rest };
+      });
+    }
+    
+    return result;
+  }
+  
+  async save(data: Record&lt;string, Document[]&gt;): Promise&lt;void&gt; {
+    const db = await this.connect();
+    
+    // For each collection
+    for (const [collectionName, documents] of Object.entries(data)) {
+      const collection = db.collection(collectionName);
+      
+      // Clear existing data
+      await collection.deleteMany({});
+      
+      // Insert new documents
+      if (documents.length &gt; 0) {
+        await collection.insertMany(documents);
+      }
+    }
+  }
+  
+  async close(): Promise&lt;void&gt; {
+    if (this.client) {
+      await this.client.close();
+    }
+  }
+}
+</code></pre>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

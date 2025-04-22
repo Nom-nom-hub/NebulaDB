@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Guide - NebulaDB Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        code {
+            color: #6e8efb;
+        }
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">NebulaDB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#getting-started">Getting Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 content">
+        <h1>Migration Guide</h1>
+<p>This guide helps you migrate from other embedded databases to NebulaDB.</p>
+<h2>Migrating from LokiJS</h2>
+<p>LokiJS is a document-oriented database similar to NebulaDB. Here&#39;s how to migrate:</p>
+<h3>Concept Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>LokiJS</th>
+<th>NebulaDB</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new Loki()</code></td>
+<td><code>createDb()</code></td>
+<td>Database creation</td>
+</tr>
+<tr>
+<td><code>db.addCollection()</code></td>
+<td><code>db.collection()</code></td>
+<td>Collection creation</td>
+</tr>
+<tr>
+<td><code>collection.insert()</code></td>
+<td><code>collection.insert()</code></td>
+<td>Similar API</td>
+</tr>
+<tr>
+<td><code>collection.find()</code></td>
+<td><code>collection.find()</code></td>
+<td>Similar query syntax</td>
+</tr>
+<tr>
+<td><code>collection.findOne()</code></td>
+<td><code>collection.findOne()</code></td>
+<td>Similar API</td>
+</tr>
+<tr>
+<td><code>collection.update()</code></td>
+<td><code>collection.update()</code></td>
+<td>NebulaDB uses MongoDB-style update operators</td>
+</tr>
+<tr>
+<td><code>collection.remove()</code></td>
+<td><code>collection.delete()</code></td>
+<td>Different method name</td>
+</tr>
+<tr>
+<td><code>collection.chain()</code></td>
+<td>N/A</td>
+<td>Use native JavaScript methods instead</td>
+</tr>
+<tr>
+<td><code>collection.ensureIndex()</code></td>
+<td><code>collection.createIndex()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>collection.observeChanges()</code></td>
+<td><code>collection.subscribe()</code></td>
+<td>Different API</td>
+</tr>
+</tbody></table>
+<h3>Example Migration</h3>
+<p><strong>LokiJS:</strong></p>
+<pre><code class="language-javascript">const loki = require(&#39;lokijs&#39;);
+const db = new loki(&#39;example.db&#39;);
+
+// Add a collection
+const users = db.addCollection(&#39;users&#39;, { indices: [&#39;email&#39;] });
+
+// Insert documents
+users.insert({ name: &#39;Alice&#39;, email: &#39;alice@example.com&#39;, age: 30 });
+users.insert({ name: &#39;Bob&#39;, email: &#39;bob@example.com&#39;, age: 25 });
+
+// Query documents
+const result = users.find({ age: { $gt: 25 } });
+
+// Update a document
+const alice = users.findOne({ name: &#39;Alice&#39; });
+alice.age = 31;
+users.update(alice);
+
+// Remove a document
+users.remove(alice);
+
+// Save the database
+db.saveDatabase();
+</code></pre>
+<p><strong>NebulaDB:</strong></p>
+<pre><code class="language-javascript">import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+
+// Create a database
+const db = createDb({
+  adapter: new FileSystemAdapter(&#39;example.json&#39;)
+});
+
+// Create a collection
+const users = db.collection(&#39;users&#39;);
+users.createIndex({
+  name: &#39;email_idx&#39;,
+  fields: [&#39;email&#39;],
+  type: &#39;unique&#39;
+});
+
+// Insert documents
+await users.insert({ name: &#39;Alice&#39;, email: &#39;alice@example.com&#39;, age: 30 });
+await users.insert({ name: &#39;Bob&#39;, email: &#39;bob@example.com&#39;, age: 25 });
+
+// Query documents
+const result = await users.find({ age: { $gt: 25 } });
+
+// Update a document
+await users.update(
+  { name: &#39;Alice&#39; },
+  { $set: { age: 31 } }
+);
+
+// Delete a document
+await users.delete({ name: &#39;Alice&#39; });
+
+// Save the database
+await db.save();
+</code></pre>
+<h3>Migration Script</h3>
+<p>Here&#39;s a script to help migrate data from LokiJS to NebulaDB:</p>
+<pre><code class="language-javascript">const loki = require(&#39;lokijs&#39;);
+import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+
+async function migrateFromLokiJS(lokiPath, nebulaPath) {
+  // Load LokiJS database
+  const lokiDb = new loki(lokiPath);
+  await new Promise(resolve =&gt; {
+    lokiDb.loadDatabase({}, resolve);
+  });
+  
+  // Create NebulaDB database
+  const nebulaDb = createDb({
+    adapter: new FileSystemAdapter(nebulaPath)
+  });
+  
+  // Migrate each collection
+  lokiDb.collections.forEach(async (lokiCollection) =&gt; {
+    const collectionName = lokiCollection.name;
+    const nebulaCollection = nebulaDb.collection(collectionName);
+    
+    // Create indexes
+    if (lokiCollection.binaryIndices) {
+      Object.keys(lokiCollection.binaryIndices).forEach(field =&gt; {
+        nebulaCollection.createIndex({
+          name: `${field}_idx`,
+          fields: [field],
+          type: &#39;single&#39;
+        });
+      });
+    }
+    
+    // Migrate documents
+    const documents = lokiCollection.find();
+    for (const doc of documents) {
+      // Convert LokiJS document to NebulaDB document
+      const { $loki, meta, ...data } = doc;
+      await nebulaCollection.insert({
+        ...data,
+        id: $loki.toString(),
+        createdAt: meta.created ? new Date(meta.created).toISOString() : undefined,
+        updatedAt: meta.updated ? new Date(meta.updated).toISOString() : undefined
+      });
+    }
+  });
+  
+  // Save the NebulaDB database
+  await nebulaDb.save();
+  
+  console.log(&#39;Migration completed successfully!&#39;);
+}
+
+// Usage
+migrateFromLokiJS(&#39;old-db.json&#39;, &#39;new-db.json&#39;);
+</code></pre>
+<h2>Migrating from PouchDB</h2>
+<p>PouchDB is a CouchDB-inspired database. Here&#39;s how to migrate:</p>
+<h3>Concept Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>PouchDB</th>
+<th>NebulaDB</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new PouchDB()</code></td>
+<td><code>createDb()</code></td>
+<td>Database creation</td>
+</tr>
+<tr>
+<td>Collections</td>
+<td>Collections</td>
+<td>PouchDB doesn&#39;t have collections, use document types</td>
+</tr>
+<tr>
+<td><code>db.put()</code></td>
+<td><code>collection.insert()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>db.get()</code></td>
+<td><code>collection.findOne()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>db.allDocs()</code></td>
+<td><code>collection.find()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>db.query()</code></td>
+<td><code>collection.find()</code></td>
+<td>Different query syntax</td>
+</tr>
+<tr>
+<td><code>db.changes()</code></td>
+<td><code>collection.subscribe()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>db.replicate()</code></td>
+<td>N/A</td>
+<td>No built-in replication in NebulaDB</td>
+</tr>
+<tr>
+<td><code>db.sync()</code></td>
+<td>N/A</td>
+<td>No built-in sync in NebulaDB</td>
+</tr>
+</tbody></table>
+<h3>Example Migration</h3>
+<p><strong>PouchDB:</strong></p>
+<pre><code class="language-javascript">const PouchDB = require(&#39;pouchdb&#39;);
+const db = new PouchDB(&#39;example&#39;);
+
+// Insert a document
+db.put({
+  _id: &#39;user:1&#39;,
+  type: &#39;user&#39;,
+  name: &#39;Alice&#39;,
+  email: &#39;alice@example.com&#39;,
+  age: 30
+}).then(function (response) {
+  // Handle response
+});
+
+// Get a document
+db.get(&#39;user:1&#39;).then(function (doc) {
+  console.log(doc);
+});
+
+// Query documents
+db.allDocs({
+  include_docs: true,
+  startkey: &#39;user:&#39;,
+  endkey: &#39;user:\ufff0&#39;
+}).then(function (result) {
+  const users = result.rows.map(row =&gt; row.doc);
+  console.log(users);
+});
+
+// Update a document
+db.get(&#39;user:1&#39;).then(function (doc) {
+  doc.age = 31;
+  return db.put(doc);
+});
+
+// Delete a document
+db.get(&#39;user:1&#39;).then(function (doc) {
+  return db.remove(doc);
+});
+</code></pre>
+<p><strong>NebulaDB:</strong></p>
+<pre><code class="language-javascript">import { createDb } from &#39;@nebula/core&#39;;
+import { IndexedDBAdapter } from &#39;@nebula/adapter-indexeddb&#39;;
+
+// Create a database
+const db = createDb({
+  adapter: new IndexedDBAdapter(&#39;example&#39;)
+});
+
+// Create collections for each document type
+const users = db.collection(&#39;users&#39;);
+
+// Insert a document
+await users.insert({
+  id: &#39;1&#39;,
+  name: &#39;Alice&#39;,
+  email: &#39;alice@example.com&#39;,
+  age: 30
+});
+
+// Get a document
+const user = await users.findOne({ id: &#39;1&#39; });
+console.log(user);
+
+// Query documents
+const allUsers = await users.find();
+console.log(allUsers);
+
+// Update a document
+await users.update(
+  { id: &#39;1&#39; },
+  { $set: { age: 31 } }
+);
+
+// Delete a document
+await users.delete({ id: &#39;1&#39; });
+</code></pre>
+<h3>Migration Script</h3>
+<p>Here&#39;s a script to help migrate data from PouchDB to NebulaDB:</p>
+<pre><code class="language-javascript">const PouchDB = require(&#39;pouchdb&#39;);
+import { createDb } from &#39;@nebula/core&#39;;
+import { IndexedDBAdapter } from &#39;@nebula/adapter-indexeddb&#39;;
+
+async function migrateFromPouchDB(pouchDbName, nebulaDbName) {
+  // Open PouchDB database
+  const pouchDb = new PouchDB(pouchDbName);
+  
+  // Create NebulaDB database
+  const nebulaDb = createDb({
+    adapter: new IndexedDBAdapter(nebulaDbName)
+  });
+  
+  // Get all documents from PouchDB
+  const result = await pouchDb.allDocs({ include_docs: true });
+  
+  // Group documents by type
+  const docsByType = {};
+  
+  for (const row of result.rows) {
+    const doc = row.doc;
+    
+    // Skip design documents
+    if (doc._id.startsWith(&#39;_design/&#39;)) continue;
+    
+    // Extract type from _id or use a default type
+    let type = &#39;documents&#39;;
+    if (doc.type) {
+      type = doc.type;
+    } else if (doc._id.includes(&#39;:&#39;)) {
+      type = doc._id.split(&#39;:&#39;)[0];
+    }
+    
+    if (!docsByType[type]) {
+      docsByType[type] = [];
+    }
+    
+    // Convert PouchDB document to NebulaDB document
+    const { _id, _rev, type: docType, ...data } = doc;
+    
+    docsByType[type].push({
+      id: _id.includes(&#39;:&#39;) ? _id.split(&#39;:&#39;)[1] : _id,
+      ...data
+    });
+  }
+  
+  // Insert documents into NebulaDB collections
+  for (const [type, docs] of Object.entries(docsByType)) {
+    const collection = nebulaDb.collection(type);
+    
+    for (const doc of docs) {
+      await collection.insert(doc);
+    }
+    
+    console.log(`Migrated ${docs.length} documents to ${type} collection`);
+  }
+  
+  // Save the NebulaDB database
+  await nebulaDb.save();
+  
+  console.log(&#39;Migration completed successfully!&#39;);
+}
+
+// Usage
+migrateFromPouchDB(&#39;old-db&#39;, &#39;new-db&#39;);
+</code></pre>
+<h2>Migrating from Lowdb</h2>
+<p>Lowdb is a small JSON database. Here&#39;s how to migrate:</p>
+<h3>Concept Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Lowdb</th>
+<th>NebulaDB</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new Low()</code></td>
+<td><code>createDb()</code></td>
+<td>Database creation</td>
+</tr>
+<tr>
+<td><code>db.data.users</code></td>
+<td><code>db.collection(&#39;users&#39;)</code></td>
+<td>Collection access</td>
+</tr>
+<tr>
+<td><code>db.data.users.push()</code></td>
+<td><code>collection.insert()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>db.data.users.find()</code></td>
+<td><code>collection.findOne()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>db.data.users.filter()</code></td>
+<td><code>collection.find()</code></td>
+<td>Different API</td>
+</tr>
+<tr>
+<td><code>db.write()</code></td>
+<td><code>db.save()</code></td>
+<td>Similar API</td>
+</tr>
+<tr>
+<td>N/A</td>
+<td><code>collection.subscribe()</code></td>
+<td>Lowdb doesn&#39;t have reactivity</td>
+</tr>
+</tbody></table>
+<h3>Example Migration</h3>
+<p><strong>Lowdb:</strong></p>
+<pre><code class="language-javascript">const { Low } = require(&#39;lowdb&#39;);
+const { JSONFile } = require(&#39;lowdb/node&#39;);
+
+// Create database
+const adapter = new JSONFile(&#39;db.json&#39;);
+const db = new Low(adapter);
+
+// Read data
+await db.read();
+
+// Set default data
+db.data ||= { users: [] };
+
+// Add a user
+db.data.users.push({
+  id: &#39;1&#39;,
+  name: &#39;Alice&#39;,
+  email: &#39;alice@example.com&#39;
+});
+
+// Find a user
+const user = db.data.users.find(u =&gt; u.id === &#39;1&#39;);
+
+// Update a user
+const userIndex = db.data.users.findIndex(u =&gt; u.id === &#39;1&#39;);
+if (userIndex !== -1) {
+  db.data.users[userIndex].name = &#39;Alicia&#39;;
+}
+
+// Remove a user
+db.data.users = db.data.users.filter(u =&gt; u.id !== &#39;1&#39;);
+
+// Write data
+await db.write();
+</code></pre>
+<p><strong>NebulaDB:</strong></p>
+<pre><code class="language-javascript">import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+
+// Create database
+const db = createDb({
+  adapter: new FileSystemAdapter(&#39;db.json&#39;)
+});
+
+// Create a collection
+const users = db.collection(&#39;users&#39;);
+
+// Add a user
+await users.insert({
+  id: &#39;1&#39;,
+  name: &#39;Alice&#39;,
+  email: &#39;alice@example.com&#39;
+});
+
+// Find a user
+const user = await users.findOne({ id: &#39;1&#39; });
+
+// Update a user
+await users.update(
+  { id: &#39;1&#39; },
+  { $set: { name: &#39;Alicia&#39; } }
+);
+
+// Remove a user
+await users.delete({ id: &#39;1&#39; });
+
+// Save the database
+await db.save();
+</code></pre>
+<h3>Migration Script</h3>
+<p>Here&#39;s a script to help migrate data from Lowdb to NebulaDB:</p>
+<pre><code class="language-javascript">const { Low } = require(&#39;lowdb&#39;);
+const { JSONFile } = require(&#39;lowdb/node&#39;);
+import { createDb } from &#39;@nebula/core&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+
+async function migrateFromLowdb(lowdbPath, nebulaPath) {
+  // Open Lowdb database
+  const adapter = new JSONFile(lowdbPath);
+  const lowDb = new Low(adapter);
+  await lowDb.read();
+  
+  // Create NebulaDB database
+  const nebulaDb = createDb({
+    adapter: new FileSystemAdapter(nebulaPath)
+  });
+  
+  // Migrate each collection
+  for (const [collectionName, documents] of Object.entries(lowDb.data)) {
+    if (!Array.isArray(documents)) continue;
+    
+    const collection = nebulaDb.collection(collectionName);
+    
+    // Insert documents
+    for (const doc of documents) {
+      // Ensure document has an id
+      if (!doc.id) {
+        doc.id = Math.random().toString(36).substr(2, 9);
+      }
+      
+      await collection.insert(doc);
+    }
+    
+    console.log(`Migrated ${documents.length} documents to ${collectionName} collection`);
+  }
+  
+  // Save the NebulaDB database
+  await nebulaDb.save();
+  
+  console.log(&#39;Migration completed successfully!&#39;);
+}
+
+// Usage
+migrateFromLowdb(&#39;old-db.json&#39;, &#39;new-db.json&#39;);
+</code></pre>
+<h2>General Migration Tips</h2>
+<p>Regardless of which database you&#39;re migrating from, consider these tips:</p>
+<ol>
+<li><strong>Plan Your Data Model</strong>: Review your current data model and consider if any changes would be beneficial</li>
+<li><strong>Migrate in Phases</strong>: For large datasets, migrate one collection at a time</li>
+<li><strong>Test Thoroughly</strong>: Test your migration process with a subset of data first</li>
+<li><strong>Validate Data</strong>: Verify that all data was migrated correctly</li>
+<li><strong>Update Queries</strong>: Adapt your queries to NebulaDB&#39;s syntax</li>
+<li><strong>Consider Indexing</strong>: Add appropriate indexes for your common queries</li>
+<li><strong>Update Application Code</strong>: Update your application code to use NebulaDB&#39;s API</li>
+<li><strong>Run in Parallel</strong>: Consider running both databases in parallel during the transition</li>
+</ol>
+<h2>Conclusion</h2>
+<p>Migrating to NebulaDB from another database requires some effort, but the benefits of NebulaDB&#39;s reactive queries, TypeScript integration, and modular architecture make it worthwhile. Use the provided migration scripts as a starting point and adapt them to your specific needs.</p>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
