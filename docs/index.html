@@ -10,29 +10,49 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   <style>
+    :root {
+      --primary: #6d28d9;
+      --primary-light: #8b5cf6;
+      --secondary: #10b981;
+      --dark: #111827;
+      --darker: #0d1117;
+      --light: #f3f4f6;
+      --gray: #6b7280;
+      --card-bg: #1e293b;
+      --card-border: #2d3748;
+      --text: #e2e8f0;
+      --text-muted: #9ca3af;
+      --code-bg: #0d1117;
+    }
+
     html {
       scroll-behavior: smooth;
       scroll-padding-top: 70px; /* Adjust for fixed navbar height */
     }
+
     body {
       font-family: 'Inter', sans-serif;
       line-height: 1.7;
-      color: #212529;
+      color: var(--text);
       padding-top: 56px; /* Adjust for navbar height */
+      background-color: var(--darker);
     }
     .navbar-dark .navbar-brand {
       font-weight: 600;
       letter-spacing: 1px;
     }
     .hero {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      background: linear-gradient(135deg, #4338ca, #6d28d9);
       color: #fff;
       padding: 100px 0;
       text-align: center;
       border-radius: 0 0 30px 30px;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
     .hero::before {
       content: '';
@@ -43,6 +63,20 @@
       height: 100%;
       background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSgzMCkiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSI+PC9yZWN0PjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSI+PC9yZWN0Pjwvc3ZnPg==');
       opacity: 0.3;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shine 4s infinite;
+    }
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
     .hero .logo {
       max-width: 150px;
@@ -56,7 +90,7 @@
     .feature-icon {
       font-size: 2.2rem;
       margin-bottom: 1rem;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      background: linear-gradient(135deg, #8b5cf6, #10b981);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -65,49 +99,63 @@
     .card {
       border: none;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       border-radius: 12px;
       overflow: hidden;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
     }
     .card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      border-color: var(--primary-light);
     }
     .btn-primary {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
       border: none;
       transition: all 0.3s ease;
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #4338ca, #6d28d9);
+      background: linear-gradient(135deg, #5b21b6, #7c3aed);
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 5px 15px rgba(109, 40, 217, 0.4);
+    }
+    .btn-outline-primary {
+      border-color: var(--primary-light);
+      color: var(--primary-light);
+    }
+    .btn-outline-primary:hover {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: white;
     }
     .footer {
-      background: #f8f9fa;
+      background: var(--dark);
       padding: 40px 0;
       font-size: 0.9rem;
       text-align: center;
-      color: #6c757d;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
     }
     pre {
-      background-color: #1e293b;
-      color: #e2e8f0;
+      background-color: var(--code-bg);
+      color: var(--text);
       padding: 16px;
       border-radius: 10px;
       display: block;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      border: 1px solid var(--card-border);
     }
     pre code {
-      color: #e2e8f0;
+      color: var(--text);
       background: transparent;
       padding: 0;
     }
     code {
-      background-color: #f1f3f5;
+      background-color: rgba(99, 102, 241, 0.1);
       padding: 3px 6px;
       border-radius: 4px;
-      color: #4f46e5;
+      color: var(--primary-light);
     }
     h2 {
       font-weight: 600;
@@ -116,7 +164,7 @@
   </style>
 </head>
 <body id="top">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm" style="background-color: rgba(13, 17, 23, 0.8); backdrop-filter: blur(10px);">
     <div class="container">
       <a class="navbar-brand" href="#top">NebulaDB</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -146,47 +194,47 @@
     </div>
   </header>
 
-  <section id="features" class="py-5">
+  <section id="features" class="py-5" style="background-color: var(--darker);">
     <div class="container">
-      <h2 class="text-center">Why NebulaDB?</h2>
+      <h2 class="text-center" data-aos="fade-up">Why NebulaDB?</h2>
       <div class="row g-4">
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100">
             <div class="feature-icon"><i class="fas fa-bolt"></i></div>
             <h4>Performance First</h4>
             <p>Blazing-fast in-memory execution with advanced B-tree indexing and query optimization.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200">
             <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
             <h4>Reactive Queries</h4>
             <p>Live query support enables seamless reactivity in real-time apps and dashboards.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300">
             <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
             <h4>Type-Safe</h4>
             <p>TypeScript-native API delivers strong typing and developer confidence out-of-the-box.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100">
             <div class="feature-icon"><i class="fas fa-cubes"></i></div>
             <h4>Modular Core</h4>
             <p>Drop-in adapters and plugin architecture lets you build exactly what you need—no bloat.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200">
             <div class="feature-icon"><i class="fas fa-globe"></i></div>
             <h4>Truly Cross-Platform</h4>
             <p>Runs everywhere—from Node.js to browsers and edge environments like Cloudflare Workers.</p>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300">
             <div class="feature-icon"><i class="fas fa-box"></i></div>
             <h4>One Package</h4>
             <p>No dependencies, no nonsense. Just install and go—serverless simplicity.</p>
@@ -196,13 +244,13 @@
     </div>
   </section>
 
-  <section id="comparison" class="py-5" style="background: linear-gradient(to bottom, #fff, #f9fafb);">
-    <div class="position-absolute w-100" style="height: 100px; background: linear-gradient(to bottom, transparent, #f9fafb); top: 0; left: 0; z-index: -1;"></div>
+  <section id="comparison" class="py-5" style="background-color: var(--dark);">
+    <div class="position-absolute w-100" style="height: 100px; background: linear-gradient(to bottom, var(--darker), var(--dark)); top: 0; left: 0; z-index: -1;"></div>
     <div class="container">
-      <h2 class="text-center">Why Choose NebulaDB?</h2>
-      <p class="text-center mb-5">See how NebulaDB compares to other embedded databases</p>
+      <h2 class="text-center" data-aos="fade-up">Why Choose NebulaDB?</h2>
+      <p class="text-center mb-5" data-aos="fade-up" data-aos-delay="100">See how NebulaDB compares to other embedded databases</p>
 
-      <div class="table-responsive shadow-sm rounded overflow-hidden">
+      <div class="table-responsive shadow-sm rounded overflow-hidden" data-aos="fade-up" data-aos-delay="200">
         <table class="table table-bordered mb-0">
           <thead class="table-light">
             <tr>
@@ -282,10 +330,10 @@
       </div>
 
       <div class="mt-5">
-        <h4 class="text-center mb-4">Performance Benchmarks</h4>
+        <h4 class="text-center mb-4" data-aos="fade-up">Performance Benchmarks</h4>
         <div class="row justify-content-center">
           <div class="col-lg-8">
-            <div class="card">
+            <div class="card" data-aos="fade-up" data-aos-delay="100">
               <div class="card-body p-0">
                 <div class="table-responsive">
                   <table class="table table-sm">
@@ -334,16 +382,16 @@
     </div>
   </section>
 
-  <section id="getting-started" class="py-5 bg-light" style="background: linear-gradient(to bottom, #f9fafb, #f1f5f9);">
+  <section id="getting-started" class="py-5 bg-light" style="background-color: var(--darker);">
     <div class="container">
-      <h2 class="text-center">Getting Started</h2>
+      <h2 class="text-center" data-aos="fade-up">Getting Started</h2>
       <div class="row g-5">
-        <div class="col-lg-6">
+        <div class="col-lg-6" data-aos="fade-right">
           <h5>Installation</h5>
           <pre><code>npm install @nebula-db/nebula-db</code></pre>
           <p>Install once. Build anywhere. It's that simple.</p>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6" data-aos="fade-left">
           <h5>Basic Example</h5>
 <pre><code>import { createDatabase } from '@nebula-db/nebula-db';
 
@@ -358,13 +406,13 @@ console.log(result);</code></pre>
     </div>
   </section>
 
-  <section id="documentation" class="py-5">
-    <div class="position-absolute w-100" style="height: 150px; background: linear-gradient(to bottom, #f1f5f9, transparent); top: 0; left: 0; z-index: -1;"></div>
+  <section id="documentation" class="py-5" style="background-color: var(--dark);">
+    <div class="position-absolute w-100" style="height: 150px; background: linear-gradient(to bottom, var(--darker), var(--dark)); top: 0; left: 0; z-index: -1;"></div>
     <div class="container">
-      <h2 class="text-center">Documentation</h2>
+      <h2 class="text-center" data-aos="fade-up">Documentation</h2>
       <div class="row g-4">
         <div class="col-md-4">
-          <div class="card h-100">
+          <div class="card h-100" data-aos="fade-up" data-aos-delay="100">
             <div class="card-body">
               <h5 class="card-title">Core Concepts</h5>
               <p class="card-text">Understand how NebulaDB is structured and how to use it efficiently.</p>
@@ -373,7 +421,7 @@ console.log(result);</code></pre>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card h-100">
+          <div class="card h-100" data-aos="fade-up" data-aos-delay="200">
             <div class="card-body">
               <h5 class="card-title">Adapters</h5>
               <p class="card-text">Learn about storage adapters and how to extend NebulaDB's capabilities.</p>
@@ -382,7 +430,7 @@ console.log(result);</code></pre>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card h-100">
+          <div class="card h-100" data-aos="fade-up" data-aos-delay="300">
             <div class="card-body">
               <h5 class="card-title">Plugins</h5>
               <p class="card-text">Explore the plugin system to enhance NebulaDB with new features.</p>
@@ -394,11 +442,11 @@ console.log(result);</code></pre>
     </div>
   </section>
 
-  <section class="py-5 bg-light text-center" style="background: linear-gradient(to bottom, #fff, #f1f5f9);">
+  <section class="py-5 bg-light text-center" style="background-color: var(--darker);">
     <div class="container">
-      <h2 class="mb-4">Ready to Get Started?</h2>
-      <p class="lead mb-4">NebulaDB is open source and free to use. Try it today!</p>
-      <div class="d-flex justify-content-center gap-3">
+      <h2 class="mb-4" data-aos="fade-up">Ready to Get Started?</h2>
+      <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">NebulaDB is open source and free to use. Try it today!</p>
+      <div class="d-flex justify-content-center gap-3" data-aos="fade-up" data-aos-delay="200">
         <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-primary" target="_blank"><i class="fab fa-github me-2"></i>View on GitHub</a>
         <a href="https://www.npmjs.com/package/@nebula-db/nebula-db" class="btn btn-outline-primary" target="_blank"><i class="fab fa-npm me-2"></i>View on npm</a>
       </div>
@@ -423,11 +471,19 @@ console.log(result);</code></pre>
     </div>
   </footer>
 
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Fix for smooth scrolling
     document.addEventListener('DOMContentLoaded', function() {
+      // Initialize AOS
+      AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+
       // Get all links with hash
       const links = document.querySelectorAll('a[href^="#"]');
 
@@ -450,6 +506,23 @@ console.log(result);</code></pre>
             // Update URL hash without jumping
             history.pushState(null, null, targetId);
           }
+        });
+      });
+
+      // Add floating animation to logo
+      const logo = document.querySelector('.hero .logo');
+      if (logo) {
+        logo.classList.add('floating');
+      }
+
+      // Add glow effect to cards
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.classList.add('glow');
+        });
+        card.addEventListener('mouseleave', function() {
+          this.classList.remove('glow');
         });
       });
     });
