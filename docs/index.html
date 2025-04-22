@@ -483,6 +483,66 @@
       opacity: 1;
     }
 
+    /* Comparison section styles */
+    .comparison-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 80%;
+      background: radial-gradient(ellipse at center,
+        rgba(139, 92, 246, 0.1) 0%,
+        rgba(16, 185, 129, 0.05) 50%,
+        rgba(17, 24, 39, 0) 70%);
+      filter: blur(40px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.8;
+      animation: pulse-slow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse-slow {
+      0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); }
+      100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    .comparison-table {
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.1) !important;
+    }
+
+    .comparison-table th {
+      border-bottom: 2px solid rgba(139, 92, 246, 0.3) !important;
+    }
+
+    .comparison-table td {
+      transition: all 0.3s ease;
+    }
+
+    .comparison-table tr:hover td {
+      background-color: rgba(139, 92, 246, 0.05) !important;
+    }
+
+    .benchmark-card {
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.1) !important;
+    }
+
+    .highlight-cell {
+      position: relative;
+      color: var(--primary-light) !important;
+      background: linear-gradient(90deg, rgba(139, 92, 246, 0.05), rgba(16, 185, 129, 0.05)) !important;
+      animation: cell-pulse 3s infinite alternate;
+    }
+
+    @keyframes cell-pulse {
+      0% { box-shadow: inset 0 0 5px rgba(139, 92, 246, 0.1); }
+      100% { box-shadow: inset 0 0 15px rgba(139, 92, 246, 0.2); }
+    }
+
     /* Glitch text effect */
     .glitch-text {
       position: relative;
@@ -703,6 +763,43 @@
       background-color: #b91c1c !important;
     }
 
+    .pulse-badge {
+      animation: badge-pulse 2s infinite;
+    }
+
+    @keyframes badge-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .check-icon {
+      color: var(--secondary) !important;
+      position: relative;
+      z-index: 1;
+    }
+
+    .check-icon::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+
+    .times-icon {
+      color: #ef4444 !important;
+    }
+
+    .minus-icon {
+      color: #f59e0b !important;
+    }
+
     h2 {
       font-weight: 600;
       margin-bottom: 2rem;
@@ -834,13 +931,14 @@
     </div>
   </section>
 
-  <section id="comparison" class="py-5 glass" style="background-color: rgba(17, 24, 39, 0.7) !important;">
-
+  <section id="comparison" class="py-5 glass" style="background-color: rgba(17, 24, 39, 0.7) !important; position: relative; overflow: hidden;">
+    <div class="tech-circuit"></div>
+    <div class="comparison-glow"></div>
     <div class="container">
       <h2 class="text-center" data-aos="fade-up">Why Choose NebulaDB?</h2>
       <p class="text-center mb-5" data-aos="fade-up" data-aos-delay="100">See how NebulaDB compares to other embedded databases</p>
 
-      <div class="table-responsive shadow-sm rounded overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+      <div class="table-responsive comparison-table shadow-sm rounded overflow-hidden" data-aos="fade-up" data-aos-delay="200">
         <table class="table table-bordered mb-0" style="background-color: var(--card-bg) !important;">
           <thead class="table-light">
             <tr>
@@ -854,24 +952,24 @@
           <tbody>
             <tr>
               <td>TypeScript-first</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
+              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
+              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
+              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
             </tr>
             <tr>
               <td>Reactive queries</td>
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
               <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
             <tr>
               <td>Plugin architecture</td>
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
               <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
+              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
             </tr>
             <tr>
               <td>Schema validation</td>
@@ -885,12 +983,12 @@
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
               <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
               <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
+              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
             </tr>
             <tr>
               <td>Advanced indexing</td>
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
+              <td class="text-center"><i class="fas fa-minus minus-icon"></i></td>
               <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
@@ -905,12 +1003,12 @@
               <td>Batch operations</td>
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
               <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
+              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
               <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
             </tr>
             <tr>
               <td>Bundle size</td>
-              <td class="text-center"><span class="badge bg-success">Small</span></td>
+              <td class="text-center"><span class="badge bg-success pulse-badge">Small</span></td>
               <td class="text-center"><span class="badge bg-warning">Medium</span></td>
               <td class="text-center"><span class="badge bg-danger">Large</span></td>
               <td class="text-center"><span class="badge bg-warning">Medium</span></td>
@@ -923,7 +1021,7 @@
         <h4 class="text-center mb-4" data-aos="fade-up">Performance Benchmarks</h4>
         <div class="row justify-content-center">
           <div class="col-lg-8">
-            <div class="card" data-aos="fade-up" data-aos-delay="100">
+            <div class="card benchmark-card" data-aos="fade-up" data-aos-delay="100">
               <div class="card-body p-0">
                 <div class="table-responsive">
                   <table class="table table-sm" style="background-color: var(--card-bg) !important;">
@@ -938,25 +1036,25 @@
                     <tbody>
                       <tr>
                         <td>Batch Insert</td>
-                        <td class="text-center fw-bold" style="color: var(--primary-light);">8.05ms</td>
+                        <td class="text-center fw-bold highlight-cell">8.05ms</td>
                         <td class="text-center">42ms</td>
                         <td class="text-center">87ms</td>
                       </tr>
                       <tr>
                         <td>Find All</td>
-                        <td class="text-center fw-bold" style="color: var(--primary-light);">0.02ms</td>
+                        <td class="text-center fw-bold highlight-cell">0.02ms</td>
                         <td class="text-center">2ms</td>
                         <td class="text-center">5ms</td>
                       </tr>
                       <tr>
                         <td>Find with Query</td>
-                        <td class="text-center fw-bold" style="color: var(--primary-light);">0.69ms</td>
+                        <td class="text-center fw-bold highlight-cell">0.69ms</td>
                         <td class="text-center">8ms</td>
                         <td class="text-center">12ms</td>
                       </tr>
                       <tr>
                         <td>Batch Delete</td>
-                        <td class="text-center fw-bold" style="color: var(--primary-light);">61.45ms</td>
+                        <td class="text-center fw-bold highlight-cell">61.45ms</td>
                         <td class="text-center">95ms</td>
                         <td class="text-center">120ms</td>
                       </tr>
