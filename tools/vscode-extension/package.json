@@ -1,0 +1,70 @@
+{
+  "name": "nebuladb-vscode",
+  "displayName": "NebulaDB",
+  "description": "VS Code extension for NebulaDB - TypeScript-first embedded database",
+  "version": "0.0.4",
+  "publisher": "nebuladb",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB"
+  },
+  "icon": "images/nebulalogo.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "nebuladb-vscode.createConfig",
+        "title": "NebulaDB: Create Configuration File"
+      },
+      {
+        "command": "nebuladb-vscode.initializeProject",
+        "title": "NebulaDB: Initialize Project"
+      },
+      {
+        "command": "nebuladb-vscode.showDocs",
+        "title": "NebulaDB: Open Documentation"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "typescript",
+        "path": "./snippets/typescript.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/javascript.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "eslint": "^9.23.0",
+    "typescript": "^5.8.2",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}

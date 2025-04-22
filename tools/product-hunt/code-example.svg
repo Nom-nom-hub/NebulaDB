@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="code-bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#2d3748" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)" />
+
+  <!-- Title -->
+  <text x="600" y="80" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">NebulaDB in Action</text>
+
+  <!-- Code example -->
+  <rect x="150" y="120" width="900" height="450" rx="10" ry="10" fill="url(#code-bg-gradient)" stroke="#8b5cf6" stroke-width="2" />
+  
+  <!-- Code content -->
+  <g font-family="Consolas, monospace" font-size="18" fill="white">
+    <!-- Line 1 -->
+    <text x="170" y="160" fill="#ff79c6">import</text>
+    <text x="230" y="160"> { createDatabase } </text>
+    <text x="400" y="160" fill="#ff79c6">from</text>
+    <text x="440" y="160" fill="#f1fa8c">'@nebula-db/nebula-db'</text>
+    <text x="620" y="160">;</text>
+
+    <!-- Line 2 -->
+    <text x="170" y="190"></text>
+
+    <!-- Line 3 - Interface -->
+    <text x="170" y="220" fill="#ff79c6">interface</text>
+    <text x="240" y="220" fill="#8be9fd"> User</text>
+    <text x="280" y="220"> {</text>
+
+    <!-- Line 4 -->
+    <text x="190" y="250" fill="#bd93f9">  id?</text>
+    <text x="220" y="250">: </text>
+    <text x="230" y="250" fill="#8be9fd">string</text>
+    <text x="270" y="250">;</text>
+
+    <!-- Line 5 -->
+    <text x="190" y="280" fill="#bd93f9">  name</text>
+    <text x="230" y="280">: </text>
+    <text x="240" y="280" fill="#8be9fd">string</text>
+    <text x="280" y="280">;</text>
+
+    <!-- Line 6 -->
+    <text x="190" y="310" fill="#bd93f9">  email</text>
+    <text x="240" y="310">: </text>
+    <text x="250" y="310" fill="#8be9fd">string</text>
+    <text x="290" y="310">;</text>
+
+    <!-- Line 7 -->
+    <text x="190" y="340" fill="#bd93f9">  age</text>
+    <text x="220" y="340">: </text>
+    <text x="230" y="340" fill="#8be9fd">number</text>
+    <text x="280" y="340">;</text>
+
+    <!-- Line 8 -->
+    <text x="170" y="370">}</text>
+
+    <!-- Line 9 -->
+    <text x="170" y="400"></text>
+
+    <!-- Line 10 - Create DB -->
+    <text x="170" y="430" fill="#ff79c6">const</text>
+    <text x="210" y="430" fill="#bd93f9"> db</text>
+    <text x="230" y="430"> = createDatabase();</text>
+
+    <!-- Line 11 - Create collection -->
+    <text x="170" y="460" fill="#ff79c6">const</text>
+    <text x="210" y="460" fill="#bd93f9"> users</text>
+    <text x="260" y="460"> = db.collection</text>
+    <text x="370" y="460" fill="#ff79c6">&lt;</text>
+    <text x="380" y="460" fill="#8be9fd">User</text>
+    <text x="410" y="460" fill="#ff79c6">&gt;</text>
+    <text x="420" y="460">(</text>
+    <text x="430" y="460" fill="#f1fa8c">'users'</text>
+    <text x="480" y="460">, {</text>
+
+    <!-- Line 12 -->
+    <text x="190" y="490">  schema: {</text>
+    <text x="270" y="490" fill="#bd93f9">/* schema definition */</text>
+    <text x="450" y="490">},</text>
+
+    <!-- Line 13 -->
+    <text x="190" y="520">  indexes: [</text>
+    <text x="270" y="520" fill="#f1fa8c">'email'</text>
+    <text x="320" y="520">]</text>
+
+    <!-- Line 14 -->
+    <text x="170" y="550">});</text>
+
+    <!-- Reactive query example -->
+    <text x="550" y="190" fill="#ff79c6">// Reactive query example</text>
+    <text x="550" y="220" fill="#ff79c6">const</text>
+    <text x="590" y="220" fill="#bd93f9"> subscription</text>
+    <text x="680" y="220"> = users.findReactive({</text>
+    <text x="570" y="250" fill="#bd93f9">  age</text>
+    <text x="600" y="250">: { </text>
+    <text x="610" y="250" fill="#ff79c6">$gt</text>
+    <text x="630" y="250">: </text>
+    <text x="640" y="250" fill="#bd93f9">25</text>
+    <text x="660" y="250"> }</text>
+    <text x="550" y="280">}).subscribe(</text>
+    <text x="650" y="280" fill="#bd93f9">results</text>
+    <text x="700" y="280"> => {</text>
+    <text x="570" y="310">  console.log(</text>
+    <text x="670" y="310" fill="#f1fa8c">'Updated results:'</text>
+    <text x="790" y="310">, results);</text>
+    <text x="550" y="340">});</text>
+
+    <!-- CRUD operations -->
+    <text x="550" y="390" fill="#ff79c6">// CRUD operations</text>
+    <text x="550" y="420" fill="#ff79c6">async function</text>
+    <text x="650" y="420" fill="#50fa7b"> performOperations</text>
+    <text x="780" y="420">() {</text>
+    
+    <!-- Insert -->
+    <text x="570" y="450" fill="#ff79c6">  await</text>
+    <text x="610" y="450"> users.insert({</text>
+    <text x="590" y="480" fill="#bd93f9">    name</text>
+    <text x="630" y="480">: </text>
+    <text x="640" y="480" fill="#f1fa8c">'Alice'</text>
+    <text x="690" y="480">,</text>
+    <text x="590" y="510" fill="#bd93f9">    email</text>
+    <text x="630" y="510">: </text>
+    <text x="640" y="510" fill="#f1fa8c">'alice@example.com'</text>
+    <text x="790" y="510">,</text>
+    <text x="590" y="540" fill="#bd93f9">    age</text>
+    <text x="620" y="540">: </text>
+    <text x="630" y="540" fill="#bd93f9">30</text>
+    <text x="570" y="570">  });</text>
+    <text x="550" y="600">}</text>
+  </g>
+</svg>

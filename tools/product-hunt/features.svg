@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="card-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#2d3748" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)" />
+
+  <!-- Title -->
+  <text x="600" y="80" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">NebulaDB Features</text>
+
+  <!-- Feature cards -->
+  <!-- Card 1 -->
+  <g transform="translate(200, 180)">
+    <rect width="240" height="180" rx="10" ry="10" fill="url(#card-gradient)" stroke="#8b5cf6" stroke-width="2" />
+    <text x="120" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#8b5cf6">Reactive Queries</text>
+    <text x="120" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Real-time data updates</text>
+    <text x="120" y="110" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Automatic UI syncing</text>
+    <text x="120" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Observable pattern</text>
+  </g>
+
+  <!-- Card 2 -->
+  <g transform="translate(480, 180)">
+    <rect width="240" height="180" rx="10" ry="10" fill="url(#card-gradient)" stroke="#8b5cf6" stroke-width="2" />
+    <text x="120" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#8b5cf6">Type-Safe API</text>
+    <text x="120" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Full TypeScript integration</text>
+    <text x="120" y="110" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Schema validation</text>
+    <text x="120" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Compile-time checks</text>
+  </g>
+
+  <!-- Card 3 -->
+  <g transform="translate(760, 180)">
+    <rect width="240" height="180" rx="10" ry="10" fill="url(#card-gradient)" stroke="#8b5cf6" stroke-width="2" />
+    <text x="120" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#8b5cf6">Plugin Architecture</text>
+    <text x="120" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Extensible design</text>
+    <text x="120" y="110" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Custom adapters</text>
+    <text x="120" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Middleware support</text>
+  </g>
+
+  <!-- Card 4 -->
+  <g transform="translate(200, 400)">
+    <rect width="240" height="180" rx="10" ry="10" fill="url(#card-gradient)" stroke="#8b5cf6" stroke-width="2" />
+    <text x="120" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#8b5cf6">Multiple Adapters</text>
+    <text x="120" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Memory</text>
+    <text x="120" y="110" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">IndexedDB</text>
+    <text x="120" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">SQLite and Redis</text>
+  </g>
+
+  <!-- Card 5 -->
+  <g transform="translate(480, 400)">
+    <rect width="240" height="180" rx="10" ry="10" fill="url(#card-gradient)" stroke="#8b5cf6" stroke-width="2" />
+    <text x="120" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#8b5cf6">WebAssembly Support</text>
+    <text x="120" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Edge computing</text>
+    <text x="120" y="110" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">High performance</text>
+    <text x="120" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Cross-platform</text>
+  </g>
+
+  <!-- Card 6 -->
+  <g transform="translate(760, 400)">
+    <rect width="240" height="180" rx="10" ry="10" fill="url(#card-gradient)" stroke="#8b5cf6" stroke-width="2" />
+    <text x="120" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#8b5cf6">Developer Experience</text>
+    <text x="120" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Clean API</text>
+    <text x="120" y="110" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">Comprehensive docs</text>
+    <text x="120" y="140" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="white">VS Code extension</text>
+  </g>
+</svg>
