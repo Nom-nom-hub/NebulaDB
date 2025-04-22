@@ -1,5 +1,5 @@
 {
-  "name": "@nebula/wasm",
+  "name": "@nebula-db/wasm",
   "version": "0.1.0",
   "description": "WebAssembly support for NebulaDB",
   "main": "dist/index.js",
@@ -12,7 +12,8 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "build:wasm": "cd wasm && wasm-pack build --target web",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prebuild": "rm -rf dist"
   },
   "keywords": [
     "database",
@@ -21,7 +22,7 @@
     "webassembly",
     "performance"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.0.1",
@@ -29,6 +30,14 @@
     "vitest": "^1.2.1"
   },
   "dependencies": {
-    "@nebula/core": "^0.1.0"
+    "@nebula-db/core": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/wasm"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

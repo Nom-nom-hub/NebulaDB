@@ -1,5 +1,5 @@
 {
-  "name": "@nebula/plugin-versioning",
+  "name": "@nebula-db/plugin-versioning",
   "version": "0.1.0",
   "description": "Document versioning plugin for NebulaDB",
   "main": "dist/index.js",
@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prebuild": "rm -rf dist"
   },
   "keywords": [
     "database",
@@ -19,7 +20,7 @@
     "versioning",
     "plugin"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.0.1",
@@ -27,6 +28,14 @@
     "vitest": "^1.2.1"
   },
   "peerDependencies": {
-    "@nebula/core": "^0.1.0"
+    "@nebula-db/core": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/plugins/versioning"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

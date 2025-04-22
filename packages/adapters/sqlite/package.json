@@ -1,5 +1,5 @@
 {
-  "name": "@nebula/adapter-sqlite",
+  "name": "@nebula-db/adapter-sqlite",
   "version": "0.1.0",
   "description": "SQLite adapter for NebulaDB",
   "main": "dist/index.js",
@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prebuild": "rm -rf dist"
   },
   "keywords": [
     "database",
@@ -20,7 +21,7 @@
     "adapter",
     "node"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.5",
@@ -32,6 +33,14 @@
     "better-sqlite3": "^9.2.2"
   },
   "peerDependencies": {
-    "@nebula/core": "^0.1.0"
+    "@nebula-db/core": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/adapters/sqlite"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

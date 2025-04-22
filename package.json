@@ -3,6 +3,10 @@
   "version": "0.2.0",
   "description": "Fast. Flexible. Serverless. The embedded database for the modern stack.",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
   "workspaces": [
     "packages/*",
     "packages/adapters/*",
@@ -24,7 +28,11 @@
     "example:browser": "cd examples/browser-demo && npm run dev",
     "website:dev": "cd website && npm run dev",
     "website:build": "cd website && npm run build",
-    "website:preview": "cd website && npm run preview"
+    "website:preview": "cd website && npm run preview",
+    "publish:core": "cd packages/core && npm publish --access public",
+    "publish:adapters": "for dir in packages/adapters/*; do (cd $dir && npm publish --access public); done",
+    "publish:plugins": "for dir in packages/plugins/*; do (cd $dir && npm publish --access public); done",
+    "publish:all": "npm run publish:core && npm run publish:adapters && npm run publish:plugins"
   },
   "keywords": [
     "database",
@@ -36,7 +44,7 @@
     "node",
     "edge"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"

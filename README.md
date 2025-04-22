@@ -8,7 +8,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/badge/npm-v0.2.0-blue)](https://www.npmjs.com/package/@nebula/core)
+[![npm version](https://img.shields.io/badge/npm-v0.1.0-blue)](https://www.npmjs.com/package/@nebula-db/core)
 
 </div>
 
@@ -35,17 +35,17 @@ NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, emb
 
 ```bash
 # Install core package
-npm install @nebula/core
+npm install @nebula-db/core
 
 # Install adapters as needed
-npm install @nebula/adapter-localstorage
-npm install @nebula/adapter-indexeddb
-npm install @nebula/adapter-filesystem
+npm install @nebula-db/adapter-localstorage
+npm install @nebula-db/adapter-indexeddb
+npm install @nebula-db/adapter-filesystem
 
 # Install plugins as needed
-npm install @nebula/plugin-encryption
-npm install @nebula/plugin-validation
-npm install @nebula/plugin-versioning
+npm install @nebula-db/plugin-encryption
+npm install @nebula-db/plugin-validation
+npm install @nebula-db/plugin-versioning
 ```
 
 > **Important**: Development dependencies require Node.js 18+. The core library is designed to work with Node.js 18+ for optimal performance and compatibility with modern JavaScript features.
@@ -59,8 +59,8 @@ npm install @nebula/plugin-versioning
 ## Quick Start
 
 ```typescript
-import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { createDb } from '@nebula-db/core';
+import { MemoryAdapter } from '@nebula-db/adapter-memory';
 
 // Create a database with in-memory adapter and optimized settings
 const db = createDb({

@@ -94,6 +94,15 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@nebula/core": "^0.1.0"
-  }
+    "@nebula-db/core": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/vscode-extension"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Nom-nom-hub"
 }

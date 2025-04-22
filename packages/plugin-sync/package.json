@@ -1,5 +1,5 @@
 {
-  "name": "@nebula/plugin-sync",
+  "name": "@nebula-db/plugin-sync",
   "version": "0.1.0",
   "description": "Synchronization plugin for NebulaDB",
   "main": "dist/index.js",
@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prebuild": "rm -rf dist"
   },
   "keywords": [
     "database",
@@ -20,7 +21,7 @@
     "offline",
     "realtime"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.0.1",
@@ -28,8 +29,16 @@
     "vitest": "^1.2.1"
   },
   "dependencies": {
-    "@nebula/core": "^0.1.0",
     "socket.io-client": "^4.7.2",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "@nebula-db/core": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/plugin-sync"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

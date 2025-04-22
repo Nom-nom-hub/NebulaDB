@@ -1,5 +1,5 @@
 {
-  "name": "@nebula/json-schema",
+  "name": "@nebula-db/json-schema",
   "version": "0.1.0",
   "description": "JSON Schema utilities for NebulaDB",
   "main": "dist/index.js",
@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prebuild": "rm -rf dist"
   },
   "keywords": [
     "json-schema",
@@ -19,7 +20,7 @@
     "validation",
     "nebula"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.0.1",
@@ -29,5 +30,13 @@
   },
   "peerDependencies": {
     "zod": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/json-schema"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

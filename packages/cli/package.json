@@ -1,5 +1,5 @@
 {
-  "name": "@nebula/cli",
+  "name": "@nebula-db/cli",
   "version": "0.1.0",
   "description": "CLI tools for NebulaDB",
   "main": "dist/index.js",
@@ -13,7 +13,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs --dts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prebuild": "rm -rf dist"
   },
   "keywords": [
     "database",
@@ -21,7 +22,7 @@
     "cli",
     "generator"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
@@ -37,5 +38,13 @@
     "fs-extra": "^11.2.0",
     "inquirer": "^8.2.6",
     "ora": "^5.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/cli"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

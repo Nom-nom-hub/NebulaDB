@@ -1,5 +1,5 @@
 {
-  "name": "@nebula/devtools",
+  "name": "@nebula-db/devtools",
   "version": "0.1.0",
   "description": "DevTools for NebulaDB",
   "main": "dist/index.js",
@@ -11,7 +11,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prebuild": "rm -rf dist"
   },
   "keywords": [
     "database",
@@ -19,15 +20,15 @@
     "devtools",
     "debugging"
   ],
-  "author": "",
+  "author": "Nom-nom-hub",
   "license": "MIT",
   "dependencies": {
-    "@nebula/core": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-json-view": "^1.21.3",
     "react-router-dom": "^6.21.1",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "@nebula-db/core": "^0.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
@@ -38,5 +39,13 @@
     "tailwindcss": "^3.3.6",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/devtools"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
