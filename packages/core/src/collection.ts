@@ -17,7 +17,6 @@ import { IndexDefinition } from './types';
 import { MemoryManager } from './memory-manager';
 // Import concurrency controls
 import { ReadWriteLock, TaskQueue } from './concurrency';
-import { AdaptiveConcurrencyControl, AdaptiveConcurrencyOptions } from './adaptive-concurrency';
 // Import query cache
 import { QueryCache } from './query-cache';
 // Import document compression
