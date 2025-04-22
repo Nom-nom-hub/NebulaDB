@@ -30,6 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Performance bottlenecks in query processing
 - Concurrency issues with parallel operations
 
+### Notes
+
+- Requires Node.js 16.x or higher (Node.js 18+ recommended for optimal performance)
+- Some development dependencies require Node.js 18+
+
 ## [0.1.0] - 2023-04-22
 
 ### Added

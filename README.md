@@ -28,6 +28,11 @@ NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, emb
 
 ## Installation
 
+### Requirements
+
+- Node.js 16.x or higher (Node.js 18+ recommended for optimal performance)
+- npm 8.x or higher
+
 ```bash
 # Install core package
 npm install @nebula/core
@@ -42,6 +47,8 @@ npm install @nebula/plugin-encryption
 npm install @nebula/plugin-validation
 npm install @nebula/plugin-versioning
 ```
+
+> **Note**: Some development dependencies require Node.js 18+. If you're using Node.js 16.x, you may see compatibility warnings during development, but the core library will work fine.
 
 ## Quick Start
 
