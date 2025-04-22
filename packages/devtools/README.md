@@ -1,19 +1,19 @@
-# @nebula-db/wasm
+# @nebula-db/devtools
 
-WebAssembly support for NebulaDB
+DevTools for NebulaDB
 
 Part of the [NebulaDB](https://github.com/Nom-nom-hub/NebulaDB) project - a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database.
 
 ## Installation
 
 ```bash
-npm install @nebula-db/wasm
+npm install @nebula-db/devtools
 ```
 
 ## Quick Start
 
 ```typescript
-import { createDb } from '@nebula-db/wasm';
+import { createDb } from '@nebula-db/devtools';
 import { MemoryAdapter } from '@nebula-db/adapter-memory';
 
 // Create a database with in-memory adapter

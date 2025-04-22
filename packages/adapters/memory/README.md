@@ -1,35 +1,29 @@
-# @nebula-db/wasm
+# @nebula-db/adapter-memory
 
-WebAssembly support for NebulaDB
+In-memory adapter for NebulaDB
 
 Part of the [NebulaDB](https://github.com/Nom-nom-hub/NebulaDB) project - a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database.
 
 ## Installation
 
 ```bash
-npm install @nebula-db/wasm
+npm install @nebula-db/adapter-memory
 ```
 
-## Quick Start
+## Usage
 
 ```typescript
-import { createDb } from '@nebula-db/wasm';
+import { createDb } from '@nebula-db/core';
 import { MemoryAdapter } from '@nebula-db/adapter-memory';
 
-// Create a database with in-memory adapter
+// Create a database with memory adapter
 const db = createDb({
   adapter: new MemoryAdapter()
 });
 
-// Create a collection
+// Use the database
 const users = db.collection('users');
-
-// Insert a document
 await users.insert({ name: 'Alice', age: 30 });
-
-// Query documents
-const result = await users.find({ age: { $gt: 20 } });
-console.log(result);
 ```
 
 ## Documentation

@@ -1,12 +1,13 @@
 {
   "name": "@nebula-db/wasm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "WebAssembly support for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",

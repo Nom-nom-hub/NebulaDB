@@ -1,35 +1,34 @@
-# @nebula-db/wasm
+# @nebula-db/plugin-logger
 
-WebAssembly support for NebulaDB
+Logging plugin for NebulaDB
 
 Part of the [NebulaDB](https://github.com/Nom-nom-hub/NebulaDB) project - a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database.
 
 ## Installation
 
 ```bash
-npm install @nebula-db/wasm
+npm install @nebula-db/plugin-logger
 ```
 
-## Quick Start
+## Usage
 
 ```typescript
-import { createDb } from '@nebula-db/wasm';
+import { createDb } from '@nebula-db/core';
 import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { createLoggerPlugin } from '@nebula-db/plugin-logger';
 
-// Create a database with in-memory adapter
+// Create the plugin
+const loggerPlugin = createLoggerPlugin();
+
+// Create a database with the plugin
 const db = createDb({
-  adapter: new MemoryAdapter()
+  adapter: new MemoryAdapter(),
+  plugins: [loggerPlugin]
 });
 
-// Create a collection
+// Use the database with the plugin
 const users = db.collection('users');
-
-// Insert a document
 await users.insert({ name: 'Alice', age: 30 });
-
-// Query documents
-const result = await users.find({ age: { $gt: 20 } });
-console.log(result);
 ```
 
 ## Documentation

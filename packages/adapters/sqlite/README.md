@@ -1,35 +1,29 @@
-# @nebula-db/wasm
+# @nebula-db/adapter-sqlite
 
-WebAssembly support for NebulaDB
+SQLite adapter for NebulaDB
 
 Part of the [NebulaDB](https://github.com/Nom-nom-hub/NebulaDB) project - a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database.
 
 ## Installation
 
 ```bash
-npm install @nebula-db/wasm
+npm install @nebula-db/adapter-sqlite
 ```
 
-## Quick Start
+## Usage
 
 ```typescript
-import { createDb } from '@nebula-db/wasm';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { createDb } from '@nebula-db/core';
+import { SqliteAdapter } from '@nebula-db/adapter-sqlite';
 
-// Create a database with in-memory adapter
+// Create a database with sqlite adapter
 const db = createDb({
-  adapter: new MemoryAdapter()
+  adapter: new SqliteAdapter()
 });
 
-// Create a collection
+// Use the database
 const users = db.collection('users');
-
-// Insert a document
 await users.insert({ name: 'Alice', age: 30 });
-
-// Query documents
-const result = await users.find({ age: { $gt: 20 } });
-console.log(result);
 ```
 
 ## Documentation
