@@ -56,7 +56,7 @@ export class SchemaPreviewPanel {
 
     // Update the content based on view changes
     this._panel.onDidChangeViewState(
-      _e => {
+      () => {
         if (this._panel.visible) {
           this._update();
         }

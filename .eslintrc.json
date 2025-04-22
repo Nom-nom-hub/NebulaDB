@@ -8,8 +8,15 @@
   ],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": "error"
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
   },
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    "coverage/**",
+    "**/*.js.map",
+    "**/*.d.ts"
+  ],
   "overrides": [
     {
       "files": [
@@ -24,14 +31,30 @@
         "**/devtools/**/*.ts",
         "**/devtools/**/*.js",
         "**/vscode-extension/**/*.ts",
-        "**/vscode-extension/**/*.js",
+        "**/vscode-extension/**/*.js"
+      ],
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": [
+        "packages/cli/**/*.ts"
+      ],
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": [
         "**/plugins/**/*.ts",
         "**/plugins/**/*.js",
         "**/plugin-sync/**/*.ts",
         "**/plugin-sync/**/*.js"
       ],
       "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
       }
     }
   ]

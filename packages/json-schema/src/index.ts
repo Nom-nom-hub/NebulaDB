@@ -529,11 +529,11 @@ function generateZodSchemaCode(schema: JSONSchema, indent = ''): string {
   // Handle type
   if (schema.type) {
     if (schema.type === 'string') {
-      return generateZodStringCode(schema, indent);
+      return generateZodStringCode(schema);
     } else if (schema.type === 'number' || schema.type === 'integer') {
-      return generateZodNumberCode(schema, indent);
+      return generateZodNumberCode(schema);
     } else if (schema.type === 'boolean') {
-      return generateZodBooleanCode(schema, indent);
+      return generateZodBooleanCode(schema);
     } else if (schema.type === 'array') {
       return generateZodArrayCode(schema, indent);
     } else if (schema.type === 'object') {
@@ -553,7 +553,7 @@ function generateZodSchemaCode(schema: JSONSchema, indent = ''): string {
 
   // Handle enum
   if (schema.enum) {
-    return generateZodEnumCode(schema, indent);
+    return generateZodEnumCode(schema);
   }
 
   // Handle oneOf
@@ -581,7 +581,7 @@ function generateZodSchemaCode(schema: JSONSchema, indent = ''): string {
 /**
  * Generate Zod string schema code
  */
-function generateZodStringCode(schema: JSONSchema, indent: string): string {
+function generateZodStringCode(schema: JSONSchema): string {
   let code = 'z.string()';
 
   // Add validations
@@ -631,7 +631,7 @@ function generateZodStringCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod number schema code
  */
-function generateZodNumberCode(schema: JSONSchema, indent: string): string {
+function generateZodNumberCode(schema: JSONSchema): string {
   let code = schema.type === 'integer' ? 'z.number().int()' : 'z.number()';
 
   // Add validations
@@ -683,7 +683,7 @@ function generateZodNumberCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod boolean schema code
  */
-function generateZodBooleanCode(schema: JSONSchema, indent: string): string {
+function generateZodBooleanCode(schema: JSONSchema): string {
   let code = 'z.boolean()';
 
   // Add description
@@ -783,7 +783,7 @@ function generateZodObjectCode(schema: JSONSchema, indent: string): string {
 /**
  * Generate Zod enum schema code
  */
-function generateZodEnumCode(schema: JSONSchema, indent: string): string {
+function generateZodEnumCode(schema: JSONSchema): string {
   if (!schema.enum || schema.enum.length === 0) {
     return 'z.any()';
   }

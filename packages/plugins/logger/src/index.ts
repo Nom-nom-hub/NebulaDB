@@ -142,7 +142,7 @@ export function createLoggerPlugin(options: LoggerPluginOptions = {}): Plugin {
   return {
     name: 'logger',
 
-    onInit(_db: any): void {
+    onInit(): void {
       if (shouldLog(LogLevel.INFO)) {
         logger.info('Database initialized');
       }
