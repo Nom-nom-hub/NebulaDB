@@ -9,6 +9,9 @@
     "packages/plugins/*"
   ],
   "scripts": {
+    "preinstall": "node ./scripts/check-node-version.js",
+    "pretest": "node ./scripts/check-node-version.js",
+    "prebuild": "node ./scripts/check-node-version.js",
     "build": "./scripts/build.sh",
     "test": "./scripts/test.sh",
     "test:watch": "cd tests && npm run test:watch",

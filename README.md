@@ -49,6 +49,12 @@ npm install @nebula/plugin-versioning
 ```
 
 > **Important**: Development dependencies require Node.js 18+. The core library is designed to work with Node.js 18+ for optimal performance and compatibility with modern JavaScript features.
+>
+> If you're running on Node.js 16.x, you can bypass the version check for development purposes by setting the `NEBULA_SKIP_VERSION_CHECK=1` environment variable:
+> ```
+> NEBULA_SKIP_VERSION_CHECK=1 npm run <command>
+> ```
+> Note that this is only recommended for development and testing purposes. Production use should always use Node.js 18+.
 
 ## Quick Start
 
@@ -182,6 +188,31 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## Troubleshooting
+
+### Node.js Version Issues
+
+If you encounter errors related to Node.js version compatibility:
+
+1. **Update Node.js**: The recommended solution is to update to Node.js 18 or higher.
+   - Download from [nodejs.org](https://nodejs.org/)
+   - Or use a version manager like [nvm](https://github.com/nvm-sh/nvm)
+
+2. **Bypass Version Check**: For development only, you can bypass the version check:
+   ```
+   NEBULA_SKIP_VERSION_CHECK=1 npm run <command>
+   ```
+
+3. **Engine Warnings**: If you see `EBADENGINE` warnings but the installation completes, these are just warnings and can be ignored for development purposes.
+
+### Common Issues
+
+- **ESLint Errors**: If you encounter ESLint errors, run `npm run lint -- --fix` to automatically fix many common issues.
+
+- **Test Failures**: Make sure you're using Node.js 18+ for running tests. Some test features require modern JavaScript capabilities.
+
+- **Build Errors**: If you encounter build errors, try running `npm run clean` followed by `npm run build`.
 
 ## License
 
