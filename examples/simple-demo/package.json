@@ -1,0 +1,12 @@
+{
+  "name": "nebuladb-simple-demo",
+  "version": "1.0.0",
+  "description": "A simple demo showcasing NebulaDB's power",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@nebula-db/nebula-db": "^0.2.0"
+  }
+}

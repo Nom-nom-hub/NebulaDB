@@ -26,3 +26,35 @@ CHANGELOG.md
 
 # Scripts
 scripts/
+
+# Build configuration
+tsup.config.ts
+rollup.config.js
+webpack.config.js
+babel.config.js
+jest.config.js
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Temporary files
+.tmp/
+.temp/
+*.tsbuildinfo
+
+# Editor specific
+.vscode-test/
+*.code-workspace
+.history/
+
+# Test files
+__tests__/
+__mocks__/
+*.spec.*
+*.test.*
+
+# macOS
+.DS_Store
+._*

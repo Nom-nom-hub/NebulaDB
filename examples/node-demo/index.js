@@ -1,99 +1,131 @@
-import { createDb } from '@nebula/core';
-import { FileSystemAdapter } from '@nebula/adapter-filesystem';
-import { createValidationPlugin } from '@nebula/plugin-validation';
-import { z } from 'zod';
+// Import packages
+import pkg1 from '@nebula-db/nebula-db';
+const { createDatabase } = pkg1;
+
+import pkg2 from '@nebula-db/adapter-memory';
+const { MemoryAdapter } = pkg2;
+
+import pkg3 from '@nebula-db/adapter-filesystem';
+const { FilesystemAdapter } = pkg3;
 import path from 'path';
 import { fileURLToPath } from 'url';
+import chalk from 'chalk';
+
+// Console styling functions
+const log = {
+  title: (text) => console.log(chalk.bold.blue(`\n=== ${text} ===`)),
+  info: (text) => console.log(chalk.cyan(`ℹ️ ${text}`)),
+  success: (text) => console.log(chalk.green(`✅ ${text}`)),
+  error: (text) => console.log(chalk.red(`❌ ${text}`)),
+  warning: (text) => console.log(chalk.yellow(`⚠️ ${text}`)),
+  data: (obj) => console.log(chalk.gray(JSON.stringify(obj, null, 2))),
+  divider: () => console.log(chalk.gray('-'.repeat(50)))
+};
 
 // Get the directory name
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Create a schema for the todos collection
-const todoSchema = z.object({
-  id: z.string(),
-  title: z.string().min(1).max(100),
-  completed: z.boolean().default(false),
-  createdAt: z.string().datetime().optional(),
-  tags: z.array(z.string()).optional()
+// Create a database with memory adapter
+const db = createDatabase({
+  adapter: new MemoryAdapter(),
+  options: {}
 });
 
-// Create a validation plugin
-const validationPlugin = createValidationPlugin({
-  schemas: {
-    todos: todoSchema
+// We could also use a filesystem adapter for persistence
+// const db = createDatabase({
+//   adapter: new FilesystemAdapter(path.join(__dirname, 'data')),
+//   options: {}
+// });
+
+// Define the todos collection with schema
+const todos = db.collection('todos', {
+  schema: {
+    id: { type: 'string', optional: true },
+    title: { type: 'string' },
+    completed: { type: 'boolean' },
+    createdAt: { type: 'date' },
+    tags: { type: 'array', optional: true }
   }
 });
-
-// Create a database with filesystem adapter and validation plugin
-const db = createDb({
-  adapter: new FileSystemAdapter(path.join(__dirname, 'data.json')),
-  plugins: [validationPlugin]
-});
-
-// Get the todos collection
-const todos = db.collection('todos');
 
 // Example usage
 async function run() {
   try {
+    log.title('NebulaDB Node.js Demo');
+    log.info('Demonstrating NebulaDB in a Node.js environment');
+    log.divider();
+
     // Insert some todos
-    console.log('Inserting todos...');
+    log.title('Creating and Inserting Data');
+    log.info('Inserting sample todos...');
     await todos.insert({
       title: 'Learn NebulaDB',
       completed: false,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
       tags: ['learning', 'database']
     });
-    
+
     await todos.insert({
       title: 'Build an app with NebulaDB',
       completed: false,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
       tags: ['coding', 'project']
     });
-    
+
+    log.success('Sample todos inserted successfully');
+
     // Find all todos
-    console.log('\nAll todos:');
+    log.title('Basic Queries');
+    log.info('Finding all todos');
     const allTodos = await todos.find();
-    console.log(allTodos);
-    
+    log.success(`Found ${allTodos.length} todos:`);
+    log.data(allTodos);
+
     // Find incomplete todos
-    console.log('\nIncomplete todos:');
+    log.info('Finding incomplete todos');
     const incompleteTodos = await todos.find({ completed: false });
-    console.log(incompleteTodos);
-    
+    log.success(`Found ${incompleteTodos.length} incomplete todos:`);
+    log.data(incompleteTodos);
+
     // Find todos with specific tag
-    console.log('\nTodos with "learning" tag:');
-    const learningTodos = await todos.find({ tags: { $in: ['learning'] } });
-    console.log(learningTodos);
-    
+    log.info('Finding todos with "learning" tag');
+    const learningTodos = await todos.find({ tags: { $contains: 'learning' } });
+    log.success(`Found ${learningTodos.length} todos with learning tag:`);
+    log.data(learningTodos);
+
     // Update a todo
-    console.log('\nUpdating todo...');
+    log.title('Updating Data');
+    log.info('Updating a todo to mark it as completed');
     await todos.update(
       { title: 'Learn NebulaDB' },
       { $set: { completed: true } }
     );
-    
+
     // Check the updated todo
-    console.log('\nAfter update:');
+    log.info('Fetching the updated todo');
     const updatedTodo = await todos.findOne({ title: 'Learn NebulaDB' });
-    console.log(updatedTodo);
-    
+    log.success('Todo updated successfully:');
+    log.data(updatedTodo);
+
     // Delete a todo
-    console.log('\nDeleting todo...');
+    log.title('Deleting Data');
+    log.info('Deleting a todo');
     await todos.delete({ title: 'Build an app with NebulaDB' });
-    
+    log.success('Todo deleted successfully');
+
     // Check remaining todos
-    console.log('\nRemaining todos:');
+    log.info('Fetching remaining todos');
     const remainingTodos = await todos.find();
-    console.log(remainingTodos);
-    
-    // Save the database
-    await db.save();
-    console.log('\nDatabase saved to disk.');
-    
+    log.success(`${remainingTodos.length} todos remaining:`);
+    log.data(remainingTodos);
+
+    // With NebulaDB, changes are saved automatically
+    log.divider();
+    log.success('All operations completed successfully!');
+
   } catch (error) {
-    console.error('Error:', error);
+    log.error(`Demo failed with error: ${error.message}`);
+    console.error(error);
   }
 }
 

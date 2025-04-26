@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NebulaDB Simple Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #6d28d9;
+    }
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .log {
+      background-color: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      height: 300px;
+      overflow-y: auto;
+    }
+    .log-entry {
+      margin-bottom: 8px;
+    }
+    .success {
+      color: #4ade80;
+    }
+    .error {
+      color: #f87171;
+    }
+    .info {
+      color: #38bdf8;
+    }
+    button {
+      background-color: #6d28d9;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    button:hover {
+      background-color: #5b21b6;
+    }
+  </style>
+</head>
+<body>
+  <h1>NebulaDB Simple Demo</h1>
+  
+  <div class="card">
+    <h2>Database Operations</h2>
+    <button id="create-db">Create Database</button>
+    <button id="add-users">Add Sample Users</button>
+    <button id="query-users">Query Users</button>
+    <button id="update-user">Update User</button>
+    <button id="delete-user">Delete User</button>
+  </div>
+  
+  <div class="card">
+    <h2>Log</h2>
+    <div id="log" class="log"></div>
+  </div>
+
+  <script>
+    // Log functions
+    function log(message, type = 'info') {
+      const logElement = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logElement.appendChild(entry);
+      logElement.scrollTop = logElement.scrollHeight;
+    }
+
+    // Global variables
+    let db, users, johnId;
+
+    // Create Database
+    document.getElementById('create-db').addEventListener('click', function() {
+      try {
+        // Create a simple in-memory database
+        log('Creating in-memory database...');
+        
+        // This is where we would normally use NebulaDB
+        // Since we can't load it directly in the browser, we'll simulate it
+        db = {
+          collection: function(name, options) {
+            log(`Creating collection: ${name}`);
+            return {
+              name: name,
+              options: options,
+              data: [],
+              insert: function(doc) {
+                const id = 'id_' + Math.random().toString(36).substr(2, 9);
+                const newDoc = { ...doc, id };
+                this.data.push(newDoc);
+                log(`Inserted document with ID: ${id}`, 'success');
+                return Promise.resolve(newDoc);
+              },
+              find: function(query) {
+                log(`Querying with filter: ${JSON.stringify(query)}`);
+                let results = this.data;
+                
+                // Apply filters
+                if (query.age) {
+                  if (query.age.$gt) {
+                    results = results.filter(doc => doc.age > query.age.$gt);
+                  } else if (query.age.$lt) {
+                    results = results.filter(doc => doc.age < query.age.$lt);
+                  } else {
+                    results = results.filter(doc => doc.age === query.age);
+                  }
+                }
+                
+                if (query.isActive !== undefined) {
+                  results = results.filter(doc => doc.isActive === query.isActive);
+                }
+                
+                if (query.id) {
+                  results = results.filter(doc => doc.id === query.id);
+                }
+                
+                log(`Found ${results.length} documents`, 'success');
+                return Promise.resolve(results);
+              },
+              findOne: function(query) {
+                return this.find(query).then(results => results[0]);
+              },
+              update: function(query, update) {
+                log(`Updating documents matching: ${JSON.stringify(query)}`);
+                let count = 0;
+                
+                this.data = this.data.map(doc => {
+                  let match = true;
+                  
+                  if (query.id && doc.id !== query.id) match = false;
+                  if (query.name && doc.name !== query.name) match = false;
+                  
+                  if (match) {
+                    count++;
+                    if (update.$set) {
+                      return { ...doc, ...update.$set };
+                    }
+                  }
+                  
+                  return doc;
+                });
+                
+                log(`Updated ${count} documents`, 'success');
+                return Promise.resolve({ modifiedCount: count });
+              },
+              remove: function(query) {
+                log(`Removing documents matching: ${JSON.stringify(query)}`);
+                const initialLength = this.data.length;
+                
+                this.data = this.data.filter(doc => {
+                  if (query.id && doc.id === query.id) return false;
+                  if (query.name && doc.name === query.name) return false;
+                  return true;
+                });
+                
+                const count = initialLength - this.data.length;
+                log(`Removed ${count} documents`, 'success');
+                return Promise.resolve({ deletedCount: count });
+              }
+            };
+          }
+        };
+        
+        // Create users collection
+        users = db.collection('users', {
+          schema: {
+            id: { type: 'string', optional: true },
+            name: { type: 'string' },
+            email: { type: 'string' },
+            age: { type: 'number' },
+            isActive: { type: 'boolean' }
+          }
+        });
+        
+        log('Database and collections created successfully', 'success');
+      } catch (error) {
+        log(`Error creating database: ${error.message}`, 'error');
+      }
+    });
+    
+    // Add Sample Users
+    document.getElementById('add-users').addEventListener('click', async function() {
+      if (!users) {
+        log('Please create the database first', 'error');
+        return;
+      }
+      
+      try {
+        log('Adding sample users...');
+        
+        const sampleUsers = [
+          { name: 'John Doe', email: 'john@example.com', age: 32, isActive: true },
+          { name: 'Jane Smith', email: 'jane@example.com', age: 28, isActive: true },
+          { name: 'Bob Johnson', email: 'bob@example.com', age: 45, isActive: false },
+          { name: 'Alice Brown', email: 'alice@example.com', age: 24, isActive: true }
+        ];
+        
+        for (const user of sampleUsers) {
+          const result = await users.insert(user);
+          if (user.name === 'John Doe') {
+            johnId = result.id;
+          }
+        }
+        
+        log('Sample users added successfully', 'success');
+      } catch (error) {
+        log(`Error adding users: ${error.message}`, 'error');
+      }
+    });
+    
+    // Query Users
+    document.getElementById('query-users').addEventListener('click', async function() {
+      if (!users) {
+        log('Please create the database first', 'error');
+        return;
+      }
+      
+      try {
+        log('Querying users...');
+        
+        // Query all active users
+        const activeUsers = await users.find({ isActive: true });
+        log(`Found ${activeUsers.length} active users:`);
+        activeUsers.forEach(user => {
+          log(`- ${user.name} (${user.email})`);
+        });
+        
+        // Query users over 30
+        const olderUsers = await users.find({ age: { $gt: 30 } });
+        log(`Found ${olderUsers.length} users over 30:`);
+        olderUsers.forEach(user => {
+          log(`- ${user.name}, age: ${user.age}`);
+        });
+        
+      } catch (error) {
+        log(`Error querying users: ${error.message}`, 'error');
+      }
+    });
+    
+    // Update User
+    document.getElementById('update-user').addEventListener('click', async function() {
+      if (!users || !johnId) {
+        log('Please create the database and add users first', 'error');
+        return;
+      }
+      
+      try {
+        log(`Updating user with ID: ${johnId}`);
+        
+        // Get the user before update
+        const beforeUpdate = await users.findOne({ id: johnId });
+        log(`Before update: ${beforeUpdate.name}, age: ${beforeUpdate.age}`);
+        
+        // Update the user
+        await users.update(
+          { id: johnId },
+          { $set: { age: 33, email: 'john.doe@example.com' } }
+        );
+        
+        // Get the user after update
+        const afterUpdate = await users.findOne({ id: johnId });
+        log(`After update: ${afterUpdate.name}, age: ${afterUpdate.age}, email: ${afterUpdate.email}`, 'success');
+        
+      } catch (error) {
+        log(`Error updating user: ${error.message}`, 'error');
+      }
+    });
+    
+    // Delete User
+    document.getElementById('delete-user').addEventListener('click', async function() {
+      if (!users) {
+        log('Please create the database first', 'error');
+        return;
+      }
+      
+      try {
+        log('Deleting a user...');
+        
+        // Delete Bob Johnson
+        await users.remove({ name: 'Bob Johnson' });
+        
+        // Check remaining users
+        const remainingUsers = await users.find({});
+        log(`Remaining users: ${remainingUsers.length}`);
+        remainingUsers.forEach(user => {
+          log(`- ${user.name}`);
+        });
+        
+      } catch (error) {
+        log(`Error deleting user: ${error.message}`, 'error');
+      }
+    });
+    
+    // Initial log message
+    log('NebulaDB Simple Demo loaded. Click "Create Database" to start.');
+  </script>
+</body>
+</html>

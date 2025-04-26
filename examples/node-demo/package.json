@@ -8,11 +8,15 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@nebula/core": "^0.1.0",
-    "@nebula/adapter-filesystem": "^0.1.0",
-    "@nebula/plugin-validation": "^0.1.0"
+    "@nebula-db/nebula-db": "^0.2.0",
+    "@nebula-db/adapter-memory": "^0.2.0",
+    "@nebula-db/adapter-filesystem": "^0.2.0",
+    "@nebula-db/plugin-validation": "^0.2.0"
   },
   "devDependencies": {
-    "zod": "^3.22.4"
-  }
+    "chalk": "^5.3.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

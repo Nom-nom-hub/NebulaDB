@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NebulaDB Demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6d28d9;
+      --primary-light: #8b5cf6;
+      --secondary: #10b981;
+      --dark: #1e293b;
+      --light: #f8fafc;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      padding-bottom: 2rem;
+    }
+
+    .navbar {
+      background-color: var(--primary);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: white !important;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      padding: 4rem 0;
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 1.5rem;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      background-color: var(--primary-light);
+      color: white;
+      font-weight: 600;
+      border-top-left-radius: 10px !important;
+      border-top-right-radius: 10px !important;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+      border-color: var(--primary-light);
+    }
+
+    .btn-success {
+      background-color: var(--secondary);
+      border-color: var(--secondary);
+    }
+
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-item.completed {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .task-item.completed .task-title {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.35em 0.65em;
+    }
+
+    .badge-high {
+      background-color: #ef4444;
+    }
+
+    .badge-medium {
+      background-color: #f59e0b;
+    }
+
+    .badge-low {
+      background-color: #10b981;
+    }
+
+    #log-container {
+      height: 200px;
+      overflow-y: auto;
+      background-color: #1e293b;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: monospace;
+      margin-bottom: 1.5rem;
+    }
+
+    .log-entry {
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .log-time {
+      color: #94a3b8;
+      margin-right: 0.5rem;
+    }
+
+    .log-info {
+      color: #38bdf8;
+    }
+
+    .log-success {
+      color: #4ade80;
+    }
+
+    .log-error {
+      color: #f87171;
+    }
+
+    .stats-card {
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .stats-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stats-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">NebulaDB Demo</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container text-center">
+      <h1>NebulaDB Task Manager</h1>
+      <p>A demonstration of NebulaDB's power and flexibility</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">Add New Task</div>
+          <div class="card-body">
+            <form id="task-form">
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" required>
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" rows="2"></textarea>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <label for="priority" class="form-label">Priority</label>
+                  <select class="form-select" id="priority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="status" class="form-label">Status</label>
+                  <select class="form-select" id="status">
+                    <option value="pending" selected>Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="tags" class="form-label">Tags (comma separated)</label>
+                <input type="text" class="form-control" id="tags" placeholder="e.g. work, urgent, feature">
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Add Task</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Filter Tasks</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="filter-status" class="form-label">Status</label>
+              <select class="form-select" id="filter-status">
+                <option value="all" selected>All</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="filter-priority" class="form-label">Priority</label>
+              <select class="form-select" id="filter-priority">
+                <option value="all" selected>All</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="search" class="form-label">Search</label>
+              <input type="text" class="form-control" id="search" placeholder="Search in title, description, or tags">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <div class="card stats-card">
+              <div class="stats-number" id="total-tasks">0</div>
+              <div class="stats-label">Total Tasks</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card stats-card">
+              <div class="stats-number" id="completed-tasks">0</div>
+              <div class="stats-label">Completed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card mb-4">
+          <div class="card-header">Tasks</div>
+          <div class="card-body p-0">
+            <div id="tasks-container">
+              <!-- Tasks will be added here dynamically -->
+              <div class="text-center py-4 text-muted">
+                Loading tasks...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Database Operations Log</div>
+          <div class="card-body p-0">
+            <div id="log-container">
+              <!-- Log entries will be added here dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load NebulaDB locally -->
+  <script src="lib/nebula-db.js"></script>
+
+  <script>
+    // Initialize NebulaDB
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if NebulaDB is loaded
+      if (typeof NebulaDB === 'undefined') {
+        // Try to get it from the module exports if it's not in the global scope
+        if (typeof module !== 'undefined' && module.exports) {
+          window.NebulaDB = module.exports;
+        } else {
+          logError('NebulaDB library not loaded. Please check your internet connection.');
+          document.getElementById('tasks-container').innerHTML = `
+            <div class="text-center py-4 text-danger">
+              <strong>Error:</strong> NebulaDB library not loaded. Please check your internet connection.
+            </div>
+          `;
+          return;
+        }
+      }
+
+      logInfo('Initializing NebulaDB...');
+
+      try {
+        // Create database with memory adapter
+        const db = NebulaDB.createDatabase({
+          adapter: new NebulaDB.MemoryAdapter(),
+          options: {}
+        });
+
+        logSuccess('Database created successfully');
+
+        // Create tasks collection
+        const tasks = db.collection('tasks', {
+          schema: {
+            id: { type: 'string', optional: true },
+            title: { type: 'string' },
+            description: { type: 'string', optional: true },
+            status: { type: 'string' },
+            priority: { type: 'string' },
+            tags: { type: 'array', optional: true },
+            createdAt: { type: 'date' }
+          }
+        });
+
+        logSuccess('Tasks collection created');
+
+        // Add sample tasks
+        const sampleTasks = [
+          {
+            title: 'Learn NebulaDB',
+            description: 'Study the documentation and examples',
+            status: 'in-progress',
+            priority: 'high',
+            tags: ['learning', 'database'],
+            createdAt: new Date()
+          },
+          {
+            title: 'Build a demo app',
+            description: 'Create a task manager to showcase NebulaDB features',
+            status: 'completed',
+            priority: 'high',
+            tags: ['development', 'demo'],
+            createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000) // 1 day ago
+          },
+          {
+            title: 'Write tests',
+            description: 'Create unit tests for the application',
+            status: 'pending',
+            priority: 'medium',
+            tags: ['testing', 'quality'],
+            createdAt: new Date()
+          },
+          {
+            title: 'Deploy application',
+            description: 'Deploy the application to a hosting service',
+            status: 'pending',
+            priority: 'low',
+            tags: ['deployment', 'devops'],
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
+          }
+        ];
+
+        // Insert sample tasks
+        Promise.all(sampleTasks.map(task => tasks.insert(task)))
+          .then(() => {
+            logSuccess('Sample tasks added');
+            refreshTasksList();
+          })
+          .catch(error => {
+            logError('Error adding sample tasks: ' + error.message);
+          });
+
+        // Handle form submission
+        document.getElementById('task-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          const title = document.getElementById('title').value;
+          const description = document.getElementById('description').value;
+          const priority = document.getElementById('priority').value;
+          const status = document.getElementById('status').value;
+          const tagsInput = document.getElementById('tags').value;
+          const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
+
+          const newTask = {
+            title,
+            description,
+            priority,
+            status,
+            tags,
+            createdAt: new Date()
+          };
+
+          logInfo(`Adding new task: ${title}`);
+
+          tasks.insert(newTask)
+            .then(result => {
+              logSuccess(`Task added with ID: ${result.id}`);
+              refreshTasksList();
+
+              // Reset form
+              document.getElementById('task-form').reset();
+            })
+            .catch(error => {
+              logError('Error adding task: ' + error.message);
+            });
+        });
+
+        // Handle filters
+        document.getElementById('filter-status').addEventListener('change', refreshTasksList);
+        document.getElementById('filter-priority').addEventListener('change', refreshTasksList);
+        document.getElementById('search').addEventListener('input', refreshTasksList);
+
+        // Function to refresh tasks list
+        function refreshTasksList() {
+          const statusFilter = document.getElementById('filter-status').value;
+          const priorityFilter = document.getElementById('filter-priority').value;
+          const searchTerm = document.getElementById('search').value.toLowerCase();
+
+          logInfo('Fetching tasks with filters...');
+
+          // Build query
+          let query = {};
+
+          if (statusFilter !== 'all') {
+            query.status = statusFilter;
+          }
+
+          if (priorityFilter !== 'all') {
+            query.priority = priorityFilter;
+          }
+
+          tasks.find(query)
+            .then(results => {
+              // Apply search filter in memory (since we can't do text search in the query)
+              if (searchTerm) {
+                results = results.filter(task =>
+                  task.title.toLowerCase().includes(searchTerm) ||
+                  (task.description && task.description.toLowerCase().includes(searchTerm)) ||
+                  (task.tags && task.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+                );
+              }
+
+              logSuccess(`Found ${results.length} tasks`);
+
+              // Update stats
+              updateStats();
+
+              // Render tasks
+              const tasksContainer = document.getElementById('tasks-container');
+
+              if (results.length === 0) {
+                tasksContainer.innerHTML = `
+                  <div class="text-center py-4 text-muted">
+                    No tasks found. Add a new task or adjust your filters.
+                  </div>
+                `;
+                return;
+              }
+
+              // Sort tasks by creation date (newest first)
+              results.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+              let html = '';
+
+              results.forEach(task => {
+                const priorityBadgeClass = `badge-${task.priority}`;
+                const isCompleted = task.status === 'completed';
+
+                html += `
+                  <div class="task-item ${isCompleted ? 'completed' : ''}" data-id="${task.id}">
+                    <div>
+                      <div class="d-flex align-items-center">
+                        <input type="checkbox" class="form-check-input me-2 task-checkbox"
+                          ${isCompleted ? 'checked' : ''} data-id="${task.id}">
+                        <span class="task-title">${task.title}</span>
+                        <span class="badge ${priorityBadgeClass} ms-2">${task.priority}</span>
+                      </div>
+                      ${task.description ? `<div class="text-muted small mt-1">${task.description}</div>` : ''}
+                      ${task.tags && task.tags.length > 0 ?
+                        `<div class="mt-1">
+                          ${task.tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('')}
+                        </div>` : ''
+                      }
+                    </div>
+                    <div>
+                      <button class="btn btn-sm btn-outline-danger delete-task" data-id="${task.id}">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              });
+
+              tasksContainer.innerHTML = html;
+
+              // Add event listeners to checkboxes
+              document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                  const taskId = this.getAttribute('data-id');
+                  const newStatus = this.checked ? 'completed' : 'pending';
+
+                  logInfo(`Updating task ${taskId} status to ${newStatus}`);
+
+                  tasks.update(
+                    { id: taskId },
+                    { $set: { status: newStatus } }
+                  ).then(() => {
+                    logSuccess(`Task ${taskId} updated`);
+                    refreshTasksList();
+                  }).catch(error => {
+                    logError('Error updating task: ' + error.message);
+                  });
+                });
+              });
+
+              // Add event listeners to delete buttons
+              document.querySelectorAll('.delete-task').forEach(button => {
+                button.addEventListener('click', function() {
+                  const taskId = this.getAttribute('data-id');
+
+                  logInfo(`Deleting task ${taskId}`);
+
+                  tasks.remove({ id: taskId })
+                    .then(() => {
+                      logSuccess(`Task ${taskId} deleted`);
+                      refreshTasksList();
+                    })
+                    .catch(error => {
+                      logError('Error deleting task: ' + error.message);
+                    });
+                });
+              });
+            })
+            .catch(error => {
+              logError('Error fetching tasks: ' + error.message);
+            });
+        }
+
+        // Function to update stats
+        function updateStats() {
+          Promise.all([
+            tasks.find({}),
+            tasks.find({ status: 'completed' })
+          ]).then(([allTasks, completedTasks]) => {
+            document.getElementById('total-tasks').textContent = allTasks.length;
+            document.getElementById('completed-tasks').textContent = completedTasks.length;
+          }).catch(error => {
+            logError('Error updating stats: ' + error.message);
+          });
+        }
+
+      } catch (error) {
+        logError('Error initializing database: ' + error.message);
+      }
+    });
+
+    // Logging functions
+    function logInfo(message) {
+      addLogEntry(message, 'info');
+    }
+
+    function logSuccess(message) {
+      addLogEntry(message, 'success');
+    }
+
+    function logError(message) {
+      addLogEntry(message, 'error');
+    }
+
+    function addLogEntry(message, type) {
+      const logContainer = document.getElementById('log-container');
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+
+      const logEntry = document.createElement('div');
+      logEntry.className = 'log-entry';
+      logEntry.innerHTML = `
+        <span class="log-time">[${timeString}]</span>
+        <span class="log-${type}">${message}</span>
+      `;
+
+      logContainer.appendChild(logEntry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+  </script>
+</body>
+</html>

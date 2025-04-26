@@ -46,3 +46,39 @@ examples/node-demo/data.json
 # Temporary files
 .tmp/
 .temp/
+
+# macOS
+.DS_Store
+._*
+
+# TypeScript
+*.tsbuildinfo
+.tscache/
+
+# Test output
+.nyc_output/
+junit.xml
+test-results/
+
+# Package files
+*.tgz
+*.vsix
+
+# Cache
+.cache/
+.eslintcache
+.stylelintcache
+
+# Local development
+local/
+.env.local
+.env.*.local
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
