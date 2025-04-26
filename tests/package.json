@@ -5,12 +5,17 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf node_modules && npx @flash-install/cli install"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
+    "esbuild": "0.25.3",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1",
     "zod": "^3.22.4"
+  },
+  "dependencies": {
+    "@flash-install/cli": "^1.3.6"
   }
 }
