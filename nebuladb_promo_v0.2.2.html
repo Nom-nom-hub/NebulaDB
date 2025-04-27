@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NebulaDB v0.2.2 Promo Image</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0a0a1a;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .promo-container {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+        }
+        
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 4px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            z-index: 1;
+        }
+        
+        .nebula {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 50%, rgba(102, 51, 153, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(51, 153, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(255, 51, 153, 0.3) 0%, transparent 50%);
+            filter: blur(30px);
+            z-index: 2;
+        }
+        
+        .grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(66, 133, 244, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(66, 133, 244, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 3;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4285f4, #34a853, #fbbc05, #ea4335);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(66, 133, 244, 0.5);
+        }
+        
+        .version {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #4285f4;
+        }
+        
+        .tagline {
+            font-size: 28px;
+            margin-bottom: 40px;
+            max-width: 800px;
+            line-height: 1.4;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            width: 200px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #4285f4;
+        }
+        
+        .feature-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .cta {
+            background: linear-gradient(to right, #4285f4, #34a853);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+        }
+        
+        .cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .data-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #4285f4;
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-300px) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        .db-container {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            z-index: 5;
+        }
+        
+        .db-cylinder {
+            width: 300px;
+            height: 100px;
+            background: linear-gradient(to right, rgba(66, 133, 244, 0.3), rgba(52, 168, 83, 0.3));
+            border-radius: 10px;
+            position: relative;
+            transform: perspective(500px) rotateX(60deg);
+            box-shadow: 0 0 30px rgba(66, 133, 244, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .db-cylinder::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to right, rgba(66, 133, 244, 0.5), rgba(52, 168, 83, 0.5));
+            border-radius: 10px 10px 0 0;
+            top: -20px;
+            transform: perspective(500px) rotateX(-20deg);
+        }
+        
+        .db-cylinder::after {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -20px;
+            left: 5%;
+            filter: blur(10px);
+        }
+        
+        .data-stream {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 6;
+        }
+        
+        .stream {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, #4285f4, transparent);
+            animation: stream 3s infinite linear;
+            opacity: 0.7;
+        }
+        
+        @keyframes stream {
+            0% {
+                transform: translateY(-100px);
+            }
+            100% {
+                transform: translateY(730px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="promo-container">
+        <div class="stars"></div>
+        <div class="nebula"></div>
+        <div class="grid"></div>
+        
+        <div class="data-particles">
+            <!-- Data particles will be added by JavaScript -->
+        </div>
+        
+        <div class="data-stream">
+            <!-- Data streams will be added by JavaScript -->
+        </div>
+        
+        <div class="db-container">
+            <div class="db-cylinder"></div>
+        </div>
+        
+        <div class="content">
+            <div class="logo">NebulaDB</div>
+            <div class="version">v0.2.2</div>
+            <div class="tagline">A high-performance, reactive, TypeScript-first NoSQL database with advanced error handling and recovery mechanisms</div>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <div class="feature-title">High Performance</div>
+                    <div class="feature-desc">Blazing-fast in-memory operations with optimized indexing</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Reactive Queries</div>
+                    <div class="feature-desc">Real-time data updates with reactive programming model</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-title">Error Recovery</div>
+                    <div class="feature-desc">Robust error handling and automatic recovery mechanisms</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔌</div>
+                    <div class="feature-title">Extensible</div>
+                    <div class="feature-desc">Plugin architecture with multiple storage adapters</div>
+                </div>
+            </div>
+            
+            <a href="https://github.com/Nom-nom-hub/NebulaDB" class="cta">Get Started</a>
+        </div>
+    </div>
+    
+    <script>
+        // Add data particles
+        const particlesContainer = document.querySelector('.data-particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 10}s`;
+            particle.style.animationDuration = `${5 + Math.random() * 10}s`;
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Add data streams
+        const streamContainer = document.querySelector('.data-stream');
+        for (let i = 0; i < 15; i++) {
+            const stream = document.createElement('div');
+            stream.classList.add('stream');
+            stream.style.left = `${Math.random() * 100}%`;
+            stream.style.animationDelay = `${Math.random() * 3}s`;
+            stream.style.animationDuration = `${1 + Math.random() * 3}s`;
+            streamContainer.appendChild(stream);
+        }
+    </script>
+</body>
+</html>

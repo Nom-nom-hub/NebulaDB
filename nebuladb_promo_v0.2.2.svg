@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a1a" />
+      <stop offset="100%" stop-color="#1a1a3a" />
+    </linearGradient>
+    
+    <!-- Logo gradient -->
+    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4285f4" />
+      <stop offset="33%" stop-color="#34a853" />
+      <stop offset="66%" stop-color="#fbbc05" />
+      <stop offset="100%" stop-color="#ea4335" />
+    </linearGradient>
+    
+    <!-- Feature card gradient -->
+    <linearGradient id="feature-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0.05)" />
+    </linearGradient>
+    
+    <!-- CTA button gradient -->
+    <linearGradient id="cta-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4285f4" />
+      <stop offset="100%" stop-color="#34a853" />
+    </linearGradient>
+    
+    <!-- Database cylinder gradient -->
+    <linearGradient id="db-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(66,133,244,0.3)" />
+      <stop offset="100%" stop-color="rgba(52,168,83,0.3)" />
+    </linearGradient>
+    
+    <!-- Database top gradient -->
+    <linearGradient id="db-top-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(66,133,244,0.5)" />
+      <stop offset="100%" stop-color="rgba(52,168,83,0.5)" />
+    </linearGradient>
+    
+    <!-- Nebula effects -->
+    <radialGradient id="nebula1" cx="30%" cy="50%" r="50%" fx="30%" fy="50%">
+      <stop offset="0%" stop-color="rgba(102,51,153,0.3)" />
+      <stop offset="100%" stop-color="rgba(102,51,153,0)" />
+    </radialGradient>
+    
+    <radialGradient id="nebula2" cx="70%" cy="50%" r="50%" fx="70%" fy="50%">
+      <stop offset="0%" stop-color="rgba(51,153,255,0.3)" />
+      <stop offset="100%" stop-color="rgba(51,153,255,0)" />
+    </radialGradient>
+    
+    <radialGradient id="nebula3" cx="50%" cy="80%" r="50%" fx="50%" fy="80%">
+      <stop offset="0%" stop-color="rgba(255,51,153,0.3)" />
+      <stop offset="100%" stop-color="rgba(255,51,153,0)" />
+    </radialGradient>
+    
+    <!-- Star pattern -->
+    <pattern id="stars" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.8)" />
+      <circle cx="30" cy="40" r="0.8" fill="rgba(255,255,255,0.6)" />
+      <circle cx="70" cy="30" r="1.2" fill="rgba(255,255,255,0.7)" />
+      <circle cx="100" cy="70" r="0.6" fill="rgba(255,255,255,0.5)" />
+      <circle cx="150" cy="30" r="1" fill="rgba(255,255,255,0.7)" />
+      <circle cx="180" cy="90" r="0.8" fill="rgba(255,255,255,0.6)" />
+      <circle cx="120" cy="120" r="1.2" fill="rgba(255,255,255,0.8)" />
+      <circle cx="50" cy="150" r="0.7" fill="rgba(255,255,255,0.5)" />
+      <circle cx="170" cy="170" r="1" fill="rgba(255,255,255,0.7)" />
+    </pattern>
+    
+    <!-- Grid pattern -->
+    <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(66,133,244,0.1)" stroke-width="1" />
+    </pattern>
+    
+    <!-- Data particle -->
+    <circle id="data-particle" cx="0" cy="0" r="3" fill="#4285f4" />
+    
+    <!-- Data stream -->
+    <linearGradient id="stream-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(66,133,244,0)" />
+      <stop offset="50%" stop-color="rgba(66,133,244,0.7)" />
+      <stop offset="100%" stop-color="rgba(66,133,244,0)" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)" />
+  
+  <!-- Nebula effects -->
+  <circle cx="360" cy="315" r="300" fill="url(#nebula1)" />
+  <circle cx="840" cy="315" r="300" fill="url(#nebula2)" />
+  <circle cx="600" cy="504" r="300" fill="url(#nebula3)" />
+  
+  <!-- Stars -->
+  <rect width="1200" height="630" fill="url(#stars)" />
+  
+  <!-- Grid -->
+  <rect width="1200" height="630" fill="url(#grid)" />
+  
+  <!-- Data particles -->
+  <g id="particles">
+    <use xlink:href="#data-particle" x="100" y="100" opacity="0.7" />
+    <use xlink:href="#data-particle" x="300" y="200" opacity="0.5" />
+    <use xlink:href="#data-particle" x="500" y="150" opacity="0.8" />
+    <use xlink:href="#data-particle" x="700" y="300" opacity="0.6" />
+    <use xlink:href="#data-particle" x="900" y="250" opacity="0.7" />
+    <use xlink:href="#data-particle" x="200" y="400" opacity="0.5" />
+    <use xlink:href="#data-particle" x="400" y="350" opacity="0.8" />
+    <use xlink:href="#data-particle" x="600" y="450" opacity="0.6" />
+    <use xlink:href="#data-particle" x="800" y="400" opacity="0.7" />
+    <use xlink:href="#data-particle" x="1000" y="350" opacity="0.5" />
+    <use xlink:href="#data-particle" x="150" y="500" opacity="0.8" />
+    <use xlink:href="#data-particle" x="350" y="550" opacity="0.6" />
+    <use xlink:href="#data-particle" x="550" y="500" opacity="0.7" />
+    <use xlink:href="#data-particle" x="750" y="550" opacity="0.5" />
+    <use xlink:href="#data-particle" x="950" y="500" opacity="0.8" />
+  </g>
+  
+  <!-- Data streams -->
+  <g id="streams">
+    <rect x="200" y="0" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="400" y="50" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="600" y="20" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="800" y="70" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="1000" y="30" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="300" y="200" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="500" y="250" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="700" y="220" width="2" height="100" fill="url(#stream-gradient)" />
+    <rect x="900" y="270" width="2" height="100" fill="url(#stream-gradient)" />
+  </g>
+  
+  <!-- Database visualization -->
+  <g transform="translate(600, 580) scale(1, 0.5) rotate(0)">
+    <!-- Database cylinder -->
+    <rect x="-150" y="-50" width="300" height="100" rx="10" ry="10" fill="url(#db-gradient)" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+    
+    <!-- Database top -->
+    <ellipse cx="0" cy="-50" rx="150" ry="30" fill="url(#db-top-gradient)" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+    
+    <!-- Database shadow -->
+    <ellipse cx="0" cy="60" rx="120" ry="10" fill="rgba(0,0,0,0.3)" opacity="0.5" />
+  </g>
+  
+  <!-- Content -->
+  <g id="content">
+    <!-- Logo -->
+    <text x="600" y="180" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" fill="url(#logo-gradient)" filter="drop-shadow(0 0 10px rgba(66,133,244,0.5))">NebulaDB</text>
+    
+    <!-- Version -->
+    <text x="600" y="240" font-family="Arial, sans-serif" font-size="36" font-weight="bold" text-anchor="middle" fill="#4285f4">v0.2.2</text>
+    
+    <!-- Tagline -->
+    <text x="600" y="290" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="white">
+      <tspan x="600" dy="0">A high-performance, reactive, TypeScript-first NoSQL database</tspan>
+      <tspan x="600" dy="30">with advanced error handling and recovery mechanisms</tspan>
+    </text>
+    
+    <!-- Feature cards -->
+    <g transform="translate(200, 380)">
+      <rect x="0" y="0" width="180" height="140" rx="10" ry="10" fill="url(#feature-gradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+      <text x="90" y="40" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4285f4">🚀</text>
+      <text x="90" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">High Performance</text>
+      <text x="90" y="110" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">Blazing-fast in-memory</text>
+      <text x="90" y="130" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">operations</text>
+    </g>
+    
+    <g transform="translate(410, 380)">
+      <rect x="0" y="0" width="180" height="140" rx="10" ry="10" fill="url(#feature-gradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+      <text x="90" y="40" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4285f4">⚡</text>
+      <text x="90" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">Reactive Queries</text>
+      <text x="90" y="110" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">Real-time data updates</text>
+      <text x="90" y="130" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">with reactive model</text>
+    </g>
+    
+    <g transform="translate(620, 380)">
+      <rect x="0" y="0" width="180" height="140" rx="10" ry="10" fill="url(#feature-gradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+      <text x="90" y="40" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4285f4">🛡️</text>
+      <text x="90" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">Error Recovery</text>
+      <text x="90" y="110" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">Robust error handling</text>
+      <text x="90" y="130" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">and recovery</text>
+    </g>
+    
+    <g transform="translate(830, 380)">
+      <rect x="0" y="0" width="180" height="140" rx="10" ry="10" fill="url(#feature-gradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+      <text x="90" y="40" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4285f4">🔌</text>
+      <text x="90" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">Extensible</text>
+      <text x="90" y="110" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">Plugin architecture with</text>
+      <text x="90" y="130" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="rgba(255,255,255,0.8)">multiple adapters</text>
+    </g>
+    
+    <!-- CTA button -->
+    <g transform="translate(600, 550)">
+      <rect x="-100" y="-25" width="200" height="50" rx="25" ry="25" fill="url(#cta-gradient)" />
+      <text x="0" y="7" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">Get Started</text>
+    </g>
+  </g>
+</svg>
