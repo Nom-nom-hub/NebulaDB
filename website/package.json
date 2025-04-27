@@ -8,9 +8,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nebula/core": "^0.1.0",
-    "@nebula/adapter-memory": "^0.1.0",
-    "@nebula/adapter-localstorage": "^0.1.0",
     "highlight.js": "^11.9.0",
     "marked": "^9.1.5",
     "vue": "^3.3.8"

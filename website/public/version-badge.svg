@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="badge-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Badge background -->
+  <rect width="200" height="60" rx="30" ry="30" fill="url(#badge-gradient)" filter="url(#glow)" />
+  
+  <!-- Cloud icon -->
+  <g transform="translate(20, 30)" fill="white">
+    <path d="M15,5.5C13.5,2.3,10.5,0,7,0C3.1,0,0,3.1,0,7c0,0.3,0,0.6,0.1,0.9C0.1,8,0,8.1,0,8.3C0,11.5,2.5,14,5.7,14h9.6c2.6,0,4.7-2.1,4.7-4.7C20,6.9,17.8,5,15,5.5z" />
+  </g>
+  
+  <!-- Version text -->
+  <text x="50" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v0.2.2</text>
+  <text x="50" y="45" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">"Altocumulus"</text>
+</svg>

@@ -2,34 +2,188 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-nebula-50: #f8fafc;
+  --color-nebula-100: #f1f5f9;
+  --color-nebula-200: #e2e8f0;
+  --color-nebula-300: #cbd5e1;
+  --color-nebula-400: #94a3b8;
+  --color-nebula-500: #64748b;
+  --color-nebula-600: #475569;
+  --color-nebula-700: #334155;
+  --color-nebula-800: #1e293b;
+  --color-nebula-900: #0f172a;
+  --color-nebula-950: #020617;
+
+  --color-accent-blue: #3b82f6;
+  --color-accent-purple: #8b5cf6;
+  --color-accent-green: #10b981;
+  --color-accent-pink: #ec4899;
+
+  --glow-blue: 0 0 15px rgba(59, 130, 246, 0.5);
+  --glow-purple: 0 0 15px rgba(139, 92, 246, 0.5);
+}
+
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
-  @apply bg-nebula-50 text-nebula-900;
+  @apply bg-nebula-950 text-white font-sans;
+  overflow-x: hidden;
 }
 
+/* Modern Code Block */
 .code-block {
-  @apply bg-nebula-900 text-nebula-50 p-4 rounded-lg overflow-x-auto;
+  @apply bg-nebula-900 text-nebula-50 p-6 rounded-xl overflow-x-auto border border-nebula-800 shadow-lg;
+  position: relative;
 }
 
+.code-block::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), transparent);
+  border-radius: 0.75rem 0.75rem 0 0;
+  z-index: 1;
+}
+
+.code-block pre {
+  @apply font-mono text-sm leading-relaxed;
+}
+
+/* Buttons */
 .btn {
-  @apply px-6 py-3 rounded-lg font-medium transition-all duration-200;
+  @apply px-6 py-3 rounded-full font-medium transition-all duration-300 inline-flex items-center justify-center;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 0;
+  padding-bottom: 120%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.3s;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn:hover::after {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
 }
 
 .btn-primary {
-  @apply bg-accent-blue text-white hover:bg-blue-600;
+  @apply bg-gradient-to-r from-accent-blue to-accent-purple text-white;
+  box-shadow: var(--glow-blue);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--glow-purple);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
-  @apply bg-nebula-200 text-nebula-800 hover:bg-nebula-300;
+  @apply bg-nebula-800 text-white border border-nebula-700;
+}
+
+.btn-secondary:hover {
+  @apply bg-nebula-700;
+  transform: translateY(-2px);
 }
 
 .btn-outline {
-  @apply border border-nebula-300 hover:bg-nebula-100;
+  @apply border border-nebula-700 text-white;
+  backdrop-filter: blur(4px);
 }
 
+.btn-outline:hover {
+  @apply bg-nebula-800 bg-opacity-50;
+  transform: translateY(-2px);
+}
+
+/* Cards */
 .card {
-  @apply bg-white p-6 rounded-xl shadow-md;
+  @apply bg-nebula-900 p-6 rounded-xl border border-nebula-800 shadow-lg;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* Staggered animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Glass effect */
+.glass {
+  @apply bg-nebula-900 bg-opacity-70 backdrop-blur-lg border border-nebula-800;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-blue to-accent-purple;
 }

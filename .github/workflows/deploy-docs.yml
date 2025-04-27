@@ -1,4 +1,4 @@
-name: Deploy Docs to GitHub Pages
+name: Deploy Docs and Website to GitHub Pages
 
 on:
   push:
@@ -11,7 +11,36 @@ permissions:
   id-token: write
 
 jobs:
+  build-website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd website
+          npm ci
+
+      - name: Build website
+        run: |
+          cd website
+          npm run build
+
+      - name: Upload website artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: website-build
+          path: website/dist
+
   deploy:
+    needs: build-website
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -20,13 +49,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download website artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: website-build
+          path: ./website-build
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deployment
+          cp -r docs/* deployment/
+          mkdir -p deployment/website
+          cp -r website-build/* deployment/website/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './docs'
+          path: './deployment'
 
       - name: Deploy to GitHub Pages
         id: deployment
