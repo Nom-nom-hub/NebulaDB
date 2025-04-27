@@ -40,7 +40,7 @@ describe('Network Interruption Recovery Tests', () => {
     });
 
     // Insert new data
-    const newUser = await users.insert({ id: 'user3', name: 'Charlie', email: 'charlie@example.com', age: 35 });
+    await users.insert({ id: 'user3', name: 'Charlie', email: 'charlie@example.com', age: 35 });
 
     // Try to save (should fail first time)
     try {
@@ -227,7 +227,7 @@ describe('Network Interruption Recovery Tests', () => {
     expect(users.insert).toHaveBeenCalled();
 
     // Try to find the user that might have been inserted despite the timeout
-    const user4 = await users.findOne({ id: 'user4' });
+    await users.findOne({ id: 'user4' });
 
     // The behavior depends on implementation:
     // 1. The insert might have completed despite the timeout

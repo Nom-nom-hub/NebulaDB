@@ -1,4 +1,4 @@
-import { Document, Database, Query, ICollection } from './types';
+import { Document, Database, Query } from './types';
 
 /**
  * Transaction class for ACID operations
@@ -10,10 +10,10 @@ export class Transaction {
     document: Document;
     originalDocument?: Document;
   }> = [];
-  
+
   private committed = false;
   private rolledBack = false;
-  
+
   /**
    * Creates a new transaction
    * @param db Database instance
@@ -23,7 +23,7 @@ export class Transaction {
     private db: Database,
     private isolationLevel: 'read-uncommitted' | 'read-committed' | 'repeatable-read' | 'serializable' = 'serializable'
   ) {}
-  
+
   /**
    * Adds an insert operation to the transaction
    * @param collection Collection name
@@ -33,14 +33,14 @@ export class Transaction {
     if (this.committed || this.rolledBack) {
       throw new Error('Transaction already committed or rolled back');
     }
-    
+
     this.operations.push({
       type: 'insert',
       collection,
       document: { ...document }
     });
   }
-  
+
   /**
    * Adds an update operation to the transaction
    * @param collection Collection name
@@ -50,14 +50,14 @@ export class Transaction {
     if (this.committed || this.rolledBack) {
       throw new Error('Transaction already committed or rolled back');
     }
-    
+
     const coll = this.db.collection(collection);
     const originalDoc = await coll.findOne({ id: document.id } as Query);
-    
+
     if (!originalDoc) {
       throw new Error(`Document with id ${document.id} not found in collection ${collection}`);
     }
-    
+
     this.operations.push({
       type: 'update',
       collection,
@@ -65,7 +65,7 @@ export class Transaction {
       originalDocument: { ...originalDoc }
     });
   }
-  
+
   /**
    * Adds a delete operation to the transaction
    * @param collection Collection name
@@ -75,14 +75,14 @@ export class Transaction {
     if (this.committed || this.rolledBack) {
       throw new Error('Transaction already committed or rolled back');
     }
-    
+
     const coll = this.db.collection(collection);
     const originalDoc = await coll.findOne({ id: document.id } as Query);
-    
+
     if (!originalDoc) {
       throw new Error(`Document with id ${document.id} not found in collection ${collection}`);
     }
-    
+
     this.operations.push({
       type: 'delete',
       collection,
@@ -90,7 +90,7 @@ export class Transaction {
       originalDocument: { ...originalDoc }
     });
   }
-  
+
   /**
    * Commits the transaction
    */
@@ -98,16 +98,16 @@ export class Transaction {
     if (this.committed) {
       throw new Error('Transaction already committed');
     }
-    
+
     if (this.rolledBack) {
       throw new Error('Transaction already rolled back');
     }
-    
+
     try {
       // Execute all operations
       for (const op of this.operations) {
         const coll = this.db.collection(op.collection);
-        
+
         switch (op.type) {
           case 'insert':
             await coll.insert(op.document);
@@ -120,7 +120,7 @@ export class Transaction {
             break;
         }
       }
-      
+
       this.committed = true;
     } catch (error) {
       // Auto-rollback on error
@@ -128,7 +128,7 @@ export class Transaction {
       throw error;
     }
   }
-  
+
   /**
    * Rolls back the transaction
    */
@@ -136,11 +136,11 @@ export class Transaction {
     if (this.committed) {
       throw new Error('Transaction already committed');
     }
-    
+
     if (this.rolledBack) {
       throw new Error('Transaction already rolled back');
     }
-    
+
     // No need to do anything as operations haven't been applied yet
     this.rolledBack = true;
   }

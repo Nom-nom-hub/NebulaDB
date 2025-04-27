@@ -27,7 +27,7 @@ export class EnhancedNestedQueryOptimizer {
    */
   static createOptimizedPathAccessor(path: string): (obj: any) => any {
     const parts = path.split('.');
-    
+
     // Optimize for common cases
     if (parts.length === 1) {
       return (obj: any) => obj?.[parts[0]];
@@ -36,7 +36,7 @@ export class EnhancedNestedQueryOptimizer {
     } else if (parts.length === 3) {
       return (obj: any) => obj?.[parts[0]]?.[parts[1]]?.[parts[2]];
     }
-    
+
     // For deeper paths, use a more general approach
     return (obj: any) => {
       let current = obj;
@@ -62,15 +62,15 @@ export class EnhancedNestedQueryOptimizer {
     if (query.$and && Array.isArray(query.$and)) {
       // Optimize each condition in the $and array
       const optimizedConditions = query.$and.map((condition: QueryCondition) => this.optimizeQuery(condition));
-      
+
       // Reorder conditions by selectivity (exact match first, then range, then regex)
       optimizedConditions.sort((a: QueryCondition, b: QueryCondition) => {
         return this.getConditionSelectivity(a) - this.getConditionSelectivity(b);
       });
-      
+
       // Merge compatible conditions
       const mergedConditions = this.mergeCompatibleConditions(optimizedConditions);
-      
+
       return { $and: mergedConditions };
     }
 
@@ -106,7 +106,7 @@ export class EnhancedNestedQueryOptimizer {
     }
 
     // Check for operators
-    for (const [key, value] of Object.entries(condition)) {
+    for (const [_, value] of Object.entries(condition)) {
       if (typeof value === 'object' && value !== null) {
         const operators = value as QueryOperators;
         // Check for equality operator
@@ -118,7 +118,7 @@ export class EnhancedNestedQueryOptimizer {
           return 2;
         }
         // Check for range operators
-        if (operators.$gt !== undefined || operators.$lt !== undefined || 
+        if (operators.$gt !== undefined || operators.$lt !== undefined ||
             operators.$gte !== undefined || operators.$lte !== undefined) {
           return 3;
         }
@@ -191,22 +191,22 @@ export class EnhancedNestedQueryOptimizer {
     // Return a function that applies all accessors to all objects
     return (objects: any[]): Map<string, any[]> => {
       const results = new Map<string, any[]>();
-      
+
       // Initialize result arrays
       for (const path of paths) {
         results.set(path, new Array(objects.length));
       }
-      
+
       // Process all objects
       for (let i = 0; i < objects.length; i++) {
         const obj = objects[i];
-        
+
         // Apply each accessor
         for (const [path, accessor] of accessors.entries()) {
           results.get(path)![i] = accessor(obj);
         }
       }
-      
+
       return results;
     };
   }

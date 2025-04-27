@@ -23,8 +23,9 @@ import { QueryCache } from './query-cache';
 import { DocumentCompression, CompressionOptions } from './document-compression';
 // Import adaptive concurrency
 import { AdaptiveConcurrencyControl, AdaptiveConcurrencyOptions } from './adaptive-concurrency';
-import { NestedPropertyIndex } from './index/nested-property-index';
-import { QueryProcessor } from './query/query-processor';
+// These imports will be used in future implementations
+// import { NestedPropertyIndex } from './index/nested-property-index';
+// import { QueryProcessor } from './query/query-processor';
 
 export class Collection implements ICollection {
   name: string;
