@@ -8,11 +8,23 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/badge/npm-v0.2.1-blue)](https://www.npmjs.com/package/@nebula-db/nebula-db)
+[![npm version](https://img.shields.io/badge/npm-v0.2.2-blue)](https://www.npmjs.com/package/@nebula-db/nebula-db)
+[![Product Hunt](https://img.shields.io/badge/Product%20Hunt-NebulaDB-orange)](https://www.producthunt.com/products/nebuladb)
 
 </div>
 
 NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database that runs in the browser, Node.js, and Edge environments. It features advanced indexing, optimized query processing, modular adapters for persistence, reactive live queries, extensibility via plugins, and blazing-fast in-memory operations with adaptive concurrency control.
+
+## Latest Release: v0.2.2 (April 27, 2025)
+
+The latest release includes significant improvements to error handling and recovery mechanisms:
+
+- Fixed TypeScript errors and improved interface implementations
+- Added comprehensive test suite for error handling and recovery
+- Improved resilience against data corruption and network interruptions
+- Enhanced transaction system robustness
+
+[Check us out on Product Hunt!](https://www.producthunt.com/products/nebuladb)
 
 ## Features
 
