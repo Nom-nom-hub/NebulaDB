@@ -458,6 +458,15 @@ export class Collection implements ICollection {
   }
 
   /**
+   * Create an index on the collection
+   */
+  createIndex(indexDef: EnhancedIndexDefinition): void {
+    this.indexManager.createIndex(indexDef);
+    // Rebuild the index with existing documents
+    this.indexManager.rebuild(this.documents);
+  }
+
+  /**
    * Insert multiple documents in a batch
    */
   async insertBatch(docs: (Omit<Document, 'id'> & { id?: string })[]): Promise<Document[]> {
