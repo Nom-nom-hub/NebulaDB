@@ -10,6 +10,15 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![npm version](https://img.shields.io/badge/npm-v0.2.2-blue)](https://www.npmjs.com/package/@nebula-db/nebula-db)
 [![Product Hunt](https://img.shields.io/badge/Product%20Hunt-NebulaDB-orange)](https://www.producthunt.com/products/nebuladb)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/NebulaDB/build.yml?branch=main)](https://github.com/Nom-nom-hub/NebulaDB/actions)
+[![Coverage Status](https://img.shields.io/codecov/c/github/Nom-nom-hub/NebulaDB)](https://codecov.io/gh/Nom-nom-hub/NebulaDB)
+[![Downloads](https://img.shields.io/npm/dm/@nebula-db/core)](https://www.npmjs.com/package/@nebula-db/core)
+[![GitHub Stars](https://img.shields.io/github/stars/Nom-nom-hub/NebulaDB)](https://github.com/Nom-nom-hub/NebulaDB/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/Nom-nom-hub/NebulaDB)](https://github.com/Nom-nom-hub/NebulaDB/issues)
+[![GitHub PRs](https://img.shields.io/github/issues-pr/Nom-nom-hub/NebulaDB)](https://github.com/Nom-nom-hub/NebulaDB/pulls)
+[![Node.js Version](https://img.shields.io/node/v/@nebula-db/core)](https://nodejs.org/)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@nebula-db/core)](https://bundlephobia.com/package/@nebula-db/core)
+[![Last Commit](https://img.shields.io/github/last-commit/Nom-nom-hub/NebulaDB)](https://github.com/Nom-nom-hub/NebulaDB/commits/main)
 
 </div>
 
@@ -25,6 +34,18 @@ The latest release includes significant improvements to error handling and recov
 - Enhanced transaction system robustness
 
 [Check us out on Product Hunt!](https://www.producthunt.com/products/nebuladb)
+
+## Project Status
+
+- **Build Status**: Continuous integration status for the main branch
+- **Coverage Status**: Code coverage percentage from automated tests
+- **Downloads**: Monthly downloads from npm
+- **GitHub Stars**: Number of GitHub stars the project has received
+- **GitHub Issues**: Number of open issues
+- **GitHub PRs**: Number of open pull requests
+- **Node.js Version**: Minimum required Node.js version
+- **Bundle Size**: Minified + gzipped size of the core package
+- **Last Commit**: Date of the last commit to the main branch
 
 ## Features
 
