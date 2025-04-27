@@ -5,21 +5,21 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 // New version to set
-const NEW_VERSION = '0.2.1';
-const OLD_VERSION = '0.2.0';
+const NEW_VERSION = '0.2.2';
+const OLD_VERSION = '0.2.1';
 
 // Function to update version in package.json
 function updatePackageVersion(packagePath) {
   const packageJsonPath = path.join(packagePath, 'package.json');
-  
+
   if (!fs.existsSync(packageJsonPath)) {
     console.log(`Skipping ${packagePath} - no package.json found`);
     return;
   }
-  
+
   try {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-    
+
     // Update version
     if (packageJson.version === OLD_VERSION) {
       packageJson.version = NEW_VERSION;
@@ -27,18 +27,18 @@ function updatePackageVersion(packagePath) {
     } else {
       console.log(`Skipping ${packagePath} - version is not ${OLD_VERSION}`);
     }
-    
+
     // Update peer dependencies
     if (packageJson.peerDependencies) {
       Object.keys(packageJson.peerDependencies).forEach(dep => {
-        if (dep.startsWith('@nebula-db/') && 
+        if (dep.startsWith('@nebula-db/') &&
             packageJson.peerDependencies[dep] === `^${OLD_VERSION}`) {
           packageJson.peerDependencies[dep] = `^${NEW_VERSION}`;
           console.log(`Updating ${packagePath} peer dependency ${dep} to ^${NEW_VERSION}`);
         }
       });
     }
-    
+
     // Write updated package.json
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
   } catch (error) {

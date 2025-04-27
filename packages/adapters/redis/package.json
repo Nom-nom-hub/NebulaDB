@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-redis",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Redis adapter for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,7 +34,7 @@
     "ioredis": "^5.3.2"
   },
   "peerDependencies": {
-    "@nebula-db/core": "^0.2.1"
+    "@nebula-db/core": "^0.2.2"
   },
   "repository": {
     "type": "git",

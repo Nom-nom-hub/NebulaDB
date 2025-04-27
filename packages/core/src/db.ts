@@ -1,6 +1,6 @@
 import { Collection } from './collection';
 import {
-  IDatabase,
+  Database as IDatabase,
   ICollection,
   DbOptions,
   CollectionOptions,

@@ -38,6 +38,7 @@ export class Collection implements ICollection {
   private queryHistory: Query[] = [];
   private batchOperationInProgress = false;
   private pendingSignalUpdate = false;
+  private _disposeHandlers: Map<string, () => void> = new Map();
 
   // Concurrency controls
   private lock = new ReadWriteLock();
@@ -343,9 +344,48 @@ export class Collection implements ICollection {
   }
 
   /**
+   * Delete a single document matching a query
+   */
+  async deleteOne(query: Query): Promise<boolean> {
+    const deletedCount = await this.delete(query);
+    return deletedCount > 0;
+  }
+
+  /**
+   * Update a single document matching a query
+   */
+  async updateOne(query: Query, update: UpdateOperation): Promise<boolean> {
+    const updatedCount = await this.update(query, update);
+    return updatedCount > 0;
+  }
+
+  /**
+   * Count documents matching a query
+   */
+  async count(query: Query = {}): Promise<number> {
+    const results = await this.find(query);
+    return results.length;
+  }
+
+  /**
+   * Unsubscribe from changes
+   */
+  unsubscribe(id: string): void {
+    // Remove subscription
+    this.subscriptions.delete(id);
+
+    // Call and remove dispose handler
+    const dispose = this._disposeHandlers.get(id);
+    if (dispose) {
+      dispose();
+      this._disposeHandlers.delete(id);
+    }
+  }
+
+  /**
    * Subscribe to changes in documents matching a query
    */
-  subscribe(query: Query, callback: SubscriptionCallback): () => void {
+  subscribe(query: Query, callback: SubscriptionCallback): string {
     const subscriptionId = uuidv4();
     this.subscriptions.set(subscriptionId, { query, callback });
 
@@ -368,11 +408,12 @@ export class Collection implements ICollection {
       isFirstRun = false;
     });
 
-    // Return unsubscribe function
-    return () => {
-      this.subscriptions.delete(subscriptionId);
-      dispose();
-    };
+    // Store the dispose function for later cleanup
+    this._disposeHandlers = this._disposeHandlers || new Map();
+    this._disposeHandlers.set(subscriptionId, dispose);
+
+    // Return subscription ID
+    return subscriptionId;
   }
 
   /**
@@ -791,18 +832,16 @@ export class Collection implements ICollection {
   async rebuildIndexes(): Promise<void> {
     // Get all documents
     const documents = await this.find({});
-    
+
     // Clear all indexes
-    if (this._collection && this._collection.indexManager) {
-      const indexes = this._collection.indexManager.getAllIndexes();
-      indexes.forEach(index => index.clear());
-      
-      // Re-add all documents to indexes
-      documents.forEach(doc => {
-        indexes.forEach(index => index.add(doc));
-      });
-    }
-    
+    const indexes = this.indexManager.getAllIndexes();
+    indexes.forEach((index: any) => index.clear());
+
+    // Re-add all documents to indexes
+    documents.forEach(doc => {
+      indexes.forEach((index: any) => index.add(doc));
+    });
+
     return Promise.resolve();
   }
 
@@ -815,19 +854,19 @@ export class Collection implements ICollection {
     return this.lock.withWriteLock(async () => {
       // Get all indexes from the index manager
       const indexes = this.indexManager.getAllIndexes();
-      
+
       // Clear all indexes
       for (const index of indexes) {
         index.clear();
       }
-      
+
       // Re-add all documents to indexes
       for (const doc of this.documents) {
         for (const index of indexes) {
           index.add(doc);
         }
       }
-      
+
       return Promise.resolve();
     });
   }
@@ -838,18 +877,19 @@ export class Collection implements ICollection {
    * @returns Promise that resolves when the index rebuild is complete
    */
   private async rebuildIndex(indexName: string): Promise<void> {
-    const index = this.indexes.find(idx => idx.name === indexName);
+    const indexes = this.indexManager.getAllIndexes();
+    const index = indexes.find(idx => idx.name === indexName);
     if (!index) return Promise.resolve();
-    
+
     // Clear the index
     index.clear();
-    
+
     // Re-index all documents
     const documents = await this.find({});
     for (const doc of documents) {
       index.add(doc);
     }
-    
+
     return Promise.resolve();
   }
 }

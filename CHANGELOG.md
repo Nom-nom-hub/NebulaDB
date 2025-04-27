@@ -5,7 +5,15 @@ All notable changes to NebulaDB will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.1] - 2023-06-22
+## [0.2.2] - 2023-06-22
+
+### Fixed
+
+- Fixed TypeScript errors in core package
+- Fixed interface implementation in Collection class
+- Fixed rebuildIndexes method in Collection class
+- Fixed duplicate identifier issues
+- Fixed transaction recovery tests
 
 ### Added
 
@@ -23,6 +31,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Recovery from network interruptions
 - Handling of adapter-specific error conditions
 - Transaction system robustness
+
+## [0.2.1] - 2023-06-21
+
+### Added
+
+- Initial implementation of transaction support
+- Basic error handling mechanisms
+- Support for multiple adapters
+- Plugin architecture
 
 ## [0.2.0] - 2023-06-15
 

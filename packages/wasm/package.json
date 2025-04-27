@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/wasm",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "WebAssembly support for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

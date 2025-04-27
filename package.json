@@ -1,6 +1,6 @@
 {
   "name": "nebula-db",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Fast. Flexible. Serverless. The embedded database for the modern stack.",
   "private": true,
   "repository": {

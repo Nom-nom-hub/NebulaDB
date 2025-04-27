@@ -19,6 +19,5 @@ export type {
   Adapter,
   Plugin,
   SubscriptionCallback,
-  ICollection,
-  IDatabase
+  ICollection
 } from './types';
