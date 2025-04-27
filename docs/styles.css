@@ -1,4 +1,5 @@
 :root {
+  /* Base colors */
   --color-nebula-50: #f8fafc;
   --color-nebula-100: #f1f5f9;
   --color-nebula-200: #e2e8f0;
@@ -10,14 +11,23 @@
   --color-nebula-800: #1e293b;
   --color-nebula-900: #0f172a;
   --color-nebula-950: #020617;
-  
-  --color-accent-blue: #3b82f6;
-  --color-accent-purple: #8b5cf6;
-  --color-accent-green: #10b981;
-  --color-accent-pink: #ec4899;
-  
+
+  /* Accent colors - cloud theme */
+  --color-accent-blue: #3b82f6;    /* Sky blue */
+  --color-accent-purple: #8b5cf6;  /* Twilight purple */
+  --color-accent-green: #10b981;   /* Altocumulus green */
+  --color-accent-pink: #ec4899;    /* Sunset pink */
+  --color-accent-cyan: #06b6d4;    /* Cloud cyan */
+
+  /* Glow effects */
   --glow-blue: 0 0 15px rgba(59, 130, 246, 0.5);
   --glow-purple: 0 0 15px rgba(139, 92, 246, 0.5);
+  --glow-cyan: 0 0 15px rgba(6, 182, 212, 0.5);
+
+  /* Cloud theme gradients */
+  --gradient-sky: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-cyan));
+  --gradient-twilight: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-pink));
+  --gradient-altocumulus: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-purple));
 }
 
 html {
@@ -118,6 +128,52 @@ nav {
   z-index: -1;
 }
 
+/* Cloud particles */
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero::before {
+  background: radial-gradient(circle at 20% 30%, var(--color-accent-blue) 0%, transparent 20%),
+              radial-gradient(circle at 80% 60%, var(--color-accent-purple) 0%, transparent 20%);
+  opacity: 0.05;
+  filter: blur(60px);
+  animation: pulse-glow 8s ease-in-out infinite alternate;
+}
+
+.hero::after {
+  background-image:
+    radial-gradient(2px 2px at 40px 60px, rgba(255, 255, 255, 0.6) 100%, transparent),
+    radial-gradient(2px 2px at 20% 20%, rgba(255, 255, 255, 0.6) 100%, transparent),
+    radial-gradient(2px 2px at 30% 40%, rgba(255, 255, 255, 0.6) 100%, transparent),
+    radial-gradient(2px 2px at 40% 80%, rgba(255, 255, 255, 0.6) 100%, transparent),
+    radial-gradient(2px 2px at 70% 50%, rgba(255, 255, 255, 0.6) 100%, transparent),
+    radial-gradient(2px 2px at 90% 90%, rgba(255, 255, 255, 0.6) 100%, transparent);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.2;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0.03; }
+  50% { opacity: 0.08; }
+  100% { opacity: 0.03; }
+}
+
+@keyframes twinkle {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
 .hero-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -143,22 +199,55 @@ nav {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .hero-logo {
   width: 4rem;
   height: 4rem;
   animation: float 6s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+
+/* Cloud glow effect behind logo */
+.hero-logo::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: -30%;
+  width: 160%;
+  height: 160%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(10px);
+  z-index: -1;
+  opacity: 0;
+  animation: pulse-logo 4s ease-in-out infinite;
+}
+
+@keyframes pulse-logo {
+  0% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 0.4; transform: scale(1.1); }
+  100% { opacity: 0.2; transform: scale(0.8); }
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
 }
 
 .version-img {
   height: 2.5rem;
+  position: relative;
+  z-index: 2;
+  animation: pulse-badge 3s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-badge {
+  0% { filter: drop-shadow(0 0 2px rgba(139, 92, 246, 0.3)); }
+  100% { filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.6)); }
 }
 
 .hero h1 {
@@ -169,22 +258,42 @@ nav {
 }
 
 .gradient-text {
-  background: linear-gradient(to right, var(--color-accent-blue), var(--color-accent-purple));
+  background: var(--gradient-altocumulus);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  position: relative;
+  display: inline-block;
+}
+
+/* Subtle glow effect for gradient text */
+.gradient-text::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background: var(--gradient-altocumulus);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: blur(8px);
+  opacity: 0.3;
 }
 
 .subtitle {
   font-size: 1.5rem;
   color: var(--color-nebula-200);
   margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
 }
 
 .description {
   color: var(--color-nebula-300);
   margin-bottom: 2rem;
   max-width: 500px;
+  line-height: 1.7;
 }
 
 .cta-buttons {
@@ -202,12 +311,34 @@ nav {
   font-weight: 500;
   text-decoration: none;
   transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button hover effect - ripple */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+  width: 300%;
+  height: 300%;
 }
 
 .btn.primary {
-  background: linear-gradient(to right, var(--color-accent-blue), var(--color-accent-purple));
+  background: var(--gradient-altocumulus);
   color: white;
   box-shadow: var(--glow-blue);
+  border: none;
 }
 
 .btn.primary:hover {
@@ -218,18 +349,42 @@ nav {
 .btn.outline {
   border: 1px solid var(--color-nebula-700);
   color: white;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
 }
 
 .btn.outline:hover {
-  background-color: var(--color-nebula-800);
+  border-color: var(--color-accent-blue);
   transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Code Block */
 .code-container {
   flex: 1;
   max-width: 600px;
+  position: relative;
+}
+
+/* Glow effect behind code block */
+.code-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+  border-radius: 1rem;
+  z-index: -1;
+  filter: blur(20px);
+  opacity: 0.8;
+  animation: pulse-code 6s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-code {
+  0% { opacity: 0.5; transform: scale(0.98); }
+  100% { opacity: 0.8; transform: scale(1.02); }
 }
 
 .code-header {
@@ -241,17 +396,33 @@ nav {
   border-top-right-radius: 0.5rem;
   border: 1px solid var(--color-nebula-700);
   border-bottom: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cloud-themed header gradient */
+.code-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-altocumulus);
+  z-index: 1;
 }
 
 .code-dots {
   display: flex;
   gap: 0.5rem;
+  z-index: 2;
 }
 
 .code-dots span {
   width: 0.75rem;
   height: 0.75rem;
   border-radius: 50%;
+  transition: all 0.3s;
 }
 
 .code-dots span:nth-child(1) {
@@ -266,10 +437,15 @@ nav {
   background-color: #27c93f;
 }
 
+.code-container:hover .code-dots span {
+  transform: scale(1.1);
+}
+
 .code-title {
   margin-left: 1rem;
   font-size: 0.875rem;
   color: var(--color-nebula-400);
+  z-index: 2;
 }
 
 .code-block {
@@ -284,6 +460,33 @@ nav {
   font-size: 0.875rem;
   line-height: 1.5;
   color: var(--color-nebula-300);
+  position: relative;
+}
+
+/* Syntax highlighting for cloud theme */
+.code-block code {
+  color: var(--color-nebula-300);
+}
+
+.code-block code .keyword {
+  color: var(--color-accent-purple);
+}
+
+.code-block code .string {
+  color: var(--color-accent-green);
+}
+
+.code-block code .comment {
+  color: var(--color-nebula-500);
+  font-style: italic;
+}
+
+.code-block code .function {
+  color: var(--color-accent-blue);
+}
+
+.code-block code .number {
+  color: var(--color-accent-pink);
 }
 
 /* Sections */
@@ -329,6 +532,35 @@ h2 {
   background-size: cover;
   opacity: 0.05;
   z-index: 0;
+  animation: slow-drift 60s linear infinite alternate;
+}
+
+/* Cloud-themed decorative elements */
+.release::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 10% 20%, var(--color-accent-blue) 0%, transparent 30%),
+    radial-gradient(circle at 90% 80%, var(--color-accent-purple) 0%, transparent 30%);
+  opacity: 0.03;
+  filter: blur(60px);
+  z-index: 0;
+  animation: cloud-glow 15s ease-in-out infinite alternate;
+}
+
+@keyframes slow-drift {
+  0% { transform: scale(1.05) translate(-1%, -1%); }
+  100% { transform: scale(1.1) translate(1%, 1%); }
+}
+
+@keyframes cloud-glow {
+  0% { opacity: 0.02; }
+  50% { opacity: 0.04; }
+  100% { opacity: 0.02; }
 }
 
 .release-content {
@@ -416,26 +648,100 @@ h2 {
   border-radius: 0.5rem;
   border: 1px solid var(--color-nebula-700);
   transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Cloud-themed gradient border on hover */
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gradient-altocumulus);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-out;
+  z-index: 1;
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Subtle cloud background */
+.feature-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('hero-altocumulus.svg');
+  background-size: 200%;
+  background-position: center;
+  opacity: 0.02;
+  z-index: -1;
+  transition: opacity 0.3s;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  border-color: var(--color-accent-blue);
+  border-color: transparent;
+}
+
+.feature-card:hover::after {
+  opacity: 0.05;
 }
 
 .feature-icon {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+/* Glow effect for feature icons */
+.feature-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3rem;
+  height: 3rem;
+  background: var(--color-accent-blue);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.1;
+  filter: blur(10px);
+  z-index: -1;
+  transition: all 0.3s;
+}
+
+.feature-card:hover .feature-icon::after {
+  width: 4rem;
+  height: 4rem;
+  opacity: 0.2;
 }
 
 .feature-card h3 {
   font-size: 1.25rem;
   margin-bottom: 1rem;
+  transition: color 0.3s;
+}
+
+.feature-card:hover h3 {
+  color: var(--color-accent-blue);
 }
 
 .feature-card p {
   color: var(--color-nebula-300);
+  position: relative;
+  z-index: 2;
 }
 
 /* Features Section */
