@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
@@ -21,12 +21,14 @@ export default {
           700: '#334155',
           800: '#1E293B',
           900: '#0F172A',
+          950: '#020617',
         },
         accent: {
           blue: '#38BDF8',
           purple: '#818CF8',
           green: '#4ADE80',
           red: '#FB7185',
+          pink: '#EC4899',
         },
       },
     },
