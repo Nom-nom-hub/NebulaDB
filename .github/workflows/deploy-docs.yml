@@ -1,4 +1,4 @@
-name: Deploy Docs and Website to GitHub Pages
+name: Deploy Website and Docs to GitHub Pages
 
 on:
   push:
@@ -60,10 +60,20 @@ jobs:
 
       - name: Prepare deployment directory
         run: |
+          # Create deployment directory
           mkdir -p deployment
-          cp -r docs/* deployment/
-          mkdir -p deployment/website
-          cp -r website-build/* deployment/website/
+
+          # Copy website files to the root directory
+          cp -r website-build/* deployment/
+
+          # Copy docs to a subdirectory
+          mkdir -p deployment/docs
+          cp -r docs/* deployment/docs/
+
+          # Create a redirect from old index to new index if needed
+          if [ -f deployment/docs/index.html ]; then
+            echo '<meta http-equiv="refresh" content="0; url=/" />' > deployment/docs/redirect.html
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
