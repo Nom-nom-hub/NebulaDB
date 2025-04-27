@@ -138,6 +138,21 @@ jobs:
             sed -i 's|href="./assets/|href="/NebulaDB/website/assets/|g' deployment/website/index.html
             sed -i 's|href="./logo.svg"|href="/NebulaDB/website/logo.svg"|g' deployment/website/index.html
 
+            # Create a symlink or copy for main.js if it's being requested
+            echo "Creating a symlink for main.js to the actual JS file"
+            mkdir -p deployment/website/js
+
+            # Find the actual JS file name
+            JS_FILE=$(find deployment/website/assets -name "*.js" | head -n 1)
+            if [ -n "$JS_FILE" ]; then
+              echo "Found JS file: $JS_FILE"
+              # Create a copy of the JS file as main.js
+              cp "$JS_FILE" deployment/website/js/main.js
+              echo "Created main.js from $JS_FILE"
+            else
+              echo "No JS file found in assets directory"
+            fi
+
             # Show the modified file for debugging
             echo "Modified website/index.html:"
             cat deployment/website/index.html
