@@ -106,7 +106,7 @@ export class EnhancedNestedQueryOptimizer {
     }
 
     // Check for operators
-    for (const [_, value] of Object.entries(condition)) {
+    for (const [/* key (unused) */, value] of Object.entries(condition)) {
       if (typeof value === 'object' && value !== null) {
         const operators = value as QueryOperators;
         // Check for equality operator
