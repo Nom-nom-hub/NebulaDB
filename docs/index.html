@@ -1,1362 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="NebulaDB — Fast, Flexible, and Serverless. An embedded database optimized for modern development." />
   <meta name="author" content="NebulaDB Team" />
-  <title>NebulaDB | Fast, Flexible, Serverless Database</title>
-  <link rel="icon" href="https://raw.githubusercontent.com/Nom-nom-hub/NebulaDB/main/assets/nebulalogo.png" type="image/png" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" />
-  <style>
-    :root {
-      --primary: #6d28d9;
-      --primary-light: #8b5cf6;
-      --secondary: #10b981;
-      --secondary-light: #34d399;
-      --dark: #111827;
-      --darker: #0d1117;
-      --light: #f3f4f6;
-      --gray: #6b7280;
-      --card-bg: #1e293b;
-      --card-border: #2d3748;
-      --text: #e2e8f0;
-      --text-muted: #9ca3af;
-      --code-bg: #0d1117;
-      --accent-pink: #ec4899;
-      --accent-blue: #3b82f6;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 70px; /* Adjust for fixed navbar height */
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      line-height: 1.7;
-      color: var(--text);
-      padding-top: 56px; /* Adjust for navbar height */
-      background-color: var(--darker);
-    }
-    .navbar-dark .navbar-brand {
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-    .hero {
-      background: linear-gradient(135deg, #4338ca, #6d28d9);
-      color: #fff;
-      padding: 100px 0;
-      text-align: center;
-      border-radius: 0 0 30px 30px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Animated gradient background */
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg,
-        rgba(236, 72, 153, 0.15) 0%,
-        rgba(59, 130, 246, 0.15) 25%,
-        rgba(16, 185, 129, 0.15) 50%,
-        rgba(139, 92, 246, 0.15) 75%,
-        rgba(236, 72, 153, 0.15) 100%);
-      background-size: 400% 400%;
-      animation: gradient-shift 15s ease infinite;
-      z-index: 0;
-      opacity: 0.7;
-    }
-
-    @keyframes gradient-shift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .particles-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    .hero .container {
-      position: relative;
-      z-index: 2;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSgzMCkiPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSI+PC9yZWN0PjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSI+PC9yZWN0Pjwvc3ZnPg==');
-      opacity: 0.3;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 100%;
-      height: 10px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      animation: shine 4s infinite;
-    }
-    @keyframes shine {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-    /* CSS Logo Styles */
-    .logo-container {
-      position: relative;
-      width: 150px;
-      height: 150px;
-      margin: 0 auto 25px;
-      z-index: 3;
-      filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.5));
-    }
-
-    .logo-nebula {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4338ca, #6d28d9);
-      box-shadow: 0 0 30px rgba(109, 40, 217, 0.8);
-      animation: pulse 3s infinite alternate;
-      overflow: hidden;
-    }
-
-    .logo-nebula::before {
-      content: '';
-      position: absolute;
-      width: 150%;
-      height: 150%;
-      top: -25%;
-      left: -25%;
-      background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.3) 0%, rgba(67, 56, 202, 0) 70%);
-      animation: nebula-glow 8s infinite alternate;
-    }
-
-    @keyframes nebula-glow {
-      0% { transform: scale(1); opacity: 0.5; }
-      100% { transform: scale(1.2); opacity: 0.8; }
-    }
-
-    .logo-ring {
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      width: calc(100% + 20px);
-      height: calc(100% + 20px);
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-top: 2px solid var(--secondary);
-      border-left: 2px solid var(--primary-light);
-      animation: spin 10s linear infinite;
-    }
-
-    .logo-ring:nth-child(2) {
-      top: -5px;
-      left: -5px;
-      width: calc(100% + 10px);
-      height: calc(100% + 10px);
-      border-top: 2px solid var(--primary-light);
-      border-right: 2px solid var(--secondary);
-      animation: spin 7s linear infinite reverse;
-    }
-
-    .logo-ring:nth-child(3) {
-      top: 10px;
-      left: 10px;
-      width: calc(100% - 20px);
-      height: calc(100% - 20px);
-      border-bottom: 2px solid var(--secondary);
-      border-right: 2px solid var(--primary-light);
-      animation: spin 5s linear infinite;
-    }
-
-    .logo-stars {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-
-    .logo-star {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background-color: white;
-      border-radius: 50%;
-      box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
-      opacity: 0.8;
-      animation: twinkle 3s infinite alternate;
-    }
-
-    .logo-db {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
-      font-weight: bold;
-      color: white;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      z-index: 2;
-      font-family: 'Inter', sans-serif;
-      letter-spacing: -1px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 20px rgba(109, 40, 217, 0.6); }
-      100% { box-shadow: 0 0 40px rgba(109, 40, 217, 0.9); }
-    }
-
-    @keyframes twinkle {
-      0% { opacity: 0.2; }
-      100% { opacity: 1; }
-    }
-
-    /* Tech circuit background */
-    .tech-circuit {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHg9IjE5IiB5PSIwIiB3aWR0aD0iMiIgaGVpZ2h0PSI0MCIgZmlsbD0icmdiYSgxMDksIDQwLCAyMTcsIDAuMDUpIj48L3JlY3Q+PHJlY3QgeD0iMCIgeT0iMTkiIHdpZHRoPSI0MCIgaGVpZ2h0PSIyIiBmaWxsPSJyZ2JhKDEwOSwgNDAsIDIxNywgMC4wNSkiPjwvcmVjdD48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiPjwvcmVjdD48L3N2Zz4=');
-      opacity: 0.5;
-      z-index: 0;
-    }
-
-    /* Animated data flow lines */
-    .data-flow {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      overflow: hidden;
-      opacity: 0.3;
-    }
-
-    .data-line {
-      position: absolute;
-      height: 2px;
-      width: 100px;
-      background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
-      animation: data-flow 8s linear infinite;
-      opacity: 0;
-    }
-
-    .data-line:nth-child(1) {
-      top: 20%;
-      left: -10%;
-      width: 150px;
-      animation-delay: 0s;
-    }
-
-    .data-line:nth-child(2) {
-      top: 40%;
-      left: -5%;
-      width: 100px;
-      animation-delay: 2s;
-    }
-
-    .data-line:nth-child(3) {
-      top: 60%;
-      left: -15%;
-      width: 200px;
-      animation-delay: 4s;
-    }
-
-    .data-line:nth-child(4) {
-      top: 80%;
-      left: -5%;
-      width: 120px;
-      animation-delay: 6s;
-    }
-
-    .data-line:nth-child(5) {
-      top: 30%;
-      right: -10%;
-      width: 180px;
-      animation: data-flow-reverse 10s linear infinite;
-      animation-delay: 1s;
-    }
-
-    .data-line:nth-child(6) {
-      top: 50%;
-      right: -5%;
-      width: 120px;
-      animation: data-flow-reverse 7s linear infinite;
-      animation-delay: 3s;
-    }
-
-    .data-line:nth-child(7) {
-      top: 70%;
-      right: -15%;
-      width: 150px;
-      animation: data-flow-reverse 9s linear infinite;
-      animation-delay: 5s;
-    }
-
-    @keyframes data-flow {
-      0% { transform: translateX(-100%); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateX(100vw); opacity: 0; }
-    }
-
-    @keyframes data-flow-reverse {
-      0% { transform: translateX(100%); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateX(-100vw); opacity: 0; }
-    }
-
-    /* Navbar Logo */
-    .navbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .navbar-logo {
-      position: relative;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4338ca, #6d28d9);
-      box-shadow: 0 0 10px rgba(109, 40, 217, 0.6);
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 5px;
-      overflow: hidden;
-    }
-
-    .navbar-logo::before {
-      content: '';
-      position: absolute;
-      width: 150%;
-      height: 150%;
-      top: -25%;
-      left: -25%;
-      background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.3) 0%, rgba(67, 56, 202, 0) 70%);
-      animation: nebula-glow 8s infinite alternate;
-    }
-
-    .navbar-logo .ring {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      width: calc(100% + 4px);
-      height: calc(100% + 4px);
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-top: 1px solid var(--secondary);
-      border-left: 1px solid var(--primary-light);
-      animation: spin 10s linear infinite;
-      pointer-events: none;
-    }
-
-    .navbar-logo .text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 10px;
-      font-weight: bold;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      letter-spacing: -0.5px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .btn-lg {
-      padding: 12px 28px;
-      font-size: 1.1rem;
-      border-radius: 50px;
-    }
-    .feature-icon {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, #8b5cf6, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      color: transparent;
-      position: relative;
-      display: inline-block;
-    }
-
-    .feature-icon::before {
-      content: '';
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: -1;
-      animation: pulse-icon 3s infinite;
-    }
-
-    @keyframes pulse-icon {
-      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
-      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
-      100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
-    }
-
-    .card-body {
-      color: var(--text) !important;
-    }
-
-    .card-title, .card-text {
-      color: var(--text) !important;
-    }
-    .card {
-      border: none;
-      transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      overflow: hidden;
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      position: relative;
-    }
-    .card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-      border-color: var(--primary-light);
-    }
-
-    .card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(225deg,
-        rgba(139, 92, 246, 0) 0%,
-        rgba(139, 92, 246, 0) 50%,
-        rgba(139, 92, 246, 0.1) 100%);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .card:hover::after {
-      opacity: 1;
-    }
-
-    /* Comparison section styles */
-    .comparison-glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      height: 80%;
-      background: radial-gradient(ellipse at center,
-        rgba(139, 92, 246, 0.1) 0%,
-        rgba(16, 185, 129, 0.05) 50%,
-        rgba(17, 24, 39, 0) 70%);
-      filter: blur(40px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.8;
-      animation: pulse-slow 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulse-slow {
-      0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); }
-      100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
-    }
-
-    .comparison-table {
-      position: relative;
-      z-index: 1;
-      border: 1px solid rgba(139, 92, 246, 0.2);
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.1) !important;
-    }
-
-    .comparison-table th {
-      border-bottom: 2px solid rgba(139, 92, 246, 0.3) !important;
-    }
-
-    .comparison-table td {
-      transition: all 0.3s ease;
-    }
-
-    .comparison-table tr:hover td {
-      background-color: rgba(139, 92, 246, 0.05) !important;
-    }
-
-    .benchmark-card {
-      border: 1px solid rgba(139, 92, 246, 0.2);
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.1) !important;
-    }
-
-    .highlight-cell {
-      position: relative;
-      color: var(--primary-light) !important;
-      background: linear-gradient(90deg, rgba(139, 92, 246, 0.05), rgba(16, 185, 129, 0.05)) !important;
-      animation: cell-pulse 3s infinite alternate;
-    }
-
-    @keyframes cell-pulse {
-      0% { box-shadow: inset 0 0 5px rgba(139, 92, 246, 0.1); }
-      100% { box-shadow: inset 0 0 15px rgba(139, 92, 246, 0.2); }
-    }
-
-    /* Glitch text effect */
-    .glitch-text {
-      position: relative;
-      animation: glitch 5s infinite;
-      font-weight: 700;
-    }
-
-    .glitch-text::before,
-    .glitch-text::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.8;
-    }
-
-    .glitch-text::before {
-      color: var(--accent-pink);
-      z-index: -1;
-      animation: glitch-effect 3s infinite;
-    }
-
-    .glitch-text::after {
-      color: var(--accent-blue);
-      z-index: -2;
-      animation: glitch-effect 2s infinite reverse;
-    }
-
-    @keyframes glitch-effect {
-      0% { transform: translate(0); }
-      20% { transform: translate(-3px, 3px); }
-      40% { transform: translate(-3px, -3px); }
-      60% { transform: translate(3px, 3px); }
-      80% { transform: translate(3px, -3px); }
-      100% { transform: translate(0); }
-    }
-
-    @keyframes glitch {
-      0% { text-shadow: 0.05em 0 0 var(--accent-pink), -0.05em -0.025em 0 var(--accent-blue); }
-      14% { text-shadow: 0.05em 0 0 var(--accent-pink), -0.05em -0.025em 0 var(--accent-blue); }
-      15% { text-shadow: -0.05em -0.025em 0 var(--accent-pink), 0.025em 0.025em 0 var(--accent-blue); }
-      49% { text-shadow: -0.05em -0.025em 0 var(--accent-pink), 0.025em 0.025em 0 var(--accent-blue); }
-      50% { text-shadow: 0.025em 0.05em 0 var(--accent-pink), 0.05em 0 0 var(--accent-blue); }
-      99% { text-shadow: 0.025em 0.05em 0 var(--accent-pink), 0.05em 0 0 var(--accent-blue); }
-      100% { text-shadow: 0.05em 0 0 var(--accent-pink), -0.05em -0.025em 0 var(--accent-blue); }
-    }
-
-    /* Glass morphism effect */
-    .glass {
-      background: rgba(30, 41, 59, 0.4);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-      border: none;
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-    }
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #5b21b6, #7c3aed);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(109, 40, 217, 0.4);
-    }
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transform: rotate(45deg);
-      z-index: -1;
-      transition: all 0.6s ease;
-      animation: btn-shine 3s infinite;
-    }
-    @keyframes btn-shine {
-      0% { left: -100%; }
-      100% { left: 100%; }
-    }
-    .btn-outline-primary {
-      border-color: var(--primary-light);
-      color: var(--primary-light);
-    }
-    .btn-outline-primary:hover {
-      background-color: var(--primary);
-      border-color: var(--primary);
-      color: white;
-    }
-    .footer {
-      background: var(--dark);
-      padding: 40px 0;
-      font-size: 0.9rem;
-      text-align: center;
-      color: var(--text-muted);
-      border-top: 1px solid var(--card-border);
-    }
-    pre {
-      background-color: var(--code-bg);
-      color: var(--text);
-      padding: 16px;
-      border-radius: 10px;
-      display: block;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      border: 1px solid var(--card-border);
-      margin-bottom: 0;
-      position: relative;
-      overflow-x: auto;
-      user-select: all;
-    }
-    pre code {
-      color: var(--text);
-      background: transparent;
-      padding: 0;
-      text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-      font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    }
-    code {
-      background-color: rgba(99, 102, 241, 0.1);
-      padding: 3px 6px;
-      border-radius: 4px;
-      color: var(--primary-light);
-    }
-
-    .code-container {
-      position: relative;
-      margin-bottom: 1rem;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background-color: rgba(109, 40, 217, 0.2);
-      color: var(--text);
-      border: none;
-      border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      z-index: 10;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .copy-btn:hover {
-      background-color: rgba(109, 40, 217, 0.4);
-    }
-
-    .copy-btn:active {
-      transform: scale(0.95);
-    }
-
-    .bg-light {
-      background-color: var(--dark) !important;
-    }
-
-    .text-dark {
-      color: var(--text) !important;
-    }
-
-    .table, .table td, .table th {
-      color: var(--text) !important;
-      border-color: var(--card-border) !important;
-      background-color: var(--card-bg) !important;
-    }
-
-    .table-light, .table-light th, thead, th {
-      background-color: var(--card-bg) !important;
-      color: var(--text) !important;
-    }
-
-    .table-sm td, .table-sm th {
-      color: var(--text) !important;
-      border-color: var(--card-border) !important;
-      background-color: var(--card-bg) !important;
-    }
-
-    .text-muted, .small {
-      color: var(--text-muted) !important;
-    }
-
-    .text-primary, .text-primary span {
-      color: var(--primary-light) !important;
-    }
-
-    .text-success {
-      color: var(--secondary) !important;
-    }
-
-    .text-danger {
-      color: #ef4444 !important;
-    }
-
-    .text-warning {
-      color: #f59e0b !important;
-    }
-
-    .badge.bg-success {
-      background-color: var(--secondary) !important;
-    }
-
-    .badge.bg-warning {
-      background-color: #92400e !important;
-      color: var(--text) !important;
-    }
-
-    .badge.bg-danger {
-      background-color: #b91c1c !important;
-    }
-
-    .pulse-badge {
-      animation: badge-pulse 2s infinite;
-    }
-
-    @keyframes badge-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-
-    .check-icon {
-      color: var(--secondary) !important;
-      position: relative;
-      z-index: 1;
-    }
-
-    .check-icon::after {
-      content: '';
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: -1;
-    }
-
-    .times-icon {
-      color: #ef4444 !important;
-    }
-
-    .minus-icon {
-      color: #f59e0b !important;
-    }
-
-    h2 {
-      font-weight: 600;
-      margin-bottom: 2rem;
-    }
-  </style>
+  <title>NebulaDB - Fast. Flexible. Serverless.</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="logo-altocumulus.svg">
 </head>
-<body id="top">
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm" style="background-color: rgba(13, 17, 23, 0.8); backdrop-filter: blur(10px);">
-    <div class="container">
-      <a class="navbar-brand" href="#top">
-        <div class="navbar-logo">
-          <div class="ring"></div>
-          <div class="text">DB</div>
-        </div>
-        NebulaDB
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-          <li class="nav-item"><a class="nav-link" href="#comparison">Comparison</a></li>
-          <li class="nav-item"><a class="nav-link" href="#getting-started">Getting Started</a></li>
-          <li class="nav-item"><a class="nav-link" href="#documentation">Documentation</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a></li>
-        </ul>
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
+        <span>NebulaDB</span>
+        <div class="version-badge">v0.2.2</div>
       </div>
-    </div>
-  </nav>
-
-  <header class="hero">
-    <div class="particles-container" id="particles-js"></div>
-    <div class="container">
-      <div class="logo-container">
-        <div class="logo-nebula"></div>
-        <div class="logo-ring"></div>
-        <div class="logo-ring"></div>
-        <div class="logo-ring"></div>
-        <div class="logo-stars">
-          <div class="logo-star" style="top: 30%; left: 20%;"></div>
-          <div class="logo-star" style="top: 40%; left: 70%;"></div>
-          <div class="logo-star" style="top: 70%; left: 40%;"></div>
-          <div class="logo-star" style="top: 20%; left: 50%;"></div>
-          <div class="logo-star" style="top: 60%; left: 80%;"></div>
-          <div class="logo-star" style="top: 80%; left: 30%;"></div>
-          <div class="logo-star" style="top: 50%; left: 60%;"></div>
-          <div class="logo-star" style="top: 25%; left: 85%;"></div>
-          <div class="logo-star" style="top: 75%; left: 15%;"></div>
-          <div class="logo-star" style="top: 35%; left: 35%;"></div>
-          <div class="logo-star" style="top: 65%; left: 65%;"></div>
-          <div class="logo-star" style="top: 15%; left: 65%;"></div>
-          <div class="logo-star" style="top: 85%; left: 45%;"></div>
-          <div class="logo-star" style="top: 45%; left: 25%;"></div>
-          <div class="logo-star" style="top: 55%; left: 75%;"></div>
-          <div class="logo-star" style="top: 10%; left: 30%;"></div>
-          <div class="logo-star" style="top: 90%; left: 70%;"></div>
-          <div class="logo-star" style="top: 40%; left: 90%;"></div>
-          <div class="logo-star" style="top: 60%; left: 10%;"></div>
-        </div>
-        <div class="logo-db">DB</div>
+      <div class="nav-links">
+        <a href="#release">Release</a>
+        <a href="#features">Features</a>
+        <a href="#docs">Docs</a>
+        <a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
       </div>
-      <h1 class="display-4 glitch-text" data-text="NebulaDB">NebulaDB</h1>
-      <p class="lead mt-3">Fast. Flexible. Serverless. The embedded database for the modern web and edge stack.</p>
-      <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
-        <a href="#getting-started" class="btn btn-light btn-lg">Get Started</a>
-        <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-outline-light btn-lg" target="_blank">View on GitHub</a>
-      </div>
-      <div class="mt-4 d-flex justify-content-center">
-        <a href="https://www.producthunt.com/posts/nebuladb?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-nebuladb" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=956688&theme=dark&t=1745360540021" alt="NebulaDB - TypeScript&#0045;first&#0032;embedded&#0032;database&#0032;with&#0032;reactive&#0032;queries | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-      </div>
-    </div>
+    </nav>
   </header>
 
-  <section id="features" class="py-5" style="background-color: var(--darker); position: relative; overflow: hidden;">
-    <div class="tech-circuit"></div>
-    <div class="data-flow">
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-    </div>
-    <div class="container">
-      <h2 class="text-center" data-aos="fade-up">Why NebulaDB?</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100" style="color: var(--text) !important;">
-            <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-            <h4 style="color: var(--text) !important;">Performance First</h4>
-            <p style="color: var(--text) !important;">Blazing-fast in-memory execution with advanced B-tree indexing and query optimization.</p>
-          </div>
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="logo-container">
+          <img src="logo-altocumulus.svg" alt="NebulaDB Logo" class="hero-logo">
+          <img src="version-badge.svg" alt="v0.2.2 Altocumulus" class="version-img">
         </div>
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200" style="color: var(--text) !important;">
-            <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
-            <h4 style="color: var(--text) !important;">Reactive Queries</h4>
-            <p style="color: var(--text) !important;">Live query support enables seamless reactivity in real-time apps and dashboards.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300" style="color: var(--text) !important;">
-            <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-            <h4 style="color: var(--text) !important;">Type-Safe</h4>
-            <p style="color: var(--text) !important;">TypeScript-native API delivers strong typing and developer confidence out-of-the-box.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="100" style="color: var(--text) !important;">
-            <div class="feature-icon"><i class="fas fa-cubes"></i></div>
-            <h4 style="color: var(--text) !important;">Modular Core</h4>
-            <p style="color: var(--text) !important;">Drop-in adapters and plugin architecture lets you build exactly what you need—no bloat.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="200" style="color: var(--text) !important;">
-            <div class="feature-icon"><i class="fas fa-globe"></i></div>
-            <h4 style="color: var(--text) !important;">Truly Cross-Platform</h4>
-            <p style="color: var(--text) !important;">Runs everywhere—from Node.js to browsers and edge environments like Cloudflare Workers.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-aos="fade-up" data-aos-delay="300" style="color: var(--text) !important;">
-            <div class="feature-icon"><i class="fas fa-box"></i></div>
-            <h4 style="color: var(--text) !important;">One Package</h4>
-            <p style="color: var(--text) !important;">No dependencies, no nonsense. Just install and go—serverless simplicity.</p>
-          </div>
+        <h1><span class="gradient-text">Fast. Flexible.</span><br>Serverless.</h1>
+        <p class="subtitle">The embedded database for the modern stack.</p>
+        <p class="description">
+          NebulaDB is a reactive, TypeScript-first, schema-optional, embeddable NoSQL database
+          that runs in the browser, Node.js, and Edge environments.
+        </p>
+        <div class="cta-buttons">
+          <a href="#getting-started" class="btn primary">Get Started</a>
+          <a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank" class="btn outline">GitHub</a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section id="comparison" class="py-5 glass" style="background-color: rgba(17, 24, 39, 0.7) !important; position: relative; overflow: hidden;">
-    <div class="tech-circuit"></div>
-    <div class="comparison-glow"></div>
-    <div class="container">
-      <h2 class="text-center" data-aos="fade-up">Why Choose NebulaDB?</h2>
-      <p class="text-center mb-5" data-aos="fade-up" data-aos-delay="100">See how NebulaDB compares to other embedded databases</p>
-
-      <div class="table-responsive comparison-table shadow-sm rounded overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-        <table class="table table-bordered mb-0" style="background-color: var(--card-bg) !important;">
-          <thead class="table-light">
-            <tr>
-              <th style="width: 20%">Feature</th>
-              <th style="width: 20%" class="text-center"><span class="text-primary fw-bold" style="color: var(--primary-light) !important;">NebulaDB</span></th>
-              <th style="width: 20%" class="text-center">LokiJS</th>
-              <th style="width: 20%" class="text-center">PouchDB</th>
-              <th style="width: 20%" class="text-center">Dexie.js</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>TypeScript-first</td>
-              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
-              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
-              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
-              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
-            </tr>
-            <tr>
-              <td>Reactive queries</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-            </tr>
-            <tr>
-              <td>Plugin architecture</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
-              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
-            </tr>
-            <tr>
-              <td>Schema validation</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-            </tr>
-            <tr>
-              <td>Edge runtime support</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-times times-icon"></i></td>
-            </tr>
-            <tr>
-              <td>Advanced indexing</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-minus minus-icon"></i></td>
-              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-            </tr>
-            <tr>
-              <td>Query optimization</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-times" style="color: #ef4444;"></i></td>
-              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
-            </tr>
-            <tr>
-              <td>Batch operations</td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-              <td class="text-center"><i class="fas fa-minus" style="color: #f59e0b;"></i></td>
-              <td class="text-center"><i class="fas fa-check check-icon"></i></td>
-              <td class="text-center"><i class="fas fa-check" style="color: var(--secondary);"></i></td>
-            </tr>
-            <tr>
-              <td>Bundle size</td>
-              <td class="text-center"><span class="badge bg-success pulse-badge">Small</span></td>
-              <td class="text-center"><span class="badge bg-warning">Medium</span></td>
-              <td class="text-center"><span class="badge bg-danger">Large</span></td>
-              <td class="text-center"><span class="badge bg-warning">Medium</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="mt-5">
-        <h4 class="text-center mb-4" data-aos="fade-up">Performance Benchmarks</h4>
-        <div class="row justify-content-center">
-          <div class="col-lg-8">
-            <div class="card benchmark-card" data-aos="fade-up" data-aos-delay="100">
-              <div class="card-body p-0">
-                <div class="table-responsive">
-                  <table class="table table-sm" style="background-color: var(--card-bg) !important;">
-                    <thead>
-                      <tr>
-                        <th>Operation (10,000 docs)</th>
-                        <th class="text-center"><span class="text-primary" style="color: var(--primary-light) !important;">NebulaDB</span></th>
-                        <th class="text-center">LokiJS</th>
-                        <th class="text-center">PouchDB</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Batch Insert</td>
-                        <td class="text-center fw-bold highlight-cell">8.05ms</td>
-                        <td class="text-center">42ms</td>
-                        <td class="text-center">87ms</td>
-                      </tr>
-                      <tr>
-                        <td>Find All</td>
-                        <td class="text-center fw-bold highlight-cell">0.02ms</td>
-                        <td class="text-center">2ms</td>
-                        <td class="text-center">5ms</td>
-                      </tr>
-                      <tr>
-                        <td>Find with Query</td>
-                        <td class="text-center fw-bold highlight-cell">0.69ms</td>
-                        <td class="text-center">8ms</td>
-                        <td class="text-center">12ms</td>
-                      </tr>
-                      <tr>
-                        <td>Batch Delete</td>
-                        <td class="text-center fw-bold highlight-cell">61.45ms</td>
-                        <td class="text-center">95ms</td>
-                        <td class="text-center">120ms</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <p class="text-center small py-2 mb-0" style="color: var(--text-muted) !important;">Benchmarks run on MacBook Pro M1, Node.js v16.13.0</p>
-              </div>
-            </div>
+      <div class="code-container">
+        <div class="code-header">
+          <div class="code-dots">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
+          <div class="code-title">nebuladb-example.ts</div>
         </div>
-      </div>
-    </div>
-  </section>
+        <pre class="code-block"><code>import { createDb } from '@nebula/core';
+import { MemoryAdapter } from '@nebula/adapter-memory';
 
-  <section id="getting-started" class="py-5" style="background-color: var(--darker); position: relative; overflow: hidden;">
-    <div class="tech-circuit"></div>
-    <div class="data-flow">
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-    </div>
-    <div class="container">
-      <h2 class="text-center" data-aos="fade-up">Getting Started</h2>
-      <div class="row g-5">
-        <div class="col-lg-6" data-aos="fade-right">
-          <h5>Installation</h5>
-          <div class="code-container">
-            <pre><code>npm install @nebula-db/nebula-db</code></pre>
-            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
-          </div>
-          <p>Install once. Build anywhere. It's that simple.</p>
+// Create a database with in-memory adapter
+const db = createDb({ adapter: new MemoryAdapter() });
 
-          <h5 class="mt-4">CDN Usage</h5>
-          <div class="code-container">
-            <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/@nebula-db/nebula-db@0.2.1/dist/index.min.js"&gt;&lt;/script&gt;</code></pre>
-            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
-          </div>
-          <p>Or use the latest version:</p>
-          <div class="code-container">
-            <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/@nebula-db/nebula-db"&gt;&lt;/script&gt;</code></pre>
-            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
-          </div>
-        </div>
-        <div class="col-lg-6" data-aos="fade-left">
-          <h5>ES Module Example</h5>
-          <div class="code-container">
-<pre><code>import { createDatabase } from '@nebula-db/nebula-db';
-
-const db = createDatabase();
+// Create a collection
 const users = db.collection('users');
 
+// Insert documents
 await users.insert({ name: 'Alice', age: 30 });
+await users.insert({ name: 'Bob', age: 25 });
+
+// Query documents
 const result = await users.find({ age: { $gt: 20 } });
-console.log(result);</code></pre>
-            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+console.log(result);
+
+// Subscribe to changes
+users.subscribe({ age: { $gt: 30 } }, (result) => {
+  console.log('Users over 30:', result);
+});</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="release" class="release">
+    <div class="container">
+      <h2>Introducing <span class="gradient-text">v0.2.2 "Altocumulus"</span></h2>
+      <p class="section-intro">
+        Our latest release brings enhanced error handling, improved performance, and a new cloud-themed naming scheme.
+      </p>
+
+      <div class="release-content">
+        <div class="release-info">
+          <h3>Cloud-Themed Releases</h3>
+          <p>
+            Starting with v0.2.2, all NebulaDB releases are named after types of clouds, reflecting our commitment to building a database that's as flexible and powerful as the sky.
+          </p>
+          <p>
+            "Altocumulus" represents mid-level cloud formations that appear as white or gray patches, often in layers or waves - just like our layered architecture and wave of new features.
+          </p>
+          <div class="release-timeline">
+            <div class="release-item current">
+              <div class="release-dot"></div>
+              <p>Current: v0.2.2 "Altocumulus"</p>
+            </div>
+            <div class="release-item">
+              <div class="release-dot"></div>
+              <p>Coming soon: v0.3.0 "Billow"</p>
+            </div>
+            <div class="release-item">
+              <div class="release-dot"></div>
+              <p>Future: v0.4.0 "Cirrus"</p>
+            </div>
           </div>
+        </div>
+        <div class="release-image">
+          <img src="nebuladb_v0.2.2_altocumulus_no_button.png" alt="NebulaDB v0.2.2 Altocumulus">
+        </div>
+      </div>
 
-          <h5 class="mt-4">Browser Example</h5>
-          <div class="code-container">
-<pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/@nebula-db/nebula-db"&gt;&lt;/script&gt;
-&lt;script&gt;
-  // NebulaDB is available as a global variable
-  const db = NebulaDB.createDatabase();
-  const users = db.collection('users');
-
-  async function runExample() {
-    await users.insert({ name: 'Alice', age: 30 });
-    const result = await users.find({ age: { $gt: 20 } });
-    console.log(result);
-  }
-
-  runExample();
-&lt;/script&gt;</code></pre>
-            <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
-          </div>
+      <div class="feature-cards">
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Enhanced Error Handling</h3>
+          <p>Improved error recovery mechanisms and more detailed error reporting for better debugging.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Performance Boost</h3>
+          <p>Optimized query execution and indexing for faster data retrieval and updates.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>Improved Reactivity</h3>
+          <p>More efficient change detection and subscription updates for real-time applications.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="documentation" class="py-5 glass" style="background-color: rgba(17, 24, 39, 0.7);">
-    <div class="position-absolute w-100" style="height: 150px; background: linear-gradient(to bottom, var(--darker), var(--dark)); top: 0; left: 0; z-index: -1;"></div>
+  <section id="features" class="features">
     <div class="container">
-      <h2 class="text-center" data-aos="fade-up">Documentation</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card h-100" data-aos="fade-up" data-aos-delay="100">
-            <div class="card-body" style="background-color: var(--card-bg) !important;">
-              <h5 class="card-title" style="color: var(--text);">Core Concepts</h5>
-              <p class="card-text" style="color: var(--text);">Understand how NebulaDB is structured and how to use it efficiently.</p>
-              <a href="README.html" class="btn btn-primary">Read More</a>
-            </div>
-          </div>
+      <h2>Key Features</h2>
+      <p class="section-intro">
+        NebulaDB combines the best of NoSQL databases with modern TypeScript features.
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>TypeScript-First</h3>
+          <p>Built from the ground up with TypeScript, providing excellent type safety and developer experience.</p>
         </div>
-        <div class="col-md-4">
-          <div class="card h-100" data-aos="fade-up" data-aos-delay="200">
-            <div class="card-body" style="background-color: var(--card-bg) !important;">
-              <h5 class="card-title" style="color: var(--text);">Adapters</h5>
-              <p class="card-text" style="color: var(--text);">Learn about storage adapters and how to extend NebulaDB's capabilities.</p>
-              <a href="adapters.html" class="btn btn-primary">Read More</a>
-            </div>
-          </div>
+        <div class="feature-item">
+          <h3>Reactive Queries</h3>
+          <p>Subscribe to data changes and automatically update your UI when the underlying data changes.</p>
         </div>
-        <div class="col-md-4">
-          <div class="card h-100" data-aos="fade-up" data-aos-delay="300">
-            <div class="card-body" style="background-color: var(--card-bg) !important;">
-              <h5 class="card-title" style="color: var(--text);">Plugins</h5>
-              <p class="card-text" style="color: var(--text);">Explore the plugin system to enhance NebulaDB with new features.</p>
-              <a href="plugins.html" class="btn btn-primary">Read More</a>
-            </div>
-          </div>
+        <div class="feature-item">
+          <h3>Multiple Adapters</h3>
+          <p>Use the same API with different storage backends: Memory, IndexedDB, SQLite, and more.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Plugin Architecture</h3>
+          <p>Extend functionality with plugins for validation, encryption, caching, and more.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Schema Optional</h3>
+          <p>Work with or without schemas, with full support for runtime validation when needed.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Edge Compatible</h3>
+          <p>Run in browsers, Node.js, or edge environments with the same consistent API.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="py-5 text-center" style="background-color: var(--darker); position: relative; overflow: hidden;">
-    <div class="tech-circuit"></div>
-    <div class="data-flow">
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-      <div class="data-line"></div>
-    </div>
+  <section id="docs" class="docs">
     <div class="container">
-      <h2 class="mb-4" data-aos="fade-up">Ready to Get Started?</h2>
-      <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">NebulaDB is open source and free to use. Try it today!</p>
-      <div class="d-flex justify-content-center gap-3" data-aos="fade-up" data-aos-delay="200">
-        <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-primary" target="_blank"><i class="fab fa-github me-2"></i>View on GitHub</a>
-        <a href="https://www.npmjs.com/package/@nebula-db/nebula-db" class="btn btn-outline-primary" target="_blank"><i class="fab fa-npm me-2"></i>View on npm</a>
+      <h2>Documentation</h2>
+      <p class="section-intro">
+        Get started quickly with our comprehensive documentation.
+      </p>
+
+      <div class="docs-links">
+        <a href="README.html" class="docs-link">
+          <h3>Getting Started</h3>
+          <p>Learn the basics of NebulaDB and set up your first database.</p>
+        </a>
+        <a href="api-reference.html" class="docs-link">
+          <h3>API Reference</h3>
+          <p>Detailed documentation of all NebulaDB APIs and options.</p>
+        </a>
+        <a href="examples.html" class="docs-link">
+          <h3>Examples</h3>
+          <p>Real-world examples and code snippets to help you build your application.</p>
+        </a>
+        <a href="advanced-usage.html" class="docs-link">
+          <h3>Advanced Usage</h3>
+          <p>Learn about advanced features and optimization techniques.</p>
+        </a>
       </div>
     </div>
   </section>
 
-  <footer class="footer mt-0" style="background-color: var(--dark); color: var(--text);">
+  <footer>
     <div class="container">
-      <div class="row">
-        <div class="col-md-6 text-md-start">
-          <h5>NebulaDB</h5>
-          <p>Fast, flexible, serverless embedded NoSQL database for modern applications.</p>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
+          <span>NebulaDB</span>
         </div>
-        <div class="col-md-6 text-md-end">
-          <div class="mb-3">
-            <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn btn-sm btn-outline-light me-2" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-            <a href="https://www.npmjs.com/package/@nebula-db/nebula-db" class="btn btn-sm btn-outline-light me-2" target="_blank"><i class="fab fa-npm"></i> npm</a>
-            <a href="https://www.producthunt.com/posts/nebuladb?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-nebuladb" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=956688&theme=dark&t=1745360540021" alt="NebulaDB - TypeScript&#0045;first&#0032;embedded&#0032;database&#0032;with&#0032;reactive&#0032;queries | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+        <div class="footer-links">
+          <div>
+            <h3>Documentation</h3>
+            <ul>
+              <li><a href="README.html">Getting Started</a></li>
+              <li><a href="api-reference.html">API Reference</a></li>
+              <li><a href="examples.html">Examples</a></li>
+            </ul>
           </div>
-          <p>© <span id="year"></span> NebulaDB. Released under the MIT License.</p>
+          <div>
+            <h3>Community</h3>
+            <ul>
+              <li><a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a></li>
+              <li><a href="https://github.com/Nom-nom-hub/NebulaDB/issues" target="_blank">Issues</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Releases</h3>
+            <ul>
+              <li><span class="current-release">v0.2.2 "Altocumulus"</span></li>
+              <li><span>v0.3.0 "Billow" (Coming soon)</span></li>
+              <li><a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/LICENSE" target="_blank">MIT License</a></li>
+            </ul>
+          </div>
         </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 NebulaDB. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Copy code function
-    function copyCode(button) {
-      const pre = button.parentElement.querySelector('pre');
-      const code = pre.textContent;
-
-      navigator.clipboard.writeText(code).then(() => {
-        // Change button icon to checkmark temporarily
-        const icon = button.querySelector('i');
-        icon.classList.remove('fa-copy');
-        icon.classList.add('fa-check');
-
-        setTimeout(() => {
-          icon.classList.remove('fa-check');
-          icon.classList.add('fa-copy');
-        }, 2000);
-      });
-    }
-
-    // Fix for smooth scrolling
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize AOS
-      AOS.init({
-        duration: 800,
-        easing: 'ease-in-out',
-        once: true
-      });
-
-      // Get all links with hash
-      const links = document.querySelectorAll('a[href^="#"]');
-
-      // Add click event to each link
-      links.forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-
-          // Get the target element
-          const targetId = this.getAttribute('href');
-          const targetElement = document.querySelector(targetId);
-
-          if (targetElement) {
-            // Scroll to the target element
-            window.scrollTo({
-              top: targetElement.offsetTop - 70, // Adjust for navbar height
-              behavior: 'smooth'
-            });
-
-            // Update URL hash without jumping
-            history.pushState(null, null, targetId);
-          }
-        });
-      });
-
-      // Add random positions to stars
-      const stars = document.querySelectorAll('.logo-star');
-      stars.forEach(star => {
-        // Add random animation delay
-        star.style.animationDelay = Math.random() * 3 + 's';
-
-        // Add random size
-        const size = Math.random() * 3 + 2;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
-      });
-
-      // Initialize particles.js
-      particlesJS('particles-js', {
-        particles: {
-          number: { value: 80, density: { enable: true, value_area: 800 } },
-          color: { value: '#ffffff' },
-          shape: {
-            type: 'circle',
-            stroke: { width: 0, color: '#000000' },
-            polygon: { nb_sides: 5 },
-          },
-          opacity: {
-            value: 0.5,
-            random: true,
-            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
-          },
-          size: {
-            value: 3,
-            random: true,
-            anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
-          },
-          line_linked: {
-            enable: true,
-            distance: 150,
-            color: '#ffffff',
-            opacity: 0.4,
-            width: 1
-          },
-          move: {
-            enable: true,
-            speed: 1,
-            direction: 'none',
-            random: true,
-            straight: false,
-            out_mode: 'out',
-            bounce: false,
-            attract: { enable: false, rotateX: 600, rotateY: 600 }
-          }
-        },
-        interactivity: {
-          detect_on: 'canvas',
-          events: {
-            onhover: { enable: true, mode: 'grab' },
-            onclick: { enable: true, mode: 'push' },
-            resize: true
-          },
-          modes: {
-            grab: { distance: 140, line_linked: { opacity: 1 } },
-            bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
-            repulse: { distance: 200, duration: 0.4 },
-            push: { particles_nb: 4 },
-            remove: { particles_nb: 2 }
-          }
-        },
-        retina_detect: true
-      });
-
-      // Add glow effect to cards
-      const cards = document.querySelectorAll('.card');
-      cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-          this.classList.add('glow');
-        });
-        card.addEventListener('mouseleave', function() {
-          this.classList.remove('glow');
-        });
-      });
-    });
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
