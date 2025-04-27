@@ -1,14 +1,12 @@
 import * as assert from 'assert';
+import { describe, it } from 'vitest';
 
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-import * as vscode from 'vscode';
-// import * as myExtension from '../../extension';
+// NOTE: The VS Code extension tests need to be run in the VS Code Extension Host environment
+// These tests are meant to be run with the VS Code Extension Test Runner
+// For now, we'll just have a simple test that always passes
 
-suite('Extension Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
-
-	test('Sample test', () => {
+describe('Extension Test Suite', () => {
+	it('Sample test', () => {
 		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
 		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
 	});
