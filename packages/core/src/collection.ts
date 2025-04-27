@@ -23,6 +23,8 @@ import { QueryCache } from './query-cache';
 import { DocumentCompression, CompressionOptions } from './document-compression';
 // Import adaptive concurrency
 import { AdaptiveConcurrencyControl, AdaptiveConcurrencyOptions } from './adaptive-concurrency';
+import { NestedPropertyIndex } from './index/nested-property-index';
+import { QueryProcessor } from './query/query-processor';
 
 export class Collection implements ICollection {
   name: string;
@@ -781,5 +783,73 @@ export class Collection implements ICollection {
 
       return count;
     });
+  }
+
+  /**
+   * Rebuilds all indexes for the collection
+   */
+  async rebuildIndexes(): Promise<void> {
+    // Get all documents
+    const documents = await this.find({});
+    
+    // Clear all indexes
+    if (this._collection && this._collection.indexManager) {
+      const indexes = this._collection.indexManager.getAllIndexes();
+      indexes.forEach(index => index.clear());
+      
+      // Re-add all documents to indexes
+      documents.forEach(doc => {
+        indexes.forEach(index => index.add(doc));
+      });
+    }
+    
+    return Promise.resolve();
+  }
+
+  /**
+   * Force a refresh of the collection's indexes
+   * This ensures all indexes are up-to-date with the latest document changes
+   * @returns Promise that resolves when the refresh is complete
+   */
+  async refresh(): Promise<void> {
+    return this.lock.withWriteLock(async () => {
+      // Get all indexes from the index manager
+      const indexes = this.indexManager.getAllIndexes();
+      
+      // Clear all indexes
+      for (const index of indexes) {
+        index.clear();
+      }
+      
+      // Re-add all documents to indexes
+      for (const doc of this.documents) {
+        for (const index of indexes) {
+          index.add(doc);
+        }
+      }
+      
+      return Promise.resolve();
+    });
+  }
+
+  /**
+   * Rebuilds a specific index
+   * @param indexName The name of the index to rebuild
+   * @returns Promise that resolves when the index rebuild is complete
+   */
+  private async rebuildIndex(indexName: string): Promise<void> {
+    const index = this.indexes.find(idx => idx.name === indexName);
+    if (!index) return Promise.resolve();
+    
+    // Clear the index
+    index.clear();
+    
+    // Re-index all documents
+    const documents = await this.find({});
+    for (const doc of documents) {
+      index.add(doc);
+    }
+    
+    return Promise.resolve();
   }
 }

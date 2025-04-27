@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-validation",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Schema validation plugin for NebulaDB using Zod",
   "repository": {
     "type": "git",
@@ -41,6 +41,6 @@
     "zod": "^3.22.4"
   },
   "peerDependencies": {
-    "@nebula-db/core": "^0.2.0"
+    "@nebula-db/core": "^0.2.1"
   }
 }

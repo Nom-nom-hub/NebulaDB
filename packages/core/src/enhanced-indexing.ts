@@ -178,6 +178,17 @@ export class EnhancedIndex {
   }
 
   /**
+   * Check if a document matches the partial filter
+   */
+  private matchesPartialFilter(doc: Document): boolean {
+    // If no partial filter is defined, all documents match
+    if (!this.options.partial) return true;
+    
+    // Use the query matcher to check if the document matches the filter
+    return matchDocument(doc, this.options.partial.filter);
+  }
+
+  /**
    * Add a document to the index
    */
   add(doc: Document): void {
@@ -218,55 +229,6 @@ export class EnhancedIndex {
       // Add to B-tree
       this.btree.insert(key, doc.id);
     }
-  }
-
-  /**
-   * Check if a document matches the partial index filter
-   */
-  private matchesPartialFilter(doc: Document): boolean {
-    if (!this.options.partial) return true;
-
-    // Import matchDocument from the query module
-    // This is a simplified version for demonstration
-    return this.matchPartialDocument(doc, this.options.partial.filter);
-  }
-
-  /**
-   * Simple implementation of document matching for partial indexes
-   */
-  private matchPartialDocument(doc: Document, filter: any): boolean {
-    // Simple implementation for basic filters
-    for (const [field, condition] of Object.entries(filter)) {
-      if (typeof condition === 'object' && condition !== null) {
-        // Handle operators like $gt, $lt, etc.
-        for (const [op, value] of Object.entries(condition)) {
-          switch (op) {
-            case '$eq':
-              if (doc[field] !== value) return false;
-              break;
-            case '$gt':
-              if (!(doc[field] > value)) return false;
-              break;
-            case '$gte':
-              if (!(doc[field] >= value)) return false;
-              break;
-            case '$lt':
-              if (!(doc[field] < value)) return false;
-              break;
-            case '$lte':
-              if (!(doc[field] <= value)) return false;
-              break;
-            case '$exists':
-              if ((field in doc) !== value) return false;
-              break;
-          }
-        }
-      } else {
-        // Simple equality check
-        if (doc[field] !== condition) return false;
-      }
-    }
-    return true;
   }
 
   /**

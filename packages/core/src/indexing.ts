@@ -100,6 +100,19 @@ export class Index {
    * Update a document in the index
    */
   update(oldDoc: Document, newDoc: Document): void {
+    // First check if the new document would violate unique constraints
+    if (this.type === IndexType.UNIQUE) {
+      const newKey = this.getIndexKey(newDoc);
+      
+      if (newKey !== undefined) {
+        const existingId = this.uniqueValues.get(String(newKey));
+        if (existingId !== undefined && existingId !== newDoc.id) {
+          throw new Error(`Unique constraint violation for index ${this.name}: ${newKey}`);
+        }
+      }
+    }
+    
+    // If no violation, proceed with update
     this.remove(oldDoc);
     this.add(newDoc);
   }
@@ -337,5 +350,58 @@ export class IndexManager {
     for (const doc of documents) {
       this.addDocument(doc);
     }
+  }
+
+  /**
+   * Creates a composite index for multiple fields
+   * @param fields Array of field names to index
+   * @returns The created index
+   */
+  createCompositeIndex(fields: string[]): Index {
+    if (!fields || fields.length === 0) {
+      throw new Error('Cannot create composite index with empty fields array');
+    }
+
+    const indexName = fields.join('_');
+    
+    if (this.indexes.has(indexName)) {
+      return this.indexes.get(indexName)!;
+    }
+
+    const index = new CompositeIndex(fields);
+    this.indexes.set(indexName, index);
+    
+    // Index existing documents
+    this.documents.forEach(doc => {
+      index.addDocument(doc);
+    });
+    
+    return index;
+  }
+
+  /**
+   * Creates a partial index based on a filter condition
+   * @param field Field name to index
+   * @param filterQuery Query to filter documents for indexing
+   * @returns The created index
+   */
+  createPartialIndex(field: string, filterQuery: Query): Index {
+    const indexName = `${field}_partial`;
+    
+    if (this.indexes.has(indexName)) {
+      return this.indexes.get(indexName)!;
+    }
+
+    const index = new PartialIndex(field, filterQuery);
+    this.indexes.set(indexName, index);
+    
+    // Index existing documents that match the filter
+    this.documents.forEach(doc => {
+      if (matchDocument(doc, filterQuery)) {
+        index.addDocument(doc);
+      }
+    });
+    
+    return index;
   }
 }

@@ -179,3 +179,40 @@ console.time('With index');
 const resultsWithIndex = await products.find({ category: 'B', inStock: true });
 console.timeEnd('With index');
 ```
+
+## Partial Indexes
+
+Partial indexes only index documents that match a specified filter. This can improve performance and reduce memory usage when you only need to query a subset of documents.
+
+```typescript
+// Create a partial index for active users only
+users.createIndex({
+  name: 'active_users_idx',
+  fields: ['lastActive'],
+  type: IndexType.SINGLE,
+  options: {
+    partial: {
+      filter: { active: true }
+    }
+  }
+});
+
+// This query will use the partial index
+const activeUsers = await users.find({ 
+  active: true,
+  lastActive: { $gt: new Date('2023-01-01') }
+});
+
+// This query won't use the partial index because it doesn't include the filter
+const recentUsers = await users.find({
+  lastActive: { $gt: new Date('2023-01-01') }
+});
+```
+
+Partial indexes are particularly useful when:
+
+1. You frequently query a specific subset of your data
+2. The subset is significantly smaller than the full collection
+3. You want to enforce unique constraints on a subset of documents
+
+For example, you might create a partial index on `email` for verified users only, ensuring uniqueness only among verified accounts.

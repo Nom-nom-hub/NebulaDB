@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-sqlite",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "SQLite adapter for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,7 +34,7 @@
     "better-sqlite3": "^9.2.2"
   },
   "peerDependencies": {
-    "@nebula-db/core": "^0.2.0"
+    "@nebula-db/core": "^0.2.1"
   },
   "repository": {
     "type": "git",

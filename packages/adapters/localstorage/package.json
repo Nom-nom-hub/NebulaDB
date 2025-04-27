@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-localstorage",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "LocalStorage adapter for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -30,7 +30,7 @@
     "vitest": "^1.2.1"
   },
   "peerDependencies": {
-    "@nebula-db/core": "^0.2.0"
+    "@nebula-db/core": "^0.2.1"
   },
   "repository": {
     "type": "git",

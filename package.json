@@ -1,6 +1,6 @@
 {
   "name": "nebula-db",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Fast. Flexible. Serverless. The embedded database for the modern stack.",
   "private": true,
   "repository": {
@@ -17,8 +17,8 @@
     "pretest": "node ./scripts/check-node-version.js",
     "prebuild": "node ./scripts/check-node-version.js",
     "build": "./scripts/build.sh",
-    "test": "./scripts/test.sh",
-    "test:watch": "cd tests && npm run test:watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:coverage": "cd tests && npm run test:coverage",
     "test:basic": "node tests/basic-test.js",
     "benchmark": "node benchmark.js",
@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "@flash-install/cli": "^1.3.6",
+    "esbuild": "^0.25.3",
     "marked": "^15.0.9"
   }
 }

@@ -1,10 +1,10 @@
 /**
- * Document type with required id field
+ * Base document interface
  */
-export type Document = {
+export interface Document {
   id: string;
   [key: string]: any;
-};
+}
 
 /**
  * Query operators for filtering documents
@@ -44,7 +44,9 @@ export type QueryCondition = {
  * Logical query combining multiple conditions
  */
 export type LogicalQuery = {
-  [K in LogicalOperator]?: Query[];
+  $and?: Array<QueryCondition | LogicalQuery>;
+  $or?: Array<QueryCondition | LogicalQuery>;
+  $not?: QueryCondition | LogicalQuery;
 };
 
 /**
@@ -154,15 +156,20 @@ export type SubscriptionCallback = (docs: Document[]) => void;
 export interface ICollection {
   name: string;
   insert(doc: Omit<Document, 'id'> & { id?: string }): Promise<Document>;
+  insertBatch(docs: (Omit<Document, 'id'> & { id?: string })[]): Promise<Document[]>;
   find(query?: Query): Promise<Document[]>;
   findOne(query: Query): Promise<Document | null>;
   update(query: Query, update: UpdateOperation): Promise<number>;
+  updateOne(query: Query, update: UpdateOperation): Promise<boolean>;
   delete(query: Query): Promise<number>;
-  subscribe(query: Query, callback: SubscriptionCallback): () => void;
+  deleteOne(query: Query): Promise<boolean>;
+  count(query?: Query): Promise<number>;
+  subscribe(query: Query, callback: SubscriptionCallback): string;
+  unsubscribe(id: string): void;
   createIndex(definition: IndexDefinition): void;
-  dropIndex(name: string): boolean;
+  dropIndex(name: string): void;
   getIndexes(): IndexDefinition[];
-
+  refresh(): Promise<void>;
   // Batch operations
   insertBatch(docs: (Omit<Document, 'id'> & { id?: string })[]): Promise<Document[]>;
   updateBatch(queries: Query[], updates: UpdateOperation[]): Promise<number>;
@@ -189,9 +196,7 @@ export interface ICollection {
 /**
  * Database interface
  */
-export interface IDatabase {
-  collection(name: string, options?: CollectionOptions): ICollection;
-  collections: Map<string, ICollection>;
-  adapter: Adapter;
-  plugins: Plugin[];
+export interface Database {
+  collection(name: string): ICollection;
+  // Add other necessary methods
 }
