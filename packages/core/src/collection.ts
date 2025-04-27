@@ -97,7 +97,16 @@ export class Collection implements ICollection {
     // Create default indexes if specified in options
     if (options.indexes) {
       for (const indexDef of options.indexes) {
-        this.createIndex(indexDef);
+        // Convert from types.IndexDefinition to enhanced-indexing.IndexDefinition
+        const enhancedDefinition: EnhancedIndexDefinition = {
+          name: indexDef.name,
+          fields: indexDef.fields,
+          type: indexDef.type === 'single' ? IndexType.SINGLE :
+                indexDef.type === 'compound' ? IndexType.COMPOUND :
+                indexDef.type === 'unique' ? IndexType.UNIQUE :
+                indexDef.type === 'text' ? IndexType.TEXT : IndexType.SINGLE
+        };
+        this.createEnhancedIndex(enhancedDefinition);
       }
     }
 
@@ -458,9 +467,9 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Create an index on the collection
+   * Create an enhanced index on the collection (internal method)
    */
-  createIndex(indexDef: EnhancedIndexDefinition): void {
+  private createEnhancedIndex(indexDef: EnhancedIndexDefinition): void {
     this.indexManager.createIndex(indexDef);
     // Rebuild the index with existing documents
     this.indexManager.rebuild(this.documents);
