@@ -24,7 +24,7 @@
 
 NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database that runs in the browser, Node.js, and Edge environments. It features advanced indexing, optimized query processing, modular adapters for persistence, reactive live queries, extensibility via plugins, and blazing-fast in-memory operations with adaptive concurrency control.
 
-## Latest Release: v0.2.2 (April 27, 2025)
+## Latest Release: v0.2.2 (April 26, 2025)
 
 The latest release includes significant improvements to error handling and recovery mechanisms:
 

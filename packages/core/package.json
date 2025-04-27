@@ -34,9 +34,10 @@
   "devDependencies": {
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.1"
+    "vitest": "^3.1.2"
   },
   "dependencies": {
-    "@preact/signals-core": "^1.5.1"
+    "@preact/signals-core": "^1.5.1",
+    "vite": "6.3.3"
   }
 }
