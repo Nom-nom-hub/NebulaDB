@@ -123,13 +123,13 @@ describe('Migration Plugin Schema Version Helpers', () => {
 
   it('should return highest applied migration version', async () => {
     const plugin = createMigrationPlugin({ migrations: [
-      { version: 1, name: 'v1', collection: 'test', up: async db => {} },
-      { version: 2, name: 'v2', collection: 'test', up: async db => {} }
+      { version: 1, name: 'v1', collection: 'test', up: async () => {} },
+      { version: 2, name: 'v2', collection: 'test', up: async () => {} }
     ] });
-    const db = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
-    await db.init?.();
+    const newDb = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
+    await newDb.init?.();
     await plugin.applyMigrations();
-    const version = await plugin.getSchemaVersion(db, 'test');
+    const version = await plugin.getSchemaVersion(newDb, 'test');
     expect(version).toBe(2);
   });
 

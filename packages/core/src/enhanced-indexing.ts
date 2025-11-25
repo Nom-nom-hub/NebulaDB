@@ -297,7 +297,6 @@ export class EnhancedIndex {
       return null; // Query can't use this index
     }
     const { operator, value } = queryInfo;
-    let result: Set<string>;
     let candidateIds: string[] = [];
     switch (operator) {
       case 'eq':

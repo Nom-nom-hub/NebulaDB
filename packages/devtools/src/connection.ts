@@ -1,7 +1,6 @@
 import { Database, Document, Query, UpdateOperation } from '@nebula-db/core';
 import { io } from 'socket.io-client';
-import { ConnectionOptions, EventType, Event, DatabaseSnapshot } from './types';
-import { createMigrationPlugin } from '../../../packages/plugins/migration/src';
+import { ConnectionOptions, EventType, Event } from './types';
 
 /**
  * Create a connection to the DevTools server

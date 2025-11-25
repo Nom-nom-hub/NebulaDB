@@ -21,8 +21,8 @@ export async function launchDevtools(port: number): Promise<void> {
       // TODO: Implement devtools installation
       // For now, just show a message
       spinner.stop();
-      console.log(chalk.yellow('Devtools are not yet implemented.'));
-      console.log('This feature will be available in a future release.');
+      spinner.warn('Devtools are not yet implemented.');
+      spinner.info('This feature will be available in a future release.');
       return;
     }
     
@@ -70,7 +70,7 @@ export async function launchDevtools(port: number): Promise<void> {
     // Start the server
     server.listen(port, () => {
       spinner.succeed(`NebulaDB devtools running at ${chalk.cyan(`http://localhost:${port}`)}`);
-      console.log('\nPress Ctrl+C to stop the server.');
+      spinner.info('Press Ctrl+C to stop the server.');
     });
     
     // Handle server errors

@@ -210,12 +210,12 @@ MIT
     );
 
     spinner.succeed(`Adapter ${chalk.cyan(adapterName)} generated successfully!`);
-    console.log(`\nTo use your new adapter:`);
-    console.log(`1. cd ${directory}/${adapterName}`);
-    console.log(`2. npm install`);
-    console.log(`3. npm run build`);
-    console.log(`\nThen import it in your project:`);
-    console.log(`import { ${className} } from '@nebula/adapter-${adapterName}';`);
+    spinner.info(`To use your new adapter:`);
+    spinner.info(`1. cd ${directory}/${adapterName}`);
+    spinner.info(`2. npm install`);
+    spinner.info(`3. npm run build`);
+    spinner.info(`Then import it in your project:`);
+    spinner.info(`import { ${className} } from '@nebula/adapter-${adapterName}';`);
 
   } catch (error) {
     spinner.fail(`Failed to generate adapter: ${error.message}`);

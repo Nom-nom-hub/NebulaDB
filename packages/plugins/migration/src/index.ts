@@ -130,9 +130,9 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
   }
   
   /**
-   * Revert migrations
-   */
-  async function revertMigrations(targetVersion?: number): Promise<void> {
+    * Revert migrations
+    */
+   async function revertMigrations(): Promise<void> {
     // Revert migrations for each collection
     for (const migration of migrations) {
       const appliedMigrations = await getAppliedMigrations(migration.collection);
