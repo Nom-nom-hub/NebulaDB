@@ -322,13 +322,14 @@ export class EnhancedIndex {
           candidateIds = [];
         }
         break;
-      case 'prefix':
-        candidateIds = [];
-        for (let i = 0; i < this.btree.keys.length; i++) {
-          if (typeof this.btree.keys[i] === 'string' && this.btree.keys[i].startsWith(value)) {
-            candidateIds.push(...this.btree.values[i]);
-          }
-        }
+        case 'prefix':
+         candidateIds = [];
+         for (let i = 0; i < this.btree.keys.length; i++) {
+           const key = this.btree.keys[i];
+           if (typeof key === 'string' && key.startsWith(value as string)) {
+             candidateIds.push(...this.btree.values[i]);
+           }
+         }
         break;
       case 'range':
         if (Array.isArray(value) && value.length === 2) {
@@ -461,8 +462,11 @@ export class EnhancedIndex {
       // If at least one field has a range
       if (prefixLen > 0 && (lower.some((v, i) => v !== null && v !== upper[i]) || upper.some((v, i) => v !== null && v !== lower[i]))) {
         // Compose start and end keys for B-tree scan
-        const fill = (arr: (string | number | null)[], fillTo: number, fillValue: string | number) => {
-          const out = arr.slice();
+        const fill = (arr: (string | number | null)[], fillTo: number, fillValue: string | number): (string | number)[] => {
+          const out: (string | number)[] = [];
+          for (const item of arr) {
+            if (item !== null) out.push(item);
+          }
           while (out.length < fillTo) out.push(fillValue);
           return out;
         };

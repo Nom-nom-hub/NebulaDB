@@ -7,12 +7,13 @@ import {
   CollectionOptions,
   SubscriptionCallback,
   ICollection,
-  Plugin
+  Plugin,
+  IndexType,
+  IndexDefinition
 } from './types';
 import { matchDocument, applyUpdate } from './optimized-query';
 // Import the enhanced indexing system
-import { EnhancedIndexManager, IndexDefinition as EnhancedIndexDefinition, IndexType } from './enhanced-indexing';
-import { IndexDefinition } from './types';
+import { EnhancedIndexManager, IndexType as EnhancedIndexType, IndexDefinition as EnhancedIndexDefinition } from './enhanced-indexing';
 // Import the memory manager
 import { MemoryManager } from './memory-manager';
 // Import concurrency controls
@@ -704,28 +705,28 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Get all indexes on the collection
-   */
+    * Get all indexes on the collection
+    */
   getIndexes(): IndexDefinition[] {
     return this.indexManager.getAllIndexes().map(index => {
-      // Convert from enhanced-indexing.IndexType to types.IndexDefinition type
-      let type: 'single' | 'compound' | 'unique' | 'text';
+      // Convert from enhanced-indexing.IndexType to types.IndexType
+      let type: IndexType;
 
       switch (index.type) {
-        case IndexType.SINGLE:
-          type = 'single';
+        case EnhancedIndexType.SINGLE:
+          type = IndexType.SINGLE;
           break;
-        case IndexType.COMPOUND:
-          type = 'compound';
+        case EnhancedIndexType.COMPOUND:
+          type = IndexType.COMPOUND;
           break;
-        case IndexType.UNIQUE:
-          type = 'unique';
+        case EnhancedIndexType.UNIQUE:
+          type = IndexType.UNIQUE;
           break;
-        case IndexType.TEXT:
-          type = 'text';
+        case EnhancedIndexType.TEXT:
+          type = IndexType.TEXT;
           break;
         default:
-          type = 'single';
+          type = IndexType.SINGLE;
       }
 
       return {

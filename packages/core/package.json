@@ -19,7 +19,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "prebuild": "rm -rf dist",
+    "prebuild": "node -e \"require('fs-extra').removeSync('dist')\"",
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "vitest run",
     "test:watch": "vitest"
