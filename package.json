@@ -12,9 +12,7 @@
     "preinstall": "node ./scripts/check-node-version.js",
     "pretest": "node ./scripts/check-node-version.js",
     "prebuild": "node ./scripts/check-node-version.js",
-    "build:unix": "sh scripts/build.sh",
-    "build:win": "scripts\\build.bat",
-    "build": "run-script-os",
+    "build": "node scripts/build.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage --coverage.provider=v8",
@@ -23,11 +21,7 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.{ts,js,json,md}\""
   },
-  "run-script-os": {
-    "win32": "npm run build:win",
-    "darwin": "npm run build:unix",
-    "linux": "npm run build:unix"
-  },
+
   "engines": {
     "node": ">=18.0.0"
   },
