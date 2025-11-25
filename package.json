@@ -14,7 +14,7 @@
     "prebuild": "node ./scripts/check-node-version.js",
     "build:unix": "sh scripts/build.sh",
     "build:win": "scripts\\build.bat",
-    "build": "run-script-os",
+    "build": "npm run build:win",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage --coverage.provider=v8",

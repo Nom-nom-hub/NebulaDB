@@ -1,60 +1,26 @@
 @echo off
-REM Automated build script for Windows
+setlocal enabledelayedexpansion
 
 REM Install root dependencies
-npm install
+echo Installing root dependencies...
+call npm install
+if errorlevel 1 (
+    echo Failed to install root dependencies
+    exit /b 1
+)
 
 REM Build core package
-cd packages\core
-npm install
-npm run build
-cd ..\..
+echo.
+echo Building core package...
+pushd packages\core
+call npm run build
+if errorlevel 1 (
+    echo Core build failed!
+    popd
+    exit /b 1
+)
+popd
 
-REM Build memory adapter
-cd packages\adapters\memory
-npm install
-npm run build
-cd ..\..\..
-
-REM Build localStorage adapter
-cd packages\adapters\localstorage
-npm install
-npm run build
-cd ..\..\..
-
-REM Build IndexedDB adapter
-cd packages\adapters\indexeddb
-npm install
-npm run build
-cd ..\..\..
-
-REM Build FileSystem adapter
-cd packages\adapters\filesystem
-npm install
-npm run build
-cd ..\..\..
-
-REM Build validation plugin
-cd packages\plugins\validation
-npm install
-npm run build
-cd ..\..\..
-
-REM Build encryption plugin
-cd packages\plugins\encryption
-npm install
-npm run build
-cd ..\..\..
-
-REM Build versioning plugin
-cd packages\plugins\versioning
-npm install
-npm run build
-cd ..\..\..
-
-REM Install test dependencies
-cd tests
-npm install
-cd ..
-
-echo Build completed successfully! 
+echo.
+echo Build completed successfully!
+exit /b 0
