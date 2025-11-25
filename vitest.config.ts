@@ -17,6 +17,8 @@ export default defineConfig({
       '**/._*',          // Exclude all macOS hidden files
       '**/.DS_Store'     // Exclude macOS .DS_Store files
     ],
+    restoreMocks: true,
+    clearMocks: true,
     coverage: {
       all: true,
       include: ['packages/*/src/**/*.ts'],

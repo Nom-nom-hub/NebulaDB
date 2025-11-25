@@ -25,10 +25,10 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm install --ignore-scripts
+      run: npm install --ignore-scripts --legacy-peer-deps
 
     - name: Set execute permissions for scripts
-      run: chmod +x ./scripts/*.sh
+      run: chmod +x ./scripts/*.sh || true
 
     - name: Build
       run: npm run build
@@ -50,10 +50,10 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm install --ignore-scripts
+      run: npm install --ignore-scripts --legacy-peer-deps
 
     - name: Set execute permissions for scripts
-      run: chmod +x ./scripts/*.sh
+      run: chmod +x ./scripts/*.sh || true
 
     - name: Lint
       run: npm run lint
