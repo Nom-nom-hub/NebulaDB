@@ -4,7 +4,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
-describe('SQLiteAdapter', () => {
+// Skip SQLiteAdapter tests if better-sqlite3 is not available (e.g., in CI without native compilation)
+const isBetterSqlite3Available = (() => {
+  try {
+    require('better-sqlite3');
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+describe.skipIf(!isBetterSqlite3Available)('SQLiteAdapter', () => {
   let tempDir: string;
   let dbPath: string;
   let adapter: SQLiteAdapter;
