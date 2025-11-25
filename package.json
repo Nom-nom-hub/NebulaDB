@@ -25,7 +25,8 @@
   },
   "run-script-os": {
     "win32": "npm run build:win",
-    "darwin:linux": "npm run build:unix"
+    "darwin": "npm run build:unix",
+    "linux": "npm run build:unix"
   },
   "engines": {
     "node": ">=18.0.0"
