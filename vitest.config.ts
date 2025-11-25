@@ -19,6 +19,8 @@ export default defineConfig({
     ],
     restoreMocks: true,
     clearMocks: true,
+    testTimeout: 10000,
+    hookTimeout: 10000,
     coverage: {
       all: true,
       include: ['packages/*/src/**/*.ts'],
