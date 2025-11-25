@@ -7,7 +7,10 @@ import * as os from 'os';
 // Skip SQLiteAdapter tests if better-sqlite3 is not available (e.g., in CI without native compilation)
 let isBetterSqlite3Available = false;
 try {
-  require('better-sqlite3');
+  // Try to actually instantiate the database to check if native bindings are available
+  const Database = require('better-sqlite3');
+  const tempDb = new Database(':memory:');
+  tempDb.close();
   isBetterSqlite3Available = true;
 } catch {
   isBetterSqlite3Available = false;
