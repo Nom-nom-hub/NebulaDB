@@ -40,6 +40,6 @@
     "run-script-os": "^1.1.6"
   },
   "dependencies": {
-    "better-sqlite3": "^12.1.1"
+    "better-sqlite3": "^9.2.2"
   }
 }
