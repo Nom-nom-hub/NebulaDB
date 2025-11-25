@@ -40,7 +40,7 @@
     "fs-extra": "^11.2.0",
     "inquirer": "^8.2.6",
     "ora": "^5.4.1",
-    "vite": "6.3.3"
+    "vite": "^6.4.1"
   },
   "repository": {
     "type": "git",

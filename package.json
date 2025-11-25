@@ -4,9 +4,7 @@
   "description": "Fast. Flexible. Serverless. The embedded database for the modern stack.",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "packages/adapters/*",
-    "packages/plugins/*"
+    "packages/*"
   ],
   "scripts": {
     "preinstall": "node ./scripts/check-node-version.js",

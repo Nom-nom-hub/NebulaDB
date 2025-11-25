@@ -4,7 +4,7 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 console.log('Installing root dependencies...');
-execSync('npm install --ignore-scripts', { stdio: 'inherit' });
+execSync('npm install --ignore-scripts --legacy-peer-deps', { stdio: 'inherit' });
 
 console.log('\nBuilding core package...');
 process.chdir(path.join(__dirname, '..', 'packages', 'core'));
