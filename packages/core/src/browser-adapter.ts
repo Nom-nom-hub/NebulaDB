@@ -1,11 +1,11 @@
 import { InMemoryAdapter } from './in-memory-adapter';
-import type { NebulaDatabase, Collection, CollectionOptions, Document } from './types';
+import type { NebulaDatabase, Collection, Document } from './types';
 
-export async function createBrowserDatabase(config: any): Promise<NebulaDatabase> {
+export async function createBrowserDatabase(): Promise<NebulaDatabase> {
   const adapter = new InMemoryAdapter();
 
   return {
-    collection: <T = any>(name: string, options?: CollectionOptions) => createBrowserCollection(adapter, name),
+    collection: (name: string) => createBrowserCollection(adapter, name),
     close: () => {}, // In-memory, no close needed
   };
 }

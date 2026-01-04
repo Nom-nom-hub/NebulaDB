@@ -173,6 +173,7 @@ export interface Plugin {
   onAfterDelete?(collection: string, query: Query, deletedDocs: Document[]): void | Promise<void>;
   onBeforeQuery?(collection: string, query: Query): Query | Promise<Query>;
   onAfterQuery?(collection: string, query: Query, results: Document[]): Document[] | Promise<Document[]>;
+  [key: string]: any; // Allow additional properties for plugin-specific methods
 }
 
 /**
@@ -247,8 +248,19 @@ export interface ICollection {
  */
 export interface Database {
   /** Get a collection by name */
-  collection(name: string): ICollection;
-  // Add other necessary methods
+  collection(name: string, options?: CollectionOptions): ICollection;
+  /** Save data to the adapter */
+  save(): Promise<void>;
+  /** Load data from the adapter */
+  load(): Promise<void>;
+  /** Collections map */
+  collections: Map<string, ICollection>;
+  /** Adapter instance */
+  adapter: Adapter;
+  /** Plugin instances */
+  plugins: Plugin[];
+  /** Allow string indexing for dynamic property access */
+  [key: string]: any;
 }
 
 /**

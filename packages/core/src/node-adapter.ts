@@ -1,12 +1,12 @@
 import { LocalstorageAdapter } from './localstorage';
-import type { NebulaDatabase, CollectionOptions, Collection, Document } from './types';
+import type { NebulaDatabase, Collection, Document } from './types';
 
-export async function createNodeDatabase(config: any): Promise<NebulaDatabase> {
+export async function createNodeDatabase(): Promise<NebulaDatabase> {
   const adapter = new LocalstorageAdapter();
   await adapter.load(); // Load initial data
 
   return {
-    collection: <T = any>(name: string, options?: CollectionOptions) => createNodeCollection<T>(adapter, name),
+    collection: (name: string) => createNodeCollection(adapter, name),
     close: () => adapter.close(),
   };
 }

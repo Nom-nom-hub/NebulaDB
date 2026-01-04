@@ -110,7 +110,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
     // Get applied migrations for each migration's collection
     for (const migration of migrations) {
       const appliedMigrations = await getAppliedMigrations(migration.collection);
-      const appliedVersions = new Set(appliedMigrations.map(m => m.version));
+      const appliedVersions = new Set(appliedMigrations.map((m: Document) => m.version));
       if (!appliedVersions.has(migration.version)) {
         try {
           logger(`Applying migration: ${migration.name} (${migration.version})`);
@@ -132,11 +132,11 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
   /**
    * Revert migrations
    */
-  async function revertMigrations(targetVersion?: number): Promise<void> {
+  async function revertMigrations(): Promise<void> {
     // Revert migrations for each collection
     for (const migration of migrations) {
       const appliedMigrations = await getAppliedMigrations(migration.collection);
-      const appliedVersions = new Set(appliedMigrations.map(m => m.version));
+      const appliedVersions = new Set(appliedMigrations.map((m: Document) => m.version));
       if (appliedVersions.has(migration.version) && migration.down) {
         try {
           logger(`Reverting migration: ${migration.name} (${migration.version})`);
@@ -162,7 +162,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
     const migrationCollection = db.collection('_migrations');
     const migrations = await migrationCollection.find({ collection: collectionName });
     if (!migrations.length) return 0;
-    return Math.max(...migrations.map(m => m.version));
+    return Math.max(...migrations.map((m: Document) => m.version));
   }
   
   /**
@@ -173,7 +173,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
     await migrationCollection.insert({ collection: collectionName, version, appliedAt: new Date().toISOString() });
   }
   
-  return {
+  const plugin = {
     name: 'migration',
     
     onInit(database: Database): void {
@@ -197,4 +197,6 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
     getSchemaVersion,
     setSchemaVersion
   };
+  
+  return plugin as Plugin;
 }

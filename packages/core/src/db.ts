@@ -61,6 +61,13 @@ export class Database {
   }
 
   /**
+   * Public load method to reload data from adapter
+   */
+  async load(): Promise<void> {
+    return this.loadFromAdapter();
+  }
+
+  /**
    * Save data to the adapter
    */
   async save(): Promise<void> {

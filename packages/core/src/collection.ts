@@ -86,13 +86,7 @@ export class Collection implements ICollection {
     // Process initial documents (decompress if needed)
     const processedDocs = initialDocs.map(doc => {
       const decompressed = this.compression.isCompressed(doc) ? this.compression.decompress(doc) : doc;
-      return {
-        ...decompressed,
-        toJSON: () => {
-          const { toJSON, ...jsonDoc } = decompressed;
-          return jsonDoc;
-        }
-      };
+      return decompressed;
     });
 
     this.documents = [...processedDocs];
@@ -150,11 +144,6 @@ export class Collection implements ICollection {
       }
     }
 
-    // Add toJSON method to the document
-    processedDoc.toJSON = () => {
-      const { toJSON, ...jsonDoc } = processedDoc;
-      return jsonDoc;
-    };
 
     // Apply compression if enabled
     const compressedDoc = this.compression.compress(processedDoc);
@@ -280,12 +269,6 @@ export class Collection implements ICollection {
           : doc;
 
         const updatedDoc = applyUpdate(decompressedDoc, processedUpdate);
-
-        // Add toJSON method
-        updatedDoc.toJSON = () => {
-          const { toJSON, ...jsonDoc } = updatedDoc;
-          return jsonDoc;
-        };
 
         // Apply compression if enabled
         const compressedDoc = this.compression.compress(updatedDoc);
@@ -456,20 +439,11 @@ export class Collection implements ICollection {
    * Set all documents in the collection (used by adapters)
    */
   setAll(documents: Document[]): void {
-    // Add toJSON method to each document
-    const docsWithToJSON = documents.map(doc => ({
-      ...doc,
-      toJSON: () => {
-        const { toJSON, ...jsonDoc } = doc;
-        return jsonDoc;
-      }
-    }));
-
-    this.documents = [...docsWithToJSON];
+    this.documents = [...documents];
     this.documentSignal.value = this.documents;
 
     // Update memory manager
-    this.memoryManager.setAll(docsWithToJSON);
+    this.memoryManager.setAll(documents);
 
     // Rebuild indexes
     this.indexManager.rebuild(this.documents);
@@ -591,11 +565,6 @@ export class Collection implements ICollection {
             if (updatedDocIds.has(doc.id)) continue;
 
             const updatedDoc = applyUpdate(doc, update);
-            // Add toJSON method
-            updatedDoc.toJSON = () => {
-              const { toJSON, ...jsonDoc } = updatedDoc;
-              return jsonDoc;
-            };
             updatedDocs.push(updatedDoc);
             updatedDocIds.add(doc.id);
 

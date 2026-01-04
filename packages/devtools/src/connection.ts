@@ -1,7 +1,6 @@
 import { Database, Document, Query, UpdateOperation } from '@nebula-db/core';
 import { io } from 'socket.io-client';
-import { ConnectionOptions, EventType, Event, DatabaseSnapshot } from './types';
-import { createMigrationPlugin } from '../../../packages/plugins/migration/src';
+import { ConnectionOptions, EventType, Event } from './types';
 
 /**
  * Create a connection to the DevTools server
@@ -43,7 +42,7 @@ export function createDevtoolsConnection(db: Database, options: ConnectionOption
       const indexes: Record<string, any[]> = {};
       const schemaVersions: Record<string, number> = {};
       const migrationHistory: Record<string, Document[]> = {};
-      const migrationPlugin = db.plugins.find(p => p.name === 'migration');
+      const migrationPlugin = db.plugins.find((p: any) => p.name === 'migration');
       for (const [name, collection] of db.collections.entries()) {
         if (typeof collection.find === 'function') {
           collections[name] = await collection.find();
@@ -384,8 +383,8 @@ export function createDevtoolsConnection(db: Database, options: ConnectionOption
 
     // Restore original methods
     for (const [key, method] of Object.entries(originalMethods)) {
-      if (db[key]) {
-        db[key] = method;
+      if ((db as any)[key]) {
+        (db as any)[key] = method;
       }
     }
   }

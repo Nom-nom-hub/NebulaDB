@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { Adapter, Document } from '@nebula-db/core';
 import { ChromadbAdapter } from './index';
 
 describe('ChromadbAdapter', () => {

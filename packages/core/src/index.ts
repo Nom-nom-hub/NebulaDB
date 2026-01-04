@@ -8,16 +8,16 @@ let createDatabase: any;
 
 if (isBrowser) {
   // Browser-compatible version
-  createDatabase = async (config: any) => {
+  createDatabase = async () => {
     // Use IndexedDB or WebSQL for browser storage
     const { createBrowserDatabase } = await import('./browser-adapter');
-    return createBrowserDatabase(config);
+    return createBrowserDatabase();
   };
 } else if (isNode) {
   // Node.js version with better-sqlite3
-  createDatabase = async (config: any) => {
+  createDatabase = async () => {
     const { createNodeDatabase } = await import('./node-adapter');
-    return createNodeDatabase(config);
+    return createNodeDatabase();
   };
 } else {
   throw new Error('Unsupported environment');

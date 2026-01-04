@@ -123,8 +123,8 @@ describe('Migration Plugin Schema Version Helpers', () => {
 
   it('should return highest applied migration version', async () => {
     const plugin = createMigrationPlugin({ migrations: [
-      { version: 1, name: 'v1', collection: 'test', up: async db => {} },
-      { version: 2, name: 'v2', collection: 'test', up: async db => {} }
+      { version: 1, name: 'v1', collection: 'test', up: async () => {} },
+      { version: 2, name: 'v2', collection: 'test', up: async () => {} }
     ] }) as any;
     const db = createDb({ adapter: new InMemoryAdapter(), plugins: [plugin] });
     // Plugin initialization happens automatically when database is created
