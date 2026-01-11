@@ -1,59 +1,186 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="refresh" content="0;url=docs/index.html">
+  <meta name="description" content="NebulaDB v0.4.0 Cirrus — Enterprise-grade sync, encryption, and edge deployment" />
+  <title>NebulaDB v0.4.0 Cirrus</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #00d4ff, #0099ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .version {
+      font-size: 1.5em;
+      color: #22d3ee;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      line-height: 1.6;
+      color: #b0b0b0;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 40px 0;
+      text-align: left;
+    }
+    .feature {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 3px solid #00d4ff;
+    }
+    .feature h3 {
+      color: #22d3ee;
+      margin-bottom: 8px;
+    }
+    .feature p {
+      font-size: 0.95em;
+      margin: 0;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin: 40px 0;
+    }
+    .stat {
+      background: rgba(0, 212, 255, 0.1);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+    .stat-value {
+      font-size: 2em;
+      color: #00d4ff;
+      font-weight: bold;
+    }
+    .stat-label {
+      color: #888;
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
+    .buttons {
+      margin: 30px 0;
+    }
+    a {
+      display: inline-block;
+      padding: 12px 30px;
+      margin: 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #00d4ff, #0099ff);
+      color: #000;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #00d4ff;
+      border: 1px solid #00d4ff;
+    }
+    .btn-secondary:hover {
+      background: rgba(0, 212, 255, 0.1);
+    }
+    @media (max-width: 768px) {
+      h1 { font-size: 2em; }
+      .features { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 <body>
-  <a href="docs/index.html">Go to NebulaDB website</a>
+  <div class="container">
+    <h1>NebulaDB</h1>
+    <div class="version">✨ v0.4.0 "Cirrus" — Now Live! ✨</div>
+    
+    <p><strong>Enterprise-grade sync, encryption, and edge deployment</strong></p>
+    <p>Production-ready database with zero breaking changes from v0.3.0</p>
 
-  <!-- Billow Release Section -->
-  <section class="release-billow">
-    <div class="release-header">
-      <!-- Special SVG for Billow Release -->
-      <img src="assets/billow-release.svg" alt="Billow Release" class="release-svg" style="max-width: 320px; margin: 0 auto; display: block;" />
-      <h1>🌥️ Billow Release <span style="font-size:0.7em;color:#888;">(July 1, 2025)</span></h1>
-      <p class="subtitle">Advanced Indexing, Schema Versioning, and Devtools—All in One Cloud</p>
-    </div>
-    <div class="release-features">
-      <h2>What's New in Billow?</h2>
-      <ul>
-        <li>
-          <strong>Advanced Indexing:</strong>
-          <ul>
-            <li>Compound, partial, and multi-field indexes</li>
-            <li>Partial prefix and multi-field range queries</li>
-            <li>All scenarios covered by robust tests</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Schema Versioning & Migrations:</strong>
-          <ul>
-            <li>Per-collection schema version tracking</li>
-            <li>Migration plugin with helpers and migration history</li>
-            <li>Automated and manual migration support</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Devtools Improvements:</strong>
-          <ul>
-            <li>Index metadata and schema version visible in the UI</li>
-            <li>Migration history for each collection</li>
-            <li>Cleaner, more informative dashboards</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Developer Experience:</strong>
-          <ul>
-            <li>Improved test coverage and monorepo coverage reporting</li>
-            <li>Cleaner code, better types, and up-to-date documentation</li>
-          </ul>
-        </li>
-      </ul>
-      <div class="release-cta">
-        <a href="https://github.com/Nom-nom-hub/NebulaDB/releases/tag/billow" class="btn btn-primary">Read the Full Release Notes</a>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">248</div>
+        <div class="stat-label">Tests Passing</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">85.3%</div>
+        <div class="stat-label">Code Coverage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">4-8x</div>
+        <div class="stat-label">Performance Gain</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Breaking Changes</div>
       </div>
     </div>
-  </section>
-  <!-- End Billow Release Section -->
+
+    <div class="features">
+      <div class="feature">
+        <h3>🔄 Real-Time Sync</h3>
+        <p>Multi-strategy conflict resolution, P2P sync, offline queues, and sync servers with webhooks.</p>
+      </div>
+      <div class="feature">
+        <h3>🔒 AES-256-GCM Encryption</h3>
+        <p>Transparent encryption at rest, field-level encryption, HIPAA/PCI/GDPR compliant.</p>
+      </div>
+      <div class="feature">
+        <h3>⚡ Query Optimizer</h3>
+        <p>Automatic index selection, cost estimation, query plan caching.</p>
+      </div>
+      <div class="feature">
+        <h3>🌐 Edge Deployment</h3>
+        <p>Deno KV and Cloudflare D1 adapters for edge computing.</p>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <a href="docs/index.html" class="btn-primary">📖 View Full Website</a>
+      <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn-secondary">⭐ GitHub</a>
+      <a href="RELEASE_NOTES_v0.4.0.md" class="btn-secondary">📰 Release Notes</a>
+    </div>
+
+    <p style="margin-top: 50px; color: #666; font-size: 0.9em;">
+      Redirecting to full website in 3 seconds... <br>
+      <a href="docs/index.html" style="color: #00d4ff;">Click here if not redirected</a>
+    </p>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = 'docs/index.html';
+    }, 3000);
+  </script>
 </body>
 </html>

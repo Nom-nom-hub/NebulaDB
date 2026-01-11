@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["es2020", "deno.window"],
+    "target": "es2020"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

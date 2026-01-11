@@ -1,6 +1,11 @@
 import { Plugin, Document, Query, UpdateOperation, Database } from '@nebula-db/core';
 import { io, Socket } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  createConflictResolver,
+  VersionedDocument,
+  ConflictResolutionResult
+} from './conflict-resolution';
 
 /**
  * Sync plugin options
@@ -39,7 +44,12 @@ export interface SyncPluginOptions {
   /**
    * Conflict resolution strategy
    */
-  conflictResolution?: 'server-wins' | 'client-wins' | 'last-write-wins';
+  conflictResolution?: 'server-wins' | 'client-wins' | 'last-write-wins' | 'custom';
+
+  /**
+   * Custom merge function for conflict resolution
+   */
+  customMergeFn?: (local: VersionedDocument, remote: VersionedDocument) => VersionedDocument;
 
   /**
    * Retry options
@@ -160,7 +170,7 @@ export interface SyncStatus {
 /**
  * Create a sync plugin
  */
-export function createSyncPlugin(options: SyncPluginOptions): Plugin {
+export function createSyncPlugin(options: SyncPluginOptions): Plugin & { api: any } {
   // Default options
   const {
     serverUrl,
@@ -169,7 +179,8 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
     syncInterval = 30000,
     autoSync = true,
     useWebSockets = true,
-    // conflictResolution = 'last-write-wins',
+    conflictResolution = 'last-write-wins',
+    customMergeFn,
     retry = {
       maxRetries: 5,
       retryDelay: 1000,
@@ -180,6 +191,12 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
       level: 'info'
     }
   } = options;
+
+  // Create conflict resolver
+  const conflictResolver = createConflictResolver(
+    conflictResolution as any,
+    customMergeFn
+  );
 
   // Generate client ID
   const clientId = uuidv4();
@@ -198,7 +215,7 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
   let syncInterval_id: any = null;
 
   // Collection subscriptions
-  const subscriptions: (() => void)[] = [];
+  const subscriptions: string[] = [];
 
   /**
    * Log message
@@ -234,6 +251,44 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
   }
 
   /**
+   * Apply conflict resolution to incoming event
+   */
+  async function resolveConflict(
+    collectionName: string,
+    event: SyncEvent
+  ): Promise<ConflictResolutionResult | null> {
+    if (!db) return null;
+
+    try {
+      const collection = db.collection(collectionName);
+      const existing = await (collection.findById as any)?.(event.documentId);
+
+      if (!existing) {
+        // No existing document, no conflict
+        return null;
+      }
+
+      const remoteDoc = event.data as VersionedDocument;
+      const localDoc = existing as VersionedDocument;
+
+      // Use conflict resolver
+      const result = conflictResolver.resolve(localDoc, remoteDoc);
+
+      if (result.conflicted) {
+        log('warn', `Conflict detected for ${collectionName}/${event.documentId}`, {
+          strategy: result.details?.strategy,
+          resolved: result.resolved?.id
+        });
+      }
+
+      return result;
+    } catch (error) {
+      log('error', 'Error resolving conflict', error);
+      return null;
+    }
+  }
+
+  /**
    * Connect to sync server
    */
   function connect() {
@@ -254,13 +309,15 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
       log('info', 'Connected to sync server');
 
       // Send client info
-      socket.emit('client:info', {
-        clientId,
-        collections
-      });
+      if (socket) {
+        socket.emit('client:info', {
+          clientId,
+          collections
+        });
 
-      // Sync pending events
-      syncPendingEvents();
+        // Sync pending events
+        syncPendingEvents();
+      }
     });
 
     socket.on('disconnect', () => {
@@ -477,12 +534,12 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
     onBeforeUpdate: (collectionName, query, update) => {
       // Check if collection should be synced
       if (!collections.includes(collectionName)) {
-        return update;
+        return [query, update];
       }
 
       log('debug', `Before update: ${collectionName}`, { query, update });
 
-      return update;
+      return [query, update];
     },
 
     onAfterUpdate: (collectionName, query, update, affectedCount) => {
@@ -547,8 +604,13 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
       stopSyncInterval();
 
       // Unsubscribe from collections
-      for (const unsubscribe of subscriptions) {
-        unsubscribe();
+      if (db) {
+        for (const collectionName of collections) {
+          for (const subscriptionId of subscriptions) {
+            const collection = db.collection(collectionName);
+            (collection.unsubscribe as any)?.(subscriptionId);
+          }
+        }
       }
     },
 

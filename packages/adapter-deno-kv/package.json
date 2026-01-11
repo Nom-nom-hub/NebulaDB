@@ -1,0 +1,17 @@
+{
+  "name": "@nebula-db/adapter-deno-kv",
+  "version": "0.4.0",
+  "description": "Deno KV adapter for NebulaDB - provides persistent key-value storage for Deno runtime",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

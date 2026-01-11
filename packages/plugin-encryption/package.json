@@ -1,0 +1,45 @@
+{
+  "name": "@nebula-db/plugin-encryption",
+  "version": "0.4.0",
+  "description": "Encryption plugin for NebulaDB - provides encryption at rest and field-level encryption",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prebuild": "rm -rf dist"
+  },
+  "keywords": [
+    "database",
+    "nosql",
+    "encryption",
+    "security",
+    "aes-256-gcm",
+    "field-level-encryption"
+  ],
+  "author": "Nom-nom-hub",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.19.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.2"
+  },
+  "dependencies": {
+    "@nebula-db/core": "^0.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
+    "directory": "packages/plugin-encryption"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

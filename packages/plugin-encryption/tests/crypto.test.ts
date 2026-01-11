@@ -1,0 +1,272 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { CryptoUtil, createCryptoUtil } from '../src/crypto';
+
+describe('CryptoUtil', () => {
+  let crypto: CryptoUtil;
+
+  beforeEach(() => {
+    crypto = new CryptoUtil({ password: 'test-password' });
+  });
+
+  describe('encryption and decryption', () => {
+    it('should encrypt and decrypt string data', () => {
+      const plaintext = 'Hello, World!';
+      const encrypted = crypto.encrypt(plaintext);
+
+      expect(encrypted).toBeDefined();
+      expect(encrypted.data).toBeDefined();
+      expect(encrypted.iv).toBeDefined();
+      expect(encrypted.authTag).toBeDefined();
+
+      const decrypted = crypto.decrypt(encrypted);
+      expect(decrypted).toBe(plaintext);
+    });
+
+    it('should encrypt and decrypt buffer data', () => {
+      const plaintext = Buffer.from('Binary data');
+      const encrypted = crypto.encrypt(plaintext);
+
+      const decrypted = Buffer.from(crypto.decrypt(encrypted), 'utf8');
+      expect(decrypted.toString()).toBe(plaintext.toString());
+    });
+
+    it('should encrypt and decrypt JSON objects', () => {
+      const obj = { name: 'Alice', age: 30, email: 'alice@example.com' };
+      const encrypted = crypto.encrypt(obj);
+
+      const decrypted = crypto.decryptJSON(encrypted);
+      expect(decrypted).toEqual(obj);
+    });
+
+    it('should handle nested objects', () => {
+      const obj = {
+        user: {
+          name: 'Alice',
+          address: {
+            street: '123 Main St',
+            city: 'Springfield'
+          }
+        }
+      };
+
+      const encrypted = crypto.encrypt(obj);
+      const decrypted = crypto.decryptJSON(encrypted);
+
+      expect(decrypted).toEqual(obj);
+    });
+
+    it('should handle arrays in objects', () => {
+      const obj = {
+        name: 'Alice',
+        tags: ['admin', 'user', 'developer']
+      };
+
+      const encrypted = crypto.encrypt(obj);
+      const decrypted = crypto.decryptJSON(encrypted);
+
+      expect(decrypted).toEqual(obj);
+    });
+  });
+
+  describe('different passwords', () => {
+    it('should fail with wrong password', () => {
+      const crypto1 = new CryptoUtil({ password: 'password1' });
+      const crypto2 = new CryptoUtil({ password: 'password2', salt: crypto1.getSalt() });
+
+      const encrypted = crypto1.encrypt('secret data');
+
+      expect(() => {
+        crypto2.decrypt(encrypted);
+      }).toThrow('Decryption failed');
+    });
+
+    it('should decrypt with correct password after salt reuse', () => {
+      const crypto1 = new CryptoUtil({ password: 'my-password' });
+      const salt = crypto1.getSalt();
+
+      const encrypted = crypto1.encrypt('secret data');
+
+      // Create new instance with same password and salt
+      const crypto2 = new CryptoUtil({ password: 'my-password', salt });
+
+      const decrypted = crypto2.decrypt(encrypted);
+      expect(decrypted).toBe('secret data');
+    });
+  });
+
+  describe('encryption metadata', () => {
+    it('should include algorithm in encrypted data', () => {
+      const encrypted = crypto.encrypt('test');
+
+      expect(encrypted.algorithm).toBe('aes-256-gcm');
+      expect(encrypted.version).toBe(1);
+      expect(encrypted.iterations).toBe(100000);
+      expect(encrypted.hashAlgorithm).toBe('sha256');
+    });
+
+    it('should store salt in encrypted data', () => {
+      const encrypted = crypto.encrypt('test');
+
+      expect(encrypted.salt).toBeDefined();
+      expect(encrypted.salt).toBeTruthy();
+    });
+
+    it('should reject mismatched algorithm', () => {
+      const encrypted = crypto.encrypt('test');
+      encrypted.algorithm = 'aes-128-gcm';
+
+      expect(() => {
+        crypto.decrypt(encrypted);
+      }).toThrow('Algorithm mismatch');
+    });
+
+    it('should reject unsupported version', () => {
+      const encrypted = crypto.encrypt('test');
+      encrypted.version = 999;
+
+      expect(() => {
+        crypto.decrypt(encrypted);
+      }).toThrow('Unsupported encryption version');
+    });
+  });
+
+  describe('static methods', () => {
+    it('should hash values consistently', () => {
+      const value = 'test-value';
+      const hash1 = CryptoUtil.hash(value);
+      const hash2 = CryptoUtil.hash(value);
+
+      expect(hash1).toBe(hash2);
+    });
+
+    it('should generate different hashes for different values', () => {
+      const hash1 = CryptoUtil.hash('value1');
+      const hash2 = CryptoUtil.hash('value2');
+
+      expect(hash1).not.toBe(hash2);
+    });
+
+    it('should hash with salt', () => {
+      const value = 'test';
+      const salt = 'my-salt';
+      const hash1 = CryptoUtil.hash(value, salt);
+      const hash2 = CryptoUtil.hash(value);
+
+      expect(hash1).not.toBe(hash2);
+    });
+
+    it('should generate random keys', () => {
+      const key1 = CryptoUtil.generateKey(32);
+      const key2 = CryptoUtil.generateKey(32);
+
+      expect(key1).toHaveLength(32);
+      expect(key2).toHaveLength(32);
+      expect(key1.toString()).not.toBe(key2.toString());
+    });
+
+    it('should generate random IVs', () => {
+      const iv1 = CryptoUtil.generateIV();
+      const iv2 = CryptoUtil.generateIV();
+
+      expect(iv1).toHaveLength(16);
+      expect(iv2).toHaveLength(16);
+      expect(iv1.toString()).not.toBe(iv2.toString());
+    });
+  });
+
+  describe('custom options', () => {
+    it('should use custom iterations', () => {
+      const customCrypto = new CryptoUtil({
+        password: 'test',
+        iterations: 50000
+      });
+
+      const encrypted = customCrypto.encrypt('test');
+      expect(encrypted.iterations).toBe(50000);
+    });
+
+    it('should use custom hash algorithm', () => {
+      const customCrypto = new CryptoUtil({
+        password: 'test',
+        hashAlgorithm: 'sha512'
+      });
+
+      const encrypted = customCrypto.encrypt('test');
+      expect(encrypted.hashAlgorithm).toBe('sha512');
+    });
+  });
+
+  describe('error handling', () => {
+    it('should throw on missing password', () => {
+      expect(() => {
+        new CryptoUtil({ password: '' });
+      }).toThrow('Password is required');
+    });
+
+    it('should throw on corrupted data', () => {
+      const encrypted = crypto.encrypt('test');
+      encrypted.data = 'corrupted-data';
+
+      expect(() => {
+        crypto.decrypt(encrypted);
+      }).toThrow('Decryption failed');
+    });
+
+    it('should throw on tampered auth tag', () => {
+      const encrypted = crypto.encrypt('test');
+      const authBuffer = Buffer.from(encrypted.authTag, 'base64');
+      authBuffer[0] = authBuffer[0] ^ 0xff; // Flip bits
+      encrypted.authTag = authBuffer.toString('base64');
+
+      expect(() => {
+        crypto.decrypt(encrypted);
+      }).toThrow('Decryption failed');
+    });
+  });
+
+  describe('createCryptoUtil factory', () => {
+    it('should create util from factory function', () => {
+      const util = createCryptoUtil('password');
+
+      expect(util).toBeInstanceOf(CryptoUtil);
+      expect(util.encrypt('test')).toBeDefined();
+    });
+
+    it('should pass options to factory', () => {
+      const util = createCryptoUtil('password', {
+        iterations: 50000,
+        hashAlgorithm: 'sha512'
+      });
+
+      const encrypted = util.encrypt('test');
+      expect(encrypted.iterations).toBe(50000);
+      expect(encrypted.hashAlgorithm).toBe('sha512');
+    });
+  });
+
+  describe('large data', () => {
+    it('should encrypt large strings', () => {
+      const largeData = 'x'.repeat(1000000); // 1MB
+      const encrypted = crypto.encrypt(largeData);
+
+      const decrypted = crypto.decrypt(encrypted);
+      expect(decrypted).toBe(largeData);
+    });
+
+    it('should encrypt large objects', () => {
+      const obj: any = {};
+      for (let i = 0; i < 10000; i++) {
+        obj[`key${i}`] = {
+          value: `value${i}`,
+          timestamp: Date.now()
+        };
+      }
+
+      const encrypted = crypto.encrypt(obj);
+      const decrypted = crypto.decryptJSON(encrypted);
+
+      expect(Object.keys(decrypted)).toHaveLength(10000);
+      expect(decrypted.key0.value).toBe('value0');
+    });
+  });
+});

@@ -19,9 +19,9 @@
     "body": [
       "const ${1:collectionName} = db.collection<${2:YourType}>('${3:collectionName}', {",
       "  schema: {",
-      "    $4",
+      "    ${4:field}: { type: 'string' }",
       "  },",
-      "  indexes: [${5:'field1', 'field2'}]",
+      "  indexes: ['${5:field1}']",
       "});",
       "$0"
     ],

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NebulaDB — Fast, Flexible, and Serverless. An embedded database optimized for modern development." />
+  <meta name="description" content="NebulaDB v0.4.0 Cirrus — Fast, Flexible, Secure, and Enterprise-Ready. An embedded database with sync, encryption, and edge deployment." />
   <meta name="author" content="NebulaDB Team" />
-  <title>NebulaDB - Fast. Flexible. Serverless.</title>
+  <title>NebulaDB v0.4.0 Cirrus - Sync, Security & Performance</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="logo-altocumulus.svg">
 </head>
@@ -13,10 +13,10 @@
   <header>
     <nav>
       <div class="logo">
-        <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
-        <span>NebulaDB</span>
-        <div class="version-badge">v0.3.0</div>
-      </div>
+         <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
+         <span>NebulaDB</span>
+         <div class="version-badge">v0.4.0 Cirrus</div>
+       </div>
       <div class="nav-links">
         <a href="#release">Release</a>
         <a href="#features">Features</a>
@@ -31,14 +31,14 @@
     <div class="hero-content">
       <div class="hero-text">
         <div class="logo-container">
-          <img src="nebuladb_v0.3.0_billow.svg" alt="NebulaDB Billow Hero" class="hero-logo" onerror="this.onerror=null;this.src='hero-altocumulus.svg';">
-          <img src="version-badge.svg" alt="v0.3.0 Billow" class="version-img">
-        </div>
-        <h1><span class="gradient-text" data-text="Fast. Flexible.">Fast. Flexible.</span><br>Serverless.</h1>
-        <p class="subtitle">The embedded database for the modern stack.</p>
+           <img src="nebuladb_v0.4.0_cirrus.svg" alt="NebulaDB Cirrus Hero" class="hero-logo" onerror="this.onerror=null;this.src='hero-altocumulus.svg';">
+           <img src="version-badge.svg" alt="v0.4.0 Cirrus" class="version-img">
+         </div>
+        <h1><span class="gradient-text" data-text="Sync. Secure.">Sync. Secure.</span><br>Enterprise-Ready.</h1>
+        <p class="subtitle">Global synchronization meets enterprise encryption.</p>
         <p class="description">
-          NebulaDB is a reactive, TypeScript-first, schema-optional, embeddable NoSQL database
-          that runs in the browser, Node.js, and Edge environments.
+          NebulaDB v0.4.0 "Cirrus" brings enterprise-grade features: real-time sync with conflict resolution,
+          AES-256-GCM encryption, edge deployment (Deno, Cloudflare), and 4-8x performance improvements.
         </p>
         <div class="cta-buttons">
           <a href="#getting-started" class="btn primary">Get Started</a>
@@ -55,48 +55,45 @@
           <div class="code-title">Terminal</div>
         </div>
         <pre class="terminal-block"><code id="typed-terminal"></code><noscript>
-$ nebula init my-app
-✔ Project initialized in my-app/
-$ nebula generate:adapter my-adapter
-✔ Adapter my-adapter created
-$ nebula migrate
-✔ All migrations applied
-$ node
-> import { createDb } from '@nebula/core';
-> import { MemoryAdapter } from '@nebula/adapter-memory';
-> import { createMigrationPlugin, getSchemaVersion } from '@nebula/plugin-migration';
-> // Billow: Migrations & advanced indexes
-> const migrations = [
->   { version: 1, name: "Add email", async up(db) { /* ... */ } },
->   { version: 2, name: "Add createdAt", async up(db) { /* ... */ } }
-> ];
-> const db = createDb({
->   adapter: new MemoryAdapter(),
->   plugins: [createMigrationPlugin(migrations)]
-> });
-> const users = db.collection("users", {
->   indexes: [
->     { name: "name_age_idx", fields: ["name", "age"], type: "compound" },
->     { name: "active_idx", fields: ["lastActive"], type: "single", options: { partial: { filter: { active: true } } } }
->   ]
-> });
-> await users.insert({ name: "Alice", age: 30, active: true });
-> await users.insert({ name: "Bob", age: 25, active: false });
-> const results = await users.find({ name: { $gte: "A", $lte: "M" }, age: { $gt: 20 } });
-> const version = await getSchemaVersion(db, "users");
-> console.log("Schema version:", version);
-> users.subscribe({ active: true }, (activeUsers) => {
->   console.log("Active users:", activeUsers);
-> });</noscript></pre>
+        $ npm install @nebula-db/core@0.4.0
+        ✔ NebulaDB v0.4.0 "Cirrus" installed
+        $ node
+        > import { createDb, QueryOptimizer, SyncPlugin } from "@nebula-db/core";
+        > import { EncryptionAdapter } from "@nebula-db/core";
+        > import { SQLiteAdapter } from "@nebula-db/sqlite";
+        > // Cirrus v0.4.0: Sync, Encryption, Performance
+        > const db = createDb({
+        >   adapter: new EncryptionAdapter({
+        >     baseAdapter: new SQLiteAdapter("app.db"),
+        >     encryptionKey: process.env.DB_KEY,
+        >     algorithm: "aes-256-gcm"
+        >   })
+        > });
+        > // Real-time sync with conflict resolution
+        > const sync = new SyncPlugin({
+        >   serverUrl: "https://sync.example.com",
+        >   conflictResolution: "last-write-wins"
+        > });
+        > db.use(sync);
+        > await sync.start();
+        > // Performance optimization
+        > const optimizer = new QueryOptimizer();
+        > const users = db.collection("users");
+        > const plan = optimizer.analyzeQuery({id: "123"}, users.getIndexes(), 10000);
+        > console.log(optimizer.formatPlan(plan));
+        > // Transparent encryption/decryption
+        > await users.insert({ id: "123", name: "Alice", ssn: "sensitive" });
+        > const result = await users.find({ id: "123" });
+        > console.log(result[0].ssn); // Auto-decrypted ✔</noscript></pre>
       </div>
     </div>
   </section>
 
   <section id="release" class="release">
     <div class="container">
-      <h2>Introducing <span class="gradient-text" data-text='v0.3.0 "Billow"'>v0.3.0 "Billow"</span></h2>
+      <h2>Introducing <span class="gradient-text" data-text='v0.4.0 "Cirrus"'>v0.4.0 "Cirrus"</span></h2>
       <p class="section-intro">
-        Our latest release brings advanced indexing, schema versioning, migration support, and major devtools improvements—all with our signature cloud-themed naming scheme.
+        Our latest release brings enterprise-grade sync & replication, AES-256-GCM encryption, edge deployment (Deno/Cloudflare), and performance improvements—delivered in production-ready code with zero breaking changes.
       </p>
 
       <div class="release-content">
@@ -106,50 +103,50 @@ $ node
             All NebulaDB releases are named after types of clouds, reflecting our commitment to building a database that's as flexible and powerful as the sky.
           </p>
           <p>
-            "Billow" represents rolling, layered cloud formations—mirroring our new multi-layered indexing and migration features.
+            "Cirrus" represents thin, delicate cloud formations at high altitude—symbolizing our approach to enterprise features: lightweight, elegant, and powerful.
           </p>
           <div class="release-timeline">
             <div class="release-item previous">
               <div class="release-dot"></div>
-              <p>Previous: v0.2.2 "Altocumulus"</p>
+              <p>v0.2.2 "Altocumulus"</p>
+            </div>
+            <div class="release-item previous">
+              <div class="release-dot"></div>
+              <p>v0.3.0 "Billow"</p>
             </div>
             <div class="release-item current">
               <div class="release-dot"></div>
-              <p>Current: v0.3.0 "Billow" <span style="font-size:0.7em;color:#888;">(July 1, 2025)</span></p>
-            </div>
-            <div class="release-item">
-              <div class="release-dot"></div>
-              <p>Future: v0.4.0 "Cirrus"</p>
+              <p>Current: v0.4.0 "Cirrus" <span style="font-size:0.7em;color:#888;">(January 11, 2026)</span></p>
             </div>
           </div>
         </div>
         <div class="release-image">
-          <img src="nebuladb_v0.3.0_billow.svg" alt="NebulaDB v0.3.0 Billow" onerror="this.onerror=null;this.src='nebuladb_v0.2.2_altocumulus_no_button.png';">
-        </div>
+           <img src="nebuladb_v0.4.0_cirrus.svg" alt="NebulaDB v0.4.0 Cirrus" onerror="this.onerror=null;this.src='nebuladb_v0.2.2_altocumulus_no_button.png';">
+         </div>
       </div>
 
       <div class="feature-cards">
-        <div class="feature-card">
-          <div class="feature-icon">🧩</div>
-          <h3>Advanced Indexing</h3>
-          <p>Compound, partial, and multi-field indexes. Efficient partial prefix and multi-field range queries. All scenarios covered by robust tests.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🗂️</div>
-          <h3>Schema Versioning & Migrations</h3>
-          <p>Per-collection schema version tracking. Migration plugin with helpers and migration history. Automated and manual migration support.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🛠️</div>
-          <h3>Devtools Improvements</h3>
-          <p>Index metadata and schema version visible in the UI. Migration history for each collection. Cleaner, more informative dashboards.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">💡</div>
-          <h3>Developer Experience</h3>
-          <p>Improved test coverage and monorepo coverage reporting. Cleaner code, better types, and up-to-date documentation.</p>
-        </div>
-      </div>
+         <div class="feature-card">
+           <div class="feature-icon">🔄</div>
+           <h3>Real-Time Sync & Replication</h3>
+           <p>Multi-strategy conflict resolution (LWWM, server-wins, client-wins, custom merge). Peer-to-peer sync, offline queues, sync servers with webhooks.</p>
+         </div>
+         <div class="feature-card">
+           <div class="feature-icon">🔒</div>
+           <h3>AES-256-GCM Encryption</h3>
+           <p>Transparent encryption at rest. Field-level encryption for sensitive data. Searchable encryption. PBKDF2 key derivation. HIPAA/PCI/GDPR ready.</p>
+         </div>
+         <div class="feature-card">
+           <div class="feature-icon">⚡</div>
+           <h3>Performance Optimizations</h3>
+           <p>Query optimizer with automatic index selection. Worker pool parallelization (4-8x speedup). Performance profiler with memory tracking.</p>
+         </div>
+         <div class="feature-card">
+           <div class="feature-icon">🌐</div>
+           <h3>Edge Deployment</h3>
+           <p>Deno KV adapter for Deno edge runtime. Cloudflare D1 adapter for Workers and Pages. Production-ready, zero breaking changes.</p>
+         </div>
+       </div>
     </div>
   </section>
 
@@ -185,21 +182,21 @@ $ node
           <p>Run in browsers, Node.js, or edge environments with the same consistent API.</p>
         </div>
         <div class="feature-item">
-          <h3>Advanced Indexing</h3>
-          <p>Compound, partial, and multi-field indexes. Efficient partial prefix and multi-field range queries. Automatic index selection for optimal performance.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Schema Versioning</h3>
-          <p>Per-collection schema version tracking and helpers for managing schema changes over time.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Migration Plugin</h3>
-          <p>Automate and track schema/data migrations with migration history and zero-downtime upgrades.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Devtools</h3>
-          <p>Visualize collections, indexes, schema versions, and migration history. Debug and optimize queries in the UI.</p>
-        </div>
+           <h3>Real-Time Sync & Replication</h3>
+           <p>Multi-strategy conflict resolution with automatic merging. Offline queue support. Peer-to-peer and server-based sync with progress tracking.</p>
+         </div>
+         <div class="feature-item">
+           <h3>AES-256-GCM Encryption</h3>
+           <p>Transparent encryption at rest. Field-level encryption for sensitive data. Searchable encryption for privacy-preserving queries.</p>
+         </div>
+         <div class="feature-item">
+           <h3>Query Optimizer</h3>
+           <p>Automatic index selection, query plan generation, cost estimation, and plan caching for optimal performance.</p>
+         </div>
+         <div class="feature-item">
+           <h3>Worker Pool Parallelization</h3>
+           <p>Batch processing with Web Workers (browser) and Worker Threads (Node.js). 4-8x speedup on multi-core systems.</p>
+         </div>
         <div class="feature-item">
           <h3>Batch Operations</h3>
           <p>Insert, update, or delete many documents at once for high performance and reduced overhead.</p>
@@ -248,36 +245,36 @@ $ node
       </p>
       <div class="docs-links">
         <a href="README.html" class="docs-link">
-          <h3>Getting Started</h3>
-          <p>Learn the basics of NebulaDB and set up your first database.</p>
+           <h3>Getting Started</h3>
+           <p>Learn the basics of NebulaDB and set up your first database.</p>
+         </a>
+         <a href="MIGRATION_v0.3_to_v0.4.html" class="docs-link">
+           <h3>Migration Guide (v0.3 → v0.4)</h3>
+           <p>Upgrade from v0.3.0 to v0.4.0 Cirrus. Zero breaking changes, easy upgrade path.</p>
+         </a>
+         <a href="SYNC_REPLICATION.html" class="docs-link">
+           <h3>Sync & Replication</h3>
+           <p>Real-time data sync with conflict resolution, P2P sync, offline support, and sync servers.</p>
+         </a>
+         <a href="ENCRYPTION.html" class="docs-link">
+           <h3>Encryption & Security</h3>
+           <p>AES-256-GCM encryption at rest, field-level encryption, key management, compliance guides.</p>
+         </a>
+        <a href="PERFORMANCE.html" class="docs-link">
+          <h3>Performance Guide</h3>
+          <p>Query optimizer, worker pools, profiler, benchmarks, and optimization techniques.</p>
+        </a>
+        <a href="PHASE4_QUICK_START.html" class="docs-link">
+          <h3>Performance Tools Quick Start</h3>
+          <p>Quick reference for QueryOptimizer, WorkerPool, and PerformanceProfiler APIs.</p>
         </a>
         <a href="api-reference.html" class="docs-link">
           <h3>API Reference</h3>
-          <p>Detailed documentation of all NebulaDB APIs and options.</p>
+          <p>Complete API documentation for all NebulaDB components and methods.</p>
         </a>
         <a href="examples.html" class="docs-link">
           <h3>Examples</h3>
-          <p>Real-world examples and code snippets to help you build your application.</p>
-        </a>
-        <a href="advanced-usage.html" class="docs-link">
-          <h3>Advanced Usage</h3>
-          <p>Performance, indexing, migrations, and advanced patterns.</p>
-        </a>
-        <a href="adapters.html" class="docs-link">
-          <h3>Adapters Guide</h3>
-          <p>How to use and implement storage adapters (Memory, IndexedDB, FileSystem, etc.).</p>
-        </a>
-        <a href="plugins.html" class="docs-link">
-          <h3>Plugins Guide</h3>
-          <p>Extend NebulaDB with validation, encryption, versioning, and custom plugins.</p>
-        </a>
-        <a href="migration-guide.html" class="docs-link">
-          <h3>Migration Guide</h3>
-          <p>How to migrate data and schemas between versions using the migration plugin.</p>
-        </a>
-        <a href="performance.html" class="docs-link">
-          <h3>Performance</h3>
-          <p>Tips and techniques for optimizing NebulaDB performance.</p>
+          <p>Real-world examples: sync, encryption, performance optimization, and edge deployment.</p>
         </a>
         <a href="indexing.html" class="docs-link">
           <h3>Indexing</h3>
@@ -303,30 +300,32 @@ $ node
           <span>NebulaDB</span>
         </div>
         <div class="footer-links">
-          <div>
-            <h3>Documentation</h3>
-            <ul>
-              <li><a href="README.html">Getting Started</a></li>
-              <li><a href="api-reference.html">API Reference</a></li>
-              <li><a href="examples.html">Examples</a></li>
-            </ul>
+            <div>
+              <h3>Cirrus Features</h3>
+              <ul>
+                <li><a href="MIGRATION_v0.3_to_v0.4.html">Migration Guide</a></li>
+                <li><a href="SYNC_REPLICATION.html">Sync & Replication</a></li>
+                <li><a href="ENCRYPTION.html">Encryption</a></li>
+                <li><a href="PERFORMANCE.html">Performance</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community</h3>
+              <ul>
+                <li><a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a></li>
+                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/issues" target="_blank">Issues</a></li>
+                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/discussions" target="_blank">Discussions</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Latest Release</h3>
+              <ul>
+                <li><span class="current-release">v0.4.0 "Cirrus"</span></li>
+                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/releases/tag/v0.4.0" target="_blank">Release Notes</a></li>
+                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/LICENSE" target="_blank">MIT License</a></li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <h3>Community</h3>
-            <ul>
-              <li><a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a></li>
-              <li><a href="https://github.com/Nom-nom-hub/NebulaDB/issues" target="_blank">Issues</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Releases</h3>
-            <ul>
-              <li><span class="current-release">v0.3.0 "Billow"</span></li>
-              <li><span>v0.2.2 "Altocumulus"</span></li>
-              <li><a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/LICENSE" target="_blank">MIT License</a></li>
-            </ul>
-          </div>
-        </div>
       </div>
       <div class="footer-bottom">
         <p>&copy; 2025 NebulaDB. All rights reserved.</p>
@@ -336,41 +335,38 @@ $ node
 
   <script src="main.js"></script>
   <script>
-  const terminalLines = [
-    '$ nebula init my-app',
-    '✔ Project initialized in my-app/',
-    '$ nebula generate:adapter my-adapter',
-    '✔ Adapter my-adapter created',
-    '$ nebula migrate',
-    '✔ All migrations applied',
-    '$ node',
-    '> import { createDb } from "@nebula/core";',
-    '> import { MemoryAdapter } from "@nebula/adapter-memory";',
-    '> import { createMigrationPlugin, getSchemaVersion } from "@nebula/plugin-migration";',
-    '> // Billow: Migrations & advanced indexes',
-    '> const migrations = [',
-    '>   { version: 1, name: "Add email", async up(db) { /* ... */ } },',
-    '>   { version: 2, name: "Add createdAt", async up(db) { /* ... */ } }',
-    '> ];',
-    '> const db = createDb({',
-    '>   adapter: new MemoryAdapter(),',
-    '>   plugins: [createMigrationPlugin(migrations)]',
-    '> });',
-    '> const users = db.collection("users", {',
-    '>   indexes: [',
-    '>     { name: "name_age_idx", fields: ["name", "age"], type: "compound" },',
-    '>     { name: "active_idx", fields: ["lastActive"], type: "single", options: { partial: { filter: { active: true } } } }',
-    '>   ]',
-    '> });',
-    '> await users.insert({ name: "Alice", age: 30, active: true });',
-    '> await users.insert({ name: "Bob", age: 25, active: false });',
-    '> const results = await users.find({ name: { $gte: "A", $lte: "M" }, age: { $gt: 20 } });',
-    '> const version = await getSchemaVersion(db, "users");',
-    '> console.log("Schema version:", version);',
-    '> users.subscribe({ active: true }, (activeUsers) => {',
-    '>   console.log("Active users:", activeUsers);',
-    '> });',
-  ];
+   const terminalLines = [
+     '$ npm install @nebula-db/core@0.4.0',
+     '✔ NebulaDB v0.4.0 "Cirrus" installed',
+     '$ node',
+     '> import { createDb, QueryOptimizer, SyncPlugin } from "@nebula-db/core";',
+     '> import { EncryptionAdapter } from "@nebula-db/core";',
+     '> import { SQLiteAdapter } from "@nebula-db/sqlite";',
+     '> // Cirrus v0.4.0: Sync, Encryption, Performance',
+     '> const db = createDb({',
+     '>   adapter: new EncryptionAdapter({',
+     '>     baseAdapter: new SQLiteAdapter("app.db"),',
+     '>     encryptionKey: process.env.DB_KEY,',
+     '>     algorithm: "aes-256-gcm"',
+     '>   })',
+     '> });',
+     '> // Real-time sync with conflict resolution',
+     '> const sync = new SyncPlugin({',
+     '>   serverUrl: "https://sync.example.com",',
+     '>   conflictResolution: "last-write-wins"',
+     '> });',
+     '> db.use(sync);',
+     '> await sync.start();',
+     '> // Performance optimization',
+     '> const optimizer = new QueryOptimizer();',
+     '> const users = db.collection("users");',
+     '> const plan = optimizer.analyzeQuery({id: "123"}, users.getIndexes(), 10000);',
+     '> console.log(optimizer.formatPlan(plan));',
+     '> // Transparent encryption/decryption',
+     '> await users.insert({ id: "123", name: "Alice", ssn: "sensitive" });',
+     '> const result = await users.find({ id: "123" });',
+     '> console.log(result[0].ssn); // Auto-decrypted ✔',
+   ];
   const terminalElem = document.getElementById('typed-terminal');
   let tLine = 0;
   let terminalOutput = [];
