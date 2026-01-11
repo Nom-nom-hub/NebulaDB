@@ -4,11 +4,11 @@
 
 # NebulaDB
 
-**Fast. Flexible. Serverless. The embedded database for the modern stack.**
+**Fast. Flexible. Secure. The embedded database for the modern stack.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/badge/npm-v0.2.2-blue)](https://www.npmjs.com/package/@nebula-db/nebula-db)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://www.typescriptlang.org/)
+[![npm version](https://img.shields.io/badge/npm-v0.4.0-blue)](https://www.npmjs.com/package/@nebula-db/core)
 [![Product Hunt](https://img.shields.io/badge/Product%20Hunt-NebulaDB-orange)](https://www.producthunt.com/products/nebuladb)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/NebulaDB/build.yml?branch=main)](https://github.com/Nom-nom-hub/NebulaDB/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Nom-nom-hub/NebulaDB)](https://codecov.io/gh/Nom-nom-hub/NebulaDB)
@@ -22,18 +22,19 @@
 
 </div>
 
-NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database that runs in the browser, Node.js, and Edge environments. It features advanced indexing, optimized query processing, modular adapters for persistence, reactive live queries, extensibility via plugins, and blazing-fast in-memory operations with adaptive concurrency control.
+NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database that runs in the browser, Node.js, and Edge environments. It features advanced indexing, optimized query processing, modular adapters for persistence, reactive live queries, extensibility via plugins, real-time sync & replication, enterprise-grade encryption, and blazing-fast in-memory operations with adaptive concurrency control.
 
-## Latest Release: v0.2.2 (April 26, 2025)
+## Latest Release: v0.4.0 "Cirrus" (January 11, 2026)
 
-The latest release includes significant improvements to error handling and recovery mechanisms:
+A major release bringing enterprise-grade features:
 
-- Fixed TypeScript errors and improved interface implementations
-- Added comprehensive test suite for error handling and recovery
-- Improved resilience against data corruption and network interruptions
-- Enhanced transaction system robustness
+✨ **Real-Time Sync & Replication** - Multi-strategy conflict resolution, P2P sync, offline queuing
+🔐 **Enterprise Encryption** - AES-256-GCM encryption at rest, field-level encryption, searchable encryption
+🌍 **Edge Deployment** - Deno KV and Cloudflare D1 adapters for edge environments
+⚡ **Performance Boost** - Query optimizer, worker pools (4-8x speedup), performance profiler
+📊 **Production Ready** - 248 tests (85.3% coverage), zero breaking changes, fully backward compatible
 
-[Check us out on Product Hunt!](https://www.producthunt.com/products/nebuladb)
+[Read the full Release Notes](./RELEASE_NOTES_v0.4.0.md) | [Migration Guide](./docs/MIGRATION_v0.3_to_v0.4.md)
 
 ## Project Status
 
@@ -49,15 +50,16 @@ The latest release includes significant improvements to error handling and recov
 
 ## Features
 
-- 🚀 **Blazing Fast**: Optimized in-memory operations with advanced indexing and query caching
-- 🔄 **Reactive**: Live queries that update in real-time
-- 📐 **TypeScript-First**: Full type safety with your data
+- 🚀 **Blazing Fast**: Query optimizer with automatic index selection, 4-8x batch speedup with worker pools
+- 🔄 **Real-Time Sync**: Multi-strategy conflict resolution, P2P sync, offline queuing with webhooks
+- 🔐 **Enterprise Security**: AES-256-GCM encryption, field-level encryption, searchable encryption
+- ⚡ **Reactive**: Live queries that update in real-time with subscription support
+- 📐 **TypeScript-First**: Full type safety with your data and strict mode support
 - 🧩 **Modular**: Use only what you need with adapters and plugins
-- 🌐 **Universal**: Works in browsers, Node.js, and Edge environments
+- 🌐 **Universal**: Works in browsers, Node.js, Deno, Cloudflare Workers, and edge environments
 - 🔌 **Extensible**: Create custom adapters and plugins
-- 📊 **Optimized**: B-tree indexing, batch operations, and adaptive concurrency control
+- 📊 **Optimized**: B-tree indexing, batch operations, adaptive concurrency control, compression
 - 💾 **Efficient**: Document compression and memory management for large datasets
-- 🔍 **Smart Queries**: Query optimization with short-circuit evaluation and index selection
 
 ## Installation
 
@@ -200,13 +202,17 @@ Here's how NebulaDB compares to other embedded databases:
 |---------|----------|--------|---------|-------|
 | TypeScript-first | ✅ | ❌ | ❌ | ✅ |
 | Reactive queries | ✅ | ❌ | ✅ | ❌ |
+| Real-time sync | ✅ | ❌ | ✅ | ❌ |
+| Encryption (at-rest) | ✅ | ❌ | ❌ | ❌ |
 | Plugin system | ✅ | ❌ | ✅ | ❌ |
 | Schema validation | ✅ | ❌ | ❌ | ❌ |
 | Browser support | ✅ | ✅ | ✅ | ✅ |
 | Node.js support | ✅ | ✅ | ✅ | ✅ |
+| Deno support | ✅ | ❌ | ❌ | ❌ |
 | Edge runtime support | ✅ | ❌ | ❌ | ❌ |
 | Advanced indexing | ✅ | ⚠️ | ⚠️ | ❌ |
 | Query optimization | ✅ | ❌ | ❌ | ❌ |
+| Worker pools | ✅ | ❌ | ❌ | ❌ |
 | Batch operations | ✅ | ⚠️ | ✅ | ❌ |
 | Document compression | ✅ | ❌ | ✅ | ❌ |
 | Adaptive concurrency | ✅ | ❌ | ❌ | ❌ |
