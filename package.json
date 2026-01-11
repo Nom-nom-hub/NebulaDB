@@ -1,7 +1,7 @@
 {
   "name": "nebula-db",
-  "version": "0.3.0",
-  "description": "Fast. Flexible. Serverless. The embedded database for the modern stack.",
+  "version": "0.4.0",
+  "description": "Fast. Flexible. Secure. The embedded database for the modern stack.",
   "private": true,
   "workspaces": [
     "packages/*"
