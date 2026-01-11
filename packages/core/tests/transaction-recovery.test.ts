@@ -150,7 +150,7 @@ describe('Transaction Failure Recovery Tests', () => {
     // Attempt to commit the transaction
     try {
       await transaction.commit();
-    } catch (error) {
+    } catch {
       // Transaction might fail depending on implementation
     }
 

@@ -101,7 +101,7 @@ describe('Data Corruption Recovery Tests', () => {
           required: ['id', 'name', 'email']
         }
       });
-    } catch (e) {
+    } catch {
       // If schema validation is not supported, skip this test
       console.warn('Schema validation not supported, skipping test');
       return;
@@ -205,7 +205,7 @@ describe('Data Corruption Recovery Tests', () => {
           required: ['id', 'name', 'email']
         }
       });
-    } catch (e) {
+    } catch {
       // If schema validation is not supported, skip this test
       console.warn('Schema validation not supported, skipping test');
       return;

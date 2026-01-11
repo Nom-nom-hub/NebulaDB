@@ -5,12 +5,13 @@ import type { Document } from '@nebula-db/core';
 /**
  * Mock Cloudflare D1 database for testing
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class MockD1Database {
   private tables: Map<string, Map<string, any>> = new Map();
 
   prepare(sql: string) {
-    const self = this;
     return {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       bind(...params: any[]) {
         return this;
       },
@@ -98,6 +99,7 @@ class BetterMockD1Database {
 
   prepare(sql: string) {
     this.lastSql = sql;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
     return {
@@ -107,46 +109,46 @@ class BetterMockD1Database {
       },
       async all() {
         if (self.lastSql.includes('sqlite_master')) {
-          const tableNames = Array.from(self.tables.keys()).map(name => ({
-            name
-          }));
-          return { results: tableNames };
-        } else if (self.lastSql.includes('SELECT id, data FROM')) {
-          const match = self.lastSql.match(/FROM "([^"]+)"/);
-          const tableName = match ? match[1] : '';
+           const tableNames = Array.from(self.tables.keys()).map(name => ({
+             name
+           }));
+           return { results: tableNames };
+         } else if (self.lastSql.includes('SELECT id, data FROM')) {
+           const match = self.lastSql.match(/FROM "([^"]+)"/);
+           const tableName = match ? match[1] : '';
 
-          if (!self.tables.has(tableName)) {
-            return { results: [] };
-          }
+           if (!self.tables.has(tableName)) {
+             return { results: [] };
+           }
 
-          const docs = Array.from(self.tables.get(tableName)!.values());
-          return { results: docs };
-        }
+           const docs = Array.from(self.tables.get(tableName)!.values());
+           return { results: docs };
+         }
 
-        return { results: [] };
-      },
-      async run() {
-        if (self.lastSql.includes('CREATE TABLE')) {
-          const match = self.lastSql.match(/CREATE TABLE IF NOT EXISTS "([^"]+)"/);
-          if (match) {
-            const tableName = match[1];
-            if (!self.tables.has(tableName)) {
-              self.tables.set(tableName, new Map());
-            }
-          }
-        } else if (self.lastSql.includes('DELETE FROM')) {
-          const match = self.lastSql.match(/DELETE FROM "([^"]+)"/);
-          if (match) {
-            const tableName = match[1];
-            if (self.tables.has(tableName)) {
-              self.tables.get(tableName)!.clear();
-            }
-          }
-        } else if (self.lastSql.includes('INSERT INTO')) {
-          const match = self.lastSql.match(/INSERT INTO "([^"]+)"/);
-          if (match && self.lastParams.length >= 2) {
-            const tableName = match[1];
-            const [id, data] = self.lastParams;
+         return { results: [] };
+       },
+       async run() {
+         if (self.lastSql.includes('CREATE TABLE')) {
+           const match = self.lastSql.match(/CREATE TABLE IF NOT EXISTS "([^"]+)"/);
+           if (match) {
+             const tableName = match[1];
+             if (!self.tables.has(tableName)) {
+               self.tables.set(tableName, new Map());
+             }
+           }
+         } else if (self.lastSql.includes('DELETE FROM')) {
+           const match = self.lastSql.match(/DELETE FROM "([^"]+)"/);
+           if (match) {
+             const tableName = match[1];
+             if (self.tables.has(tableName)) {
+               self.tables.get(tableName)!.clear();
+             }
+           }
+         } else if (self.lastSql.includes('INSERT INTO')) {
+           const match = self.lastSql.match(/INSERT INTO "([^"]+)"/);
+           if (match && self.lastParams.length >= 2) {
+             const tableName = match[1];
+             const [id, data] = self.lastParams;
 
             if (!self.tables.has(tableName)) {
               self.tables.set(tableName, new Map());

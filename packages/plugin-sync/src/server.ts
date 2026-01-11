@@ -210,7 +210,7 @@ export function createSyncServer(options: SyncServerOptions = {}) {
           } else {
             next(new Error('Authentication failed'));
           }
-        } catch (error) {
+        } catch {
           next(new Error('Authentication error'));
         }
       });

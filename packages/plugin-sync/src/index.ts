@@ -253,7 +253,8 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin & { api: an
   /**
    * Apply conflict resolution to incoming event
    */
-  async function resolveConflict(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async function _resolveConflict(
     collectionName: string,
     event: SyncEvent
   ): Promise<ConflictResolutionResult | null> {

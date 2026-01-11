@@ -43,9 +43,10 @@ export async function runMigrations(directory: string, configPath: string): Prom
     // Load configuration
     let config;
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       config = require(configFile);
     } catch (error) {
-      spinner.fail(`Failed to load configuration file: ${error.message}`);
+      spinner.fail(`Failed to load configuration file: ${error instanceof Error ? error.message : 'Unknown error'}`);
       return;
     }
     

@@ -61,7 +61,7 @@ export class CloudflareD1Adapter implements Adapter {
             id: row.id,
             ...JSON.parse(row.data)
           }));
-        } catch (error) {
+        } catch {
           // Table might not exist yet, skip it
           continue;
         }

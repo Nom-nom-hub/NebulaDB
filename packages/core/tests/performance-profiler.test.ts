@@ -100,8 +100,6 @@ describe('Performance Profiler Tests', () => {
   });
 
   it('should calculate average time', () => {
-    const start = Date.now();
-
     profiler.startOperation('op-1', 'insert');
     profiler.endOperation('op-1', true);
 

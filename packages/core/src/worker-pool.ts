@@ -195,6 +195,7 @@ export class AdaptiveWorkerPool {
     }
     if (typeof require !== 'undefined') {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const os = require('os');
         return os.cpus().length;
       } catch {

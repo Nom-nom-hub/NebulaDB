@@ -214,7 +214,7 @@ function matchOperator(value: any, operator: string, operand: any): boolean {
     case '$regex':
       try {
         return new RegExp(operand).test(String(value));
-      } catch (e) {
+      } catch {
         return false;
       }
     case '$exists':

@@ -8,6 +8,7 @@ import * as os from 'os';
 let isBetterSqlite3Available = false;
 try {
   // Try to actually instantiate the database to check if native bindings are available
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const Database = require('better-sqlite3');
   const tempDb = new Database(':memory:');
   tempDb.close();

@@ -41,7 +41,7 @@ export default db;
 `;
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('NebulaDB extension is now active!');
+	// Extension activated
 
 	// Command: Create NebulaDB configuration file
 	const createConfigCommand = vscode.commands.registerCommand('nebuladb-vscode.createConfig', async () => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { DenoKvAdapter, createDenoKvAdapter } from '../src/index';
 import type { Document } from '@nebula-db/core';
 
@@ -34,7 +34,6 @@ class MockDenoKv {
       return keyStr.startsWith(prefixStr.slice(0, -1)); // Match prefix
     });
 
-    const self = this;
     return {
       async *[Symbol.asyncIterator]() {
         for (const entry of entries) {

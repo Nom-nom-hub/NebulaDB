@@ -138,7 +138,7 @@ export class DocumentCompression {
     // Try to parse as JSON, otherwise return as string
     try {
       return JSON.parse(decompressed);
-    } catch (e) {
+    } catch {
       return decompressed;
     }
   }

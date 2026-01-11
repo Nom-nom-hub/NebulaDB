@@ -1,4 +1,4 @@
-import { Document, UpdateOperation } from '@nebula-db/core';
+import { Document } from '@nebula-db/core';
 
 /**
  * Conflict resolution result
@@ -133,7 +133,6 @@ export class LastWriteWinsResolver {
     const remoteTime = remote.__lastWrite || 0;
 
     const winner = remoteTime >= localTime ? remote : local;
-    const loser = remoteTime >= localTime ? local : remote;
 
     return {
       resolved: winner,
@@ -290,7 +289,7 @@ export class CustomMergeResolver {
           resolvedAt: Date.now()
         }
       };
-    } catch (error) {
+    } catch {
       // If merge fails, fall back to server-wins
       return {
         resolved: remote,

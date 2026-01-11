@@ -179,7 +179,7 @@ export class CryptoUtil {
     try {
       const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
       return decrypted.toString('utf8');
-    } catch (error) {
+    } catch {
       throw new Error('Decryption failed: invalid key or corrupted data');
     }
   }
@@ -191,7 +191,7 @@ export class CryptoUtil {
     const decrypted = this.decrypt(encryptedData);
     try {
       return JSON.parse(decrypted);
-    } catch (error) {
+    } catch {
       throw new Error('Failed to parse decrypted JSON');
     }
   }
@@ -200,6 +200,7 @@ export class CryptoUtil {
    * Hash a string (for searchable encryption)
    */
   static hash(value: string, salt: string = ''): string {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256');
     hash.update(value + salt);
