@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/orm",
-  "version": "0.2.3",
+  "version": "0.4.0",
   "description": "ORM-style modeling for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
