@@ -87,6 +87,7 @@ local/
 yarn.lock
 pnpm-lock.yaml
 package-lock.json
+bun.lock
 .history/
 packages/*/dist/
 packages/*/build/

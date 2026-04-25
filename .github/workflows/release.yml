@@ -23,6 +23,9 @@ jobs:
 
       - run: bun run test
 
+      - name: Create empty lockfile
+        run: echo '{}' > bun.lock
+
       - uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
