@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Database, Document, AdapterChange } from '@nebula-db/core';
+import { Database, AdapterChange } from '@nebula-db/core';
 
 export interface SupabaseConfig {
   url: string;

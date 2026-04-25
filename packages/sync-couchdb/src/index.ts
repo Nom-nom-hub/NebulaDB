@@ -1,4 +1,4 @@
-import { Database, Document, Adapter, AdapterChange } from '@nebula-db/core';
+import { Database, Document, AdapterChange } from '@nebula-db/core';
 
 export interface CouchDBConfig {
   url: string;
@@ -6,15 +6,6 @@ export interface CouchDBConfig {
   username?: string;
   password?: string;
   apikey?: string;
-}
-
-interface CouchDBResponse {
-  id: string;
-  key: any;
-  value: {
-    rev: string;
-  };
-  doc?: CouchDBDocument;
 }
 
 interface CouchDBDocument extends Document {

@@ -1,4 +1,4 @@
-import mysql, { Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+import mysql, { Pool, RowDataPacket } from 'mysql2/promise';
 import { Adapter, Document } from '@nebula-db/core';
 
 export interface MySQLOptions {

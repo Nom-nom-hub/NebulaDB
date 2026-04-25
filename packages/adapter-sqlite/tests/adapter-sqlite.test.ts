@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { SQLiteAdapter, createSQLiteAdapter } from '../src/index';
-import Database from 'better-sqlite3';
 
 describe('SQLiteAdapter', () => {
   let adapter: SQLiteAdapter;

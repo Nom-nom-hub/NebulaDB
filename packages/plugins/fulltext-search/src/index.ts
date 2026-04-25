@@ -111,7 +111,7 @@ export class FullTextSearchPlugin implements Plugin {
     if (collection !== this.collectionName) return;
 
     for (const doc of deletedDocs) {
-      for (const [term, entry] of this.invertedIndex) {
+      for (const [, entry] of this.invertedIndex) {
         entry.documentIds.delete(doc.id as string);
       }
     }
@@ -176,7 +176,7 @@ export class FullTextSearchPlugin implements Plugin {
     const offset = options?.offset || 0;
 
     return sorted
-      .filter(([_, score]) => score >= (options?.$threshold || 1))
+      .filter(([, score]) => score >= (options?.$threshold || 1))
       .slice(offset, offset + limit)
       .map(([docId]) => docId);
   }

@@ -28,7 +28,7 @@ export class ModelManager {
     return this.db;
   }
 
-  registerModel<T extends Document>(modelClass: new () => T, options: ModelOptions = {}): void {
+  registerModel<T extends Document>(modelClass: new () => T): void {
     const meta = modelClass.getModelMetadata();
     if (!meta) {
       throw new Error(`No model metadata found for ${modelClass.name}. Did you add @Model() decorator?`);
@@ -36,7 +36,7 @@ export class ModelManager {
     this.modelClasses.set(meta.collection, modelClass);
   }
 
-  getCollection<T extends Document>(collectionName: string): Collection {
+  getCollection(collectionName: string): Collection {
     if (!this.collectionCache.has(collectionName)) {
       this.collectionCache.set(collectionName, this.db.collection(collectionName));
     }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Collection, createDb } from '../src/index';
+import { createDb } from '../src/index';
 
 describe('Partial indexes', () => {
   it('should only index documents that match the filter', async () => {
