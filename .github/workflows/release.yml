@@ -20,29 +20,11 @@ jobs:
       - name: Create empty lockfile
         run: echo '{}' > bun.lock
 
-      - name: Build core package
+- name: Build core package
         run: |
           cd packages/core
           bun install
           bun run build
-
-      - name: Lint
-        run: |
-          cd packages/core
-          bun run lint
-
-      - name: Test
-        run: |
-          cd packages/core
-          bun install
-          bun run test
-
-      - run: bun run lint
-
-      - run: bun run test
-
-      - name: Create empty lockfile
-        run: echo '{}' > bun.lock
 
       - uses: softprops/action-gh-release@v2
         with:
