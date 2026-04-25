@@ -7,6 +7,9 @@ const fs = require('fs');
 if (fs.existsSync('package-lock.json')) {
   console.log('Installing root dependencies...');
   execSync('npm install --ignore-scripts --legacy-peer-deps', { stdio: 'inherit' });
+} else {
+  console.log('Installing root dependencies with bun...');
+  execSync('bun install --no-frozen-lockfile', { stdio: 'inherit' });
 }
 
 console.log('\nBuilding core package...');
