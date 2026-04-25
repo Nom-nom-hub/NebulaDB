@@ -1,7 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { SQLiteAdapter, createSQLiteAdapter } from '../src/index';
 
-describe('SQLiteAdapter', () => {
+let canRun = true;
+try {
+  require('better-sqlite3');
+} catch {
+  canRun = false;
+}
+
+describe.skipIf(!canRun)('SQLiteAdapter', () => {
   let adapter: SQLiteAdapter;
 
   beforeEach(() => {
@@ -65,7 +72,7 @@ describe('SQLiteAdapter', () => {
   });
 });
 
-describe('SQLiteAdapter with file', () => {
+describe.skipIf(!canRun)('SQLiteAdapter with file', () => {
   it('should create file-based database', async () => {
     const adapter = createSQLiteAdapter('/tmp/test-nebula.db');
     await adapter.save({ test: [{ id: '1' }] });
