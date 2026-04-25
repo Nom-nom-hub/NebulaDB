@@ -17,7 +17,25 @@ jobs:
 
       - run: bun install --no-frozen-lockfile
 
-      - run: bun run build
+      - name: Create empty lockfile
+        run: echo '{}' > bun.lock
+
+      - name: Build core package
+        run: |
+          cd packages/core
+          bun install
+          bun run build
+
+      - name: Lint
+        run: |
+          cd packages/core
+          bun run lint
+
+      - name: Test
+        run: |
+          cd packages/core
+          bun install
+          bun run test
 
       - run: bun run lint
 
