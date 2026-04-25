@@ -1,9 +1,32 @@
 {
   "name": "@nebula-db/adapter-redis",
   "version": "0.4.0",
+  "description": "Redis storage adapter for NebulaDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nebula-db/core": "^0.4.0",
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/ioredis": "^4.28.10",
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.2"
+  },
+  "keywords": [
+    "nebula-db",
+    "adapter",
+    "redis",
+    "cache"
+  ],
+  "license": "Apache-2.0"
 }

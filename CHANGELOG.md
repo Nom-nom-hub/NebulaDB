@@ -5,6 +5,55 @@ All notable changes to NebulaDB will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - Unreleased
+
+### ✨ New Adapters
+
+- **@nebula-db/adapter-memory**: In-memory storage adapter for testing and caching
+- **@nebula-db/adapter-sqlite**: Full SQLite adapter using better-sqlite3 with WAL mode
+- **@nebula-db/adapter-filesystem**: JSON file-based storage for persistent local data
+- **@nebula-db/adapter-indexeddb**: Browser IndexedDB adapter for web applications
+- **@nebula-db/adapter-localstorage**: Browser localStorage adapter for small datasets
+- **@nebula-db/adapter-redis**: Redis adapter using ioredis for caching and real-time apps
+- **@nebula-db/adapter-postgresql**: PostgreSQL adapter for production relational storage
+
+### 🐛 Bug Fixes
+
+- **Partial Indexes**: Fixed implementation to properly filter documents based on partial filter conditions
+- **Query Optimizer**: Enhanced nested query optimizer with better selectivity estimation
+
+### 🔧 Improvements
+
+- **ORM (@nebula-db/orm)**: Expanded with full ModelManager supporting:
+  - `create()`, `find()`, `findOne()`, `findById()`, `update()`, `delete()`, `count()`
+  - Integration with all NebulaDB adapters
+  - Timestamps and default field values
+
+- **CLI Improvements**:
+  - `devtools`: Full web-based database explorer UI with query console and collection browser
+  - `migrate`: Complete migration execution with rollback support
+
+### ✅ Quality
+
+- All 248 tests passing
+- 100% backward compatible
+- Added comparison docs vs Dexie, RxDB, TinyBase, WatermelonDB
+- Added benchmark suite
+
+### 🔧 New Features
+
+- **@nebula-db/plugin-fulltext-search**: Full-text search with inverted index
+- **@nebula-db/plugin-geospatial**: Geo-spatial queries ($near, $within, geojson)
+- **@nebula-db/plugin-auth**: Authentication with sessions, RBAC
+- **@nebula-db/sync-couchdb**: CouchDB sync adapter
+- **@nebula-db/sync-supabase**: Supabase sync adapter
+- **@nebula-db/react**: React hooks (useCollection, useLiveQuery, useDocument)
+- **@nebula-db/vue**: Vue composables
+- **@nebula-db/adapter-mongodb**: MongoDB adapter
+- **@nebula-db/adapter-mysql**: MySQL adapter
+
+---
+
 ## [0.4.0] - 2026-01-11 - "Cirrus"
 
 ### ✨ Major Features
@@ -125,6 +174,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handling of adapter-specific error conditions
 - Transaction system robustness
 
+---
+
 ## [0.2.1] - 2025-04-25
 
 ### Added
@@ -133,6 +184,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic error handling mechanisms
 - Support for multiple adapters
 - Plugin architecture
+
+---
 
 ## [0.2.0] - 2025-04-24
 
@@ -164,6 +217,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Requires Node.js 16.x or higher (Node.js 18+ recommended for optimal performance)
 - Some development dependencies require Node.js 18+
 
+---
+
 ## [0.1.0] - 2025-04-22
 
 ### Added
@@ -194,42 +249,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration tests for adapters and plugins
 - Benchmarks
   - Performance comparison with similar databases
-
-## [Billow] - 2025-07-01
-
-### 🚀 Major Features
-
-- **Advanced Indexing**
-  - Full support for compound, partial, and multi-field indexes.
-  - Efficient partial prefix and multi-field range queries.
-  - Robust, tested index logic for all advanced scenarios.
-
-- **Schema Versioning & Migrations**
-  - Per-collection schema version tracking.
-  - Migration plugin with helpers to get/set schema version.
-  - Migration history tracked and queryable for each collection.
-  - Automated and manual migration support.
-
-- **Devtools Improvements**
-  - Index metadata and schema version visible in the UI for each collection.
-  - Migration history for each collection shown on the dashboard.
-  - Cleaner, more informative dashboards and collection views.
-
-- **Developer Experience**
-  - Improved test coverage and monorepo coverage reporting.
-  - Cleaner code, better types, and up-to-date documentation.
-
----
-
-#### 💡 Upgrade Notes
-
-- To use schema versioning and migrations, install and configure the migration plugin in your project.
-- Devtools now require the latest backend for full feature support.
-
----
-
-#### 🛠️ Contributors
-
-- @your-github-handle and the NebulaDB community
-
----

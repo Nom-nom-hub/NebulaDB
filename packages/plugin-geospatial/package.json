@@ -1,0 +1,25 @@
+{
+  "name": "@nebula-db/plugin-geospatial",
+  "version": "0.4.0",
+  "description": "Geo-spatial indexing for NebulaDB with GeoJSON support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nebula-db",
+    "plugin",
+    "geospatial",
+    "geo",
+    "location",
+    "geojson"
+  ],
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@nebula-db/adapter-mysql",
+  "version": "0.4.0",
+  "description": "MySQL adapter for NebulaDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nebula-db",
+    "adapter",
+    "mysql"
+  ],
+  "license": "Apache-2.0"
+}

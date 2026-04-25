@@ -1,296 +1,295 @@
 # Plugins Guide
 
-NebulaDB's plugin system allows you to extend its functionality with custom behaviors. Plugins can intercept and modify database operations at various points in the lifecycle.
+Extend NebulaDB with plugins.
 
 ## Available Plugins
 
-NebulaDB comes with several built-in plugins:
+| Plugin | Description |
+|--------|-------------|
+| encryption | AES-256 encryption at rest |
+| cache | Query result caching |
+| sync | Real-time sync |
+| validation | Schema validation |
+| versioning | Schema versioning |
+| fulltext-search | Full-text search |
+| geospatial | Geo-spatial queries |
+| auth | Authentication & RBAC |
 
-### Validation Plugin
+## Encryption Plugin
 
-The Validation Plugin uses [Zod](https://github.com/colinhacks/zod) to validate documents before they're inserted or updated.
+Encrypt data at rest.
+
+```bash
+npm install @nebula-db/plugin-encryption
+```
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
-import { createValidationPlugin } from '@nebula/plugin-validation';
+import { createEncryptionPlugin } from '@nebula-db/plugin-encryption';
+
+const encryption = createEncryptionPlugin({
+  key: 'your-256-bit-key-here-32byt',
+  algorithm: 'AES-256-GCM'
+});
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [encryption]
+});
+
+// Documents are now encrypted when saved
+await db.collection('secrets').insert({ 
+  secret: 'my password' 
+});
+```
+
+## Cache Plugin
+
+Cache query results.
+
+```bash
+npm install @nebula-db/plugin-cache
+```
+
+```typescript
+import { createCachePlugin } from '@nebula-db/plugin-cache';
+
+const cache = createCachePlugin({
+  ttlMs: 60000,  // 1 minute
+  maxSize: 100
+});
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [cache]
+});
+
+// Repeated queries return cached results
+const users = await db.collection('users').find({ age: 25 });
+```
+
+## Validation Plugin
+
+Validate documents against schemas.
+
+```bash
+npm install @nebula-db/plugin-validation
+```
+
+```typescript
+import { createValidationPlugin } from '@nebula-db/plugin-validation';
 import { z } from 'zod';
 
-// Define schemas for your collections
 const userSchema = z.object({
-  id: z.string(),
-  name: z.string().min(2).max(50),
-  email: z.string().email().optional(),
-  age: z.number().int().positive().optional()
+  name: z.string().min(1),
+  email: z.string().email(),
+  age: z.number().min(0).optional()
 });
 
-// Create the validation plugin
-const validationPlugin = createValidationPlugin({
-  schemas: {
-    users: userSchema
-  },
-  strict: false // Set to true to require schemas for all collections
+const validation = createValidationPlugin({
+  users: userSchema
 });
 
-// Create a database with the validation plugin
 const db = createDb({
   adapter: new MemoryAdapter(),
-  plugins: [validationPlugin]
+  plugins: [validation]
 });
 
-// This will validate against the schema
-const users = db.collection('users');
-await users.insert({ name: 'Alice', email: 'alice@example.com' }); // Valid
-await users.insert({ name: 'B', email: 'not-an-email' }); // Error: Validation failed
-```
-
-### Encryption Plugin
-
-The Encryption Plugin encrypts sensitive data before saving it and decrypts it when loading.
-
-```typescript
-import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
-import { createEncryptionPlugin } from '@nebula/plugin-encryption';
-
-// Create the encryption plugin
-const encryptionPlugin = createEncryptionPlugin({
-  encryptionKey: 'your-secret-key',
-  fields: {
-    users: ['email', 'password', 'ssn'] // Fields to encrypt in the users collection
-  },
-  encryptAll: false // Set to true to encrypt all string fields except 'id'
-});
-
-// Create a database with the encryption plugin
-const db = createDb({
-  adapter: new MemoryAdapter(),
-  plugins: [encryptionPlugin]
-});
-
-// The specified fields will be automatically encrypted/decrypted
-const users = db.collection('users');
-await users.insert({
+// Throws if invalid
+await db.collection('users').insert({ 
   name: 'Alice',
-  email: 'alice@example.com', // Will be encrypted
-  password: 'secret123' // Will be encrypted
+  email: 'invalid-email'
 });
 ```
 
-### Versioning Plugin
+## Versioning Plugin
 
-The Versioning Plugin tracks document versions and maintains a history of changes.
+Track schema versions and run migrations.
 
-```typescript
-import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
-import { createVersioningPlugin } from '@nebula/plugin-versioning';
-
-// Create the versioning plugin
-const versioningPlugin = createVersioningPlugin({
-  versionField: '_version', // Field to store version number
-  timestampField: '_updatedAt', // Field to store update timestamp
-  historyCollectionSuffix: '_history', // Suffix for history collections
-  maxVersions: 10 // Maximum number of versions to keep (0 = unlimited)
-});
-
-// Create a database with the versioning plugin
-const db = createDb({
-  adapter: new MemoryAdapter(),
-  plugins: [versioningPlugin]
-});
-
-// Documents will automatically track versions
-const users = db.collection('users');
-const user = await users.insert({ name: 'Alice' }); // _version: 1
-await users.update({ id: user.id }, { $set: { name: 'Alicia' } }); // _version: 2
-
-// Access history
-const userHistory = db.collection('users_history');
-const versions = await userHistory.find({ _originalId: user.id });
-console.log(versions); // All versions of the document
+```bash
+npm install @nebula-db/plugin-versioning
 ```
 
-### Migration Plugin (Billow)
-
-The Migration Plugin manages per-collection schema versioning and migrations.
-
 ```typescript
-import { createMigrationPlugin, getSchemaVersion, setSchemaVersion } from '@nebula/plugin-migration';
+import { createVersioningPlugin } from '@nebula-db/plugin-versioning';
 
-const migrations = [
-  { version: 1, name: 'Add email', async up(db) { /* ... */ } },
-  { version: 2, name: 'Add createdAt', async up(db) { /* ... */ } }
-];
+const versioning = createVersioningPlugin();
 
 const db = createDb({
   adapter: new MemoryAdapter(),
-  plugins: [createMigrationPlugin(migrations)]
+  plugins: [versioning]
 });
 
-const version = await getSchemaVersion(db, 'users');
-await setSchemaVersion(db, 'users', 2);
+// Set schema version
+await versioning.setVersion('users', 2);
+
+// Get version
+const version = await versioning.getVersion('users');
+
+// Add migration
+await versioning.addMigration('users', 2, async (db) => {
+  await db.collection('users').update({}, { $set: { newField: '' }});
+});
 ```
 
-**Best Practices (Billow):**
-- Use the migration plugin for zero-downtime schema upgrades.
-- Track schema version per collection.
-- Inspect migration history in the devtools UI.
+## Full-Text Search Plugin
 
-## Creating Custom Plugins
+Search documents by text content.
 
-You can create your own plugins by implementing the `Plugin` interface:
+```bash
+npm install @nebula-db/plugin-fulltext-search
+```
 
 ```typescript
-import { Plugin, Document, Query, UpdateOperation } from '@nebula-db/core';
+import { createFullTextSearchPlugin } from '@nebula-db/plugin-fulltext-search';
 
-// Create a logging plugin
-const loggingPlugin: Plugin = {
-  name: 'logging',
-  
-  onInit(db) {
-    console.log('Database initialized');
-  },
-  
-  onCollectionCreate(collection) {
-    console.log(`Collection created: ${collection.name}`);
-  },
-  
-  async onBeforeInsert(collection, doc) {
-    console.log(`Inserting into ${collection}:`, doc);
-    return doc;
-  },
-  
-  onAfterInsert(collection, doc) {
-    console.log(`Inserted into ${collection}:`, doc);
-  },
-  
-  async onBeforeUpdate(collection, query, update) {
-    console.log(`Updating in ${collection}:`, { query, update });
-    return [query, update];
-  },
-  
-  onAfterUpdate(collection, query, update, affectedDocs) {
-    console.log(`Updated in ${collection}:`, { query, update, affectedDocs });
-  },
-  
-  async onBeforeDelete(collection, query) {
-    console.log(`Deleting from ${collection}:`, query);
-    return query;
-  },
-  
-  onAfterDelete(collection, query, deletedDocs) {
-    console.log(`Deleted from ${collection}:`, { query, deletedDocs });
-  },
-  
-  async onBeforeQuery(collection, query) {
-    console.log(`Querying ${collection}:`, query);
-    return query;
-  },
-  
-  async onAfterQuery(collection, query, results) {
-    console.log(`Query results from ${collection}:`, { query, count: results.length });
-    return results;
+const fts = createFullTextSearchPlugin({
+  fields: ['title', 'content'],
+  stopWords: new Set(['the', 'a', 'an']),
+  minWordLength: 2
+});
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [fts]
+});
+
+await db.collection('posts').insert({
+  id: '1',
+  title: 'Getting Started with JavaScript',
+  content: 'Learn JavaScript from scratch'
+});
+
+// Search
+const results = await db.collection('posts').find({
+  $text: { $search: 'javascript' }
+});
+```
+
+## Geo-Spatial Plugin
+
+Query by location.
+
+```bash
+npm install @nebula-db/plugin-geospatial
+```
+
+```typescript
+import { createGeospatialPlugin } from '@nebula-db/plugin-geospatial';
+
+const geo = createGeospatialPlugin({
+  latField: 'location.lat',
+  lngField: 'location.lng'
+});
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [geo]
+});
+
+await db.collection('places').insert([
+  { id: '1', name: 'NYC', location: { lat: 40.7128, lng: -74.0060 }},
+  { id: '2', name: 'LA', location: { lat: 34.0522, lng: -118.2437 }}
+]);
+
+// Find nearby
+const nearby = await db.collection('places').find({
+  $geo: {
+    $near: { lat: 40.7128, lng: -74.0060, maxDistance: 100000 }
   }
-};
+});
 
-// Use your custom plugin
-const db = createDb({
-  adapter: new MemoryAdapter(),
-  plugins: [loggingPlugin]
+// Find within box
+const inBox = await db.collection('places').find({
+  $geo: { $within: { box: [-80, 35, -70, 45] }}
+});
+
+// Find within circle
+const inCircle = await db.collection('places').find({
+  $geo: { $within: { center: [-74.0060, 40.7128, 50000] }}
 });
 ```
 
-### Example: Timestamps Plugin
+## Auth Plugin
 
-Here's an example of a custom plugin that adds creation and update timestamps to documents:
+Authentication and authorization.
+
+```bash
+npm install @nebula-db/plugin-auth
+```
 
 ```typescript
-import { Plugin, Document } from '@nebula-db/core';
+import { createAuthPlugin } from '@nebula-db/plugin-auth';
 
-export function createTimestampsPlugin(options = {}): Plugin {
-  const {
-    createdAtField = 'createdAt',
-    updatedAtField = 'updatedAt'
-  } = options;
-  
-  return {
-    name: 'timestamps',
-    
-    async onBeforeInsert(collection, doc) {
-      const now = new Date().toISOString();
-      return {
-        ...doc,
-        [createdAtField]: now,
-        [updatedAtField]: now
-      };
-    },
-    
-    async onBeforeUpdate(collection, query, update) {
-      const now = new Date().toISOString();
-      
-      // Create or update the $set operation
-      const newUpdate = { ...update };
-      if (!newUpdate.$set) {
-        newUpdate.$set = {};
-      }
-      
-      newUpdate.$set[updatedAtField] = now;
-      
-      return [query, newUpdate];
-    }
-  };
+const auth = createAuthPlugin();
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [auth]
+});
+
+// Register user
+await auth.register('alice', 'alice@example.com', 'password123');
+
+// Login
+const { user, session } = await auth.login('alice@example.com', 'password123');
+console.log(session.id); // session token
+
+// Validate session
+const validUser = await auth.validateSession(session.id);
+
+// Check permissions
+if (auth.canAccess(validUser, 'posts', 'write')) {
+  await db.collection('posts').insert({ title: 'New post' });
 }
+
+// Define access control
+auth.requireAuth('admin-posts', 'admin');
+```
+
+## Sync Plugins
+
+CouchDB and Supabase sync.
+
+```bash
+npm install @nebula-db/sync-couchdb
+npm install @nebula-db/sync-supabase
+```
+
+```typescript
+// CouchDB
+import { createCouchDBSyncAdapter } from '@nebula-db/sync-couchdb';
+
+const couch = createCouchDBSyncAdapter({
+  url: 'http://localhost:5984',
+  database: 'myapp',
+  username: 'admin',
+  password: 'secret'
+}, db);
+
+await couch.sync();
+
+// Supabase
+import { createSupabaseSyncAdapter } from '@nebula-db/sync-supabase';
+
+const supabase = createSupabaseSyncAdapter({
+  url: 'https://xxx.supabase.co',
+  apikey: 'your-key'
+}, db);
+
+await supabase.sync();
 ```
 
 ## Combining Plugins
 
-You can use multiple plugins together. The plugins are executed in the order they are provided:
-
 ```typescript
 const db = createDb({
-  adapter: new MemoryAdapter(),
+  adapter: new SQLiteAdapter('./app.db'),
   plugins: [
-    createTimestampsPlugin(),
-    createValidationPlugin({ schemas }),
-    createEncryptionPlugin({ encryptionKey }),
-    loggingPlugin
+    encryption,
+    cache,
+    validation,
+    versioning
   ]
 });
 ```
-
-## Best Practices
-
-### Plugin Order
-
-The order of plugins matters. For example:
-
-1. Put validation plugins early to reject invalid documents before processing
-2. Put transformation plugins (like timestamps) before validation
-3. Put encryption plugins after validation but before saving
-4. Put logging plugins at the beginning or end depending on whether you want to log raw or processed data
-
-### Error Handling
-
-Plugins should handle errors gracefully and not break the application:
-
-```typescript
-async onBeforeInsert(collection, doc) {
-  try {
-    // Do something that might fail
-    return processedDoc;
-  } catch (error) {
-    console.error('Plugin error:', error);
-    // Return the original document to continue the operation
-    return doc;
-  }
-}
-```
-
-### Performance Considerations
-
-Be mindful of performance, especially in hooks that run frequently:
-
-- Keep plugin operations lightweight
-- Use async operations judiciously
-- Consider caching results for expensive operations

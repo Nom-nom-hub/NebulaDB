@@ -1,0 +1,32 @@
+{
+  "name": "@nebula-db/plugin-auth",
+  "version": "0.4.0",
+  "description": "Authentication and authorization plugin for NebulaDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nebula-db",
+    "plugin",
+    "auth",
+    "authentication",
+    "authorization",
+    "rbac"
+  ],
+  "dependencies": {
+    "@nebula-db/core": "^0.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.2"
+  ],
+  "license": "Apache-2.0"
+}

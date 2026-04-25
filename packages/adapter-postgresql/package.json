@@ -1,0 +1,32 @@
+{
+  "name": "@nebula-db/adapter-postgresql",
+  "version": "0.4.0",
+  "description": "PostgreSQL storage adapter for NebulaDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nebula-db/core": "*",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.6",
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.2"
+  },
+  "keywords": [
+    "nebula-db",
+    "adapter",
+    "postgresql",
+    "postgres"
+  ],
+  "license": "Apache-2.0"
+}

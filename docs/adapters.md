@@ -1,204 +1,215 @@
 # Adapters Guide
 
-NebulaDB uses adapters to handle data persistence. This modular approach allows you to choose the storage mechanism that best fits your application's needs.
+Storage backends for NebulaDB.
 
 ## Available Adapters
 
-NebulaDB comes with several built-in adapters:
+| Adapter | Environment | Use Case |
+|---------|-------------|----------|
+| Memory | All | Testing, caching |
+| SQLite | Node.js | Production desktop apps |
+| PostgreSQL | Node.js | Production databases |
+| MySQL | Node.js | Production databases |
+| MongoDB | Node.js | Production databases |
+| Redis | Node.js | Caching, real-time |
+| IndexedDB | Browser | Web apps |
+| localStorage | Browser | Small web data |
+| Filesystem | Node.js | File-based storage |
+| Deno KV | Deno | Edge runtime |
+| Cloudflare D1 | Workers | Edge/serverless |
 
-### Memory Adapter
+## Memory Adapter
 
-The Memory Adapter stores data in memory only. Data is lost when the application restarts.
+For testing and caching.
+
+```bash
+npm install @nebula-db/adapter-memory
+```
 
 ```typescript
-import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { createDb } from '@nebula-db/core';
+import { MemoryAdapter } from '@nebula-db/adapter-memory';
 
-const db = createDb({
-  adapter: new MemoryAdapter()
+const adapter = new MemoryAdapter();
+const db = createDb({ adapter });
+```
+
+## SQLite Adapter
+
+Persistent local storage using better-sqlite3.
+
+```bash
+npm install @nebula-db/adapter-sqlite
+npm install better-sqlite3
+```
+
+```typescript
+import { SQLiteAdapter } from '@nebula-db/adapter-sqlite';
+
+const adapter = new SQLiteAdapter('./data.db');
+const db = createDb({ adapter });
+
+// Raw queries
+const users = await adapter.query('SELECT * FROM users WHERE age > ?', [25]);
+```
+
+## PostgreSQL Adapter
+
+For production with PostgreSQL.
+
+```bash
+npm install @nebula-db/adapter-postgresql
+npm install pg
+```
+
+```typescript
+import { PostgreSQLAdapter } from '@nebula-db/adapter-postgresql';
+
+const adapter = new PostgreSQLAdapter({
+  host: 'localhost',
+  port: 5432,
+  user: 'admin',
+  password: 'secret',
+  database: 'myapp'
+});
+
+const db = createDb({ adapter });
+```
+
+## MySQL Adapter
+
+```bash
+npm install @nebula-db/adapter-mysql
+npm install mysql2
+```
+
+```typescript
+import { MySQLAdapter } from '@nebula-db/adapter-mysql';
+
+const adapter = new MySQLAdapter({
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'secret',
+  database: 'myapp'
 });
 ```
 
-**Use cases:**
-- Testing and development
-- Temporary data storage
-- Applications where persistence isn't required
-- In-memory caching
+## MongoDB Adapter
 
-### LocalStorage Adapter
-
-The LocalStorage Adapter persists data to the browser's localStorage.
+```bash
+npm install @nebula-db/adapter-mongodb
+npm install mongodb
+```
 
 ```typescript
-import { createDb } from '@nebula/core';
-import { LocalStorageAdapter } from '@nebula/adapter-localstorage';
+import { MongoDBAdapter } from '@nebula-db/adapter-mongodb';
 
-const db = createDb({
-  adapter: new LocalStorageAdapter('my-app-data')
+const adapter = new MongoDBAdapter({
+  uri: 'mongodb://localhost:27017',
+  database: 'myapp'
 });
 ```
 
-**Use cases:**
-- Simple browser applications
-- Offline-capable web apps
-- Persisting user preferences
-- Small to medium datasets (localStorage has size limitations)
+## Redis Adapter
 
-### IndexedDB Adapter
+For caching and real-time data.
 
-The IndexedDB Adapter persists data to the browser's IndexedDB, which can handle larger datasets.
+```bash
+npm install @nebula-db/adapter-redis
+npm install ioredis
+```
 
 ```typescript
-import { createDb } from '@nebula/core';
-import { IndexedDBAdapter } from '@nebula/adapter-indexeddb';
+import { RedisAdapter } from '@nebula-db/adapter-redis';
 
-const db = createDb({
-  adapter: new IndexedDBAdapter('my-app-db', 'collections', 1)
+const adapter = new RedisAdapter({
+  host: 'localhost',
+  port: 6379
 });
 ```
 
-**Use cases:**
-- Browser applications with larger data requirements
-- Offline-first web applications
-- Complex data structures
-- Applications requiring better performance than localStorage
+## IndexedDB Adapter (Browser)
 
-### FileSystem Adapter
-
-The FileSystem Adapter persists data to the file system in Node.js environments.
-
-```typescript
-import { createDb } from '@nebula/core';
-import { FileSystemAdapter } from '@nebula/adapter-filesystem';
-import path from 'path';
-
-const db = createDb({
-  adapter: new FileSystemAdapter(path.join(__dirname, 'data.json'))
-});
+```bash
+npm install @nebula-db/adapter-indexeddb
 ```
 
-**Use cases:**
-- Node.js applications
-- Command-line tools
-- Server-side applications
-- Desktop applications with Electron
-
-## Creating Custom Adapters
-
-You can create your own adapters by implementing the `Adapter` interface:
-
 ```typescript
-import { Adapter, Document } from '@nebula/core';
+import { IndexedDBAdapter } from '@nebula-db/adapter-indexeddb';
 
-class CustomAdapter implements Adapter {
-  async load(): Promise<Record<string, Document[]>> {
-    // Load data from your storage mechanism
-    // Return an object where keys are collection names and values are arrays of documents
-    return {
-      users: [
-        { id: '1', name: 'Alice' },
-        { id: '2', name: 'Bob' }
-      ],
-      posts: [
-        { id: '1', title: 'Hello World' }
-      ]
-    };
-  }
-
-  async save(data: Record<string, Document[]>): Promise<void> {
-    // Save data to your storage mechanism
-    // 'data' is an object where keys are collection names and values are arrays of documents
-    console.log('Saving data:', data);
-  }
-}
-
-// Use your custom adapter
-const db = createDb({
-  adapter: new CustomAdapter()
-});
+const adapter = new IndexedDBAdapter('my-app');
 ```
 
-### Example: Redis Adapter
+## localStorage Adapter (Browser)
 
-Here's an example of a custom adapter that uses Redis for storage:
-
-```typescript
-import { Adapter, Document } from '@nebula/core';
-import Redis from 'ioredis';
-
-export class RedisAdapter implements Adapter {
-  private redis: Redis;
-  private key: string;
-
-  constructor(redisOptions: Redis.RedisOptions = {}, key: string = 'nebula-db') {
-    this.redis = new Redis(redisOptions);
-    this.key = key;
-  }
-
-  async load(): Promise<Record<string, Document[]>> {
-    try {
-      const data = await this.redis.get(this.key);
-      return data ? JSON.parse(data) : {};
-    } catch (error) {
-      console.error('Failed to load data from Redis:', error);
-      return {};
-    }
-  }
-
-  async save(data: Record<string, Document[]>): Promise<void> {
-    try {
-      await this.redis.set(this.key, JSON.stringify(data));
-    } catch (error) {
-      console.error('Failed to save data to Redis:', error);
-      throw error;
-    }
-  }
-
-  async close(): Promise<void> {
-    await this.redis.quit();
-  }
-}
+```bash
+npm install @nebula-db/adapter-localstorage
 ```
 
-## Best Practices
-
-### Choosing the Right Adapter
-
-- **Browser applications**: Use `LocalStorageAdapter` for simple apps or `IndexedDBAdapter` for more complex ones
-- **Node.js applications**: Use `FileSystemAdapter` or a custom adapter for your database
-- **Testing**: Use `MemoryAdapter` for fast, isolated tests
-
-### Error Handling
-
-Always handle errors that might occur during loading or saving:
-
 ```typescript
-try {
-  await db.save();
-  console.log('Data saved successfully');
-} catch (error) {
-  console.error('Failed to save data:', error);
-  // Handle the error appropriately
-}
+import { LocalStorageAdapter } from '@nebula-db/adapter-localstorage';
+
+const adapter = new LocalStorageAdapter('nebula:');
 ```
 
-### Adapter Lifecycle
+## Filesystem Adapter (Node.js)
 
-Some adapters might need cleanup when your application shuts down:
-
-```typescript
-// Example with a custom adapter that has a close method
-const customAdapter = new CustomAdapter();
-const db = createDb({ adapter: customAdapter });
-
-// When your application is shutting down
-process.on('SIGINT', async () => {
-  await db.save(); // Save any pending changes
-  await customAdapter.close(); // Close connections
-  process.exit(0);
-});
+```bash
+npm install @nebula-db/adapter-filesystem
 ```
 
-## Billow Update: Index Metadata & Schema Version
+```typescript
+import { FilesystemAdapter } from '@nebula-db/adapter-filesystem';
 
-Adapters now support exposing index metadata and schema version for each collection, visible in the devtools UI (Billow release).
+const adapter = new FilesystemAdapter('./data');
+
+// Get the directory
+const dir = adapter.getDirPath();
+```
+
+## Deno KV Adapter
+
+```bash
+npm install @nebula-db/adapter-deno-kv
+```
+
+```typescript
+import { DenoKvAdapter } from '@nebula-db/adapter-deno-kv';
+
+const adapter = new DenoKvAdapter();
+await adapter.init();
+```
+
+## Cloudflare D1 Adapter
+
+```bash
+npm install @nebula-db/adapter-cloudflare-d1
+```
+
+```typescript
+// In Cloudflare Workers
+export default {
+  async fetch(request, env) {
+    const adapter = new CloudflareD1Adapter(env.DB);
+    const db = createDb({ adapter });
+    
+    const users = db.collection('users');
+    await users.insert({ name: 'Alice' });
+  }
+};
+```
+
+## Choosing an Adapter
+
+| Scenario | Recommended Adapter |
+|----------|-------------------|
+| Testing | Memory |
+| Learning | Memory, SQLite |
+| Web app (simple) | IndexedDB |
+| Web app (offline) | IndexedDB + sync |
+| Node.js desktop app | SQLite |
+| Node.js server | PostgreSQL |
+| Caching layer | Redis |
+| Edge/Serverless | Cloudflare D1, Deno KV |
+| Browser + Node shared | SQLite (both) |

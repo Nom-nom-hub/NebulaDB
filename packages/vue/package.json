@@ -1,0 +1,31 @@
+{
+  "name": "@nebula-db/vue",
+  "version": "0.4.0",
+  "description": "Vue composables for NebulaDB",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nebula-db",
+    "vue",
+    "composables",
+    "reactive"
+  ],
+  "dependencies": {
+    "@nebula-db/core": "^0.4.0",
+    "vue": "^3.4.0"
+  },
+  "peerDependencies": {
+    "vue": ">=3.0.0"
+  },
+  "license": "Apache-2.0"
+}

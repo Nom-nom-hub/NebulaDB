@@ -1,0 +1,24 @@
+{
+  "name": "@nebula-db/sync-couchdb",
+  "version": "0.4.0",
+  "description": "CouchDB sync adapter for NebulaDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nebula-db",
+    "sync",
+    "couchdb",
+    "couch",
+    "offline-first"
+  ],
+  "license": "Apache-2.0"
+}

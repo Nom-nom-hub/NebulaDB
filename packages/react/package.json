@@ -1,0 +1,30 @@
+{
+  "name": "@nebula-db/react",
+  "version": "0.4.0",
+  "description": "React hooks for NebulaDB",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nebula-db",
+    "react",
+    "hooks",
+    "reactive"
+  ],
+  "dependencies": {
+    "@nebula-db/core": "^0.4.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "license": "Apache-2.0"
+}

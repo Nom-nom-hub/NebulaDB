@@ -1,0 +1,25 @@
+{
+  "name": "@nebula-db/plugin-fulltext-search",
+  "version": "0.4.0",
+  "description": "Full-text search plugin for NebulaDB with inverted index",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nebula-db",
+    "plugin",
+    "full-text",
+    "search",
+    "fts",
+    "inverted-index"
+  ],
+  "license": "Apache-2.0"
+}
