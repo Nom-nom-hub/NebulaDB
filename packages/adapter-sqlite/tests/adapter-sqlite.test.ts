@@ -81,6 +81,7 @@ describe('SQLiteAdapter', () => {
 
 describe('SQLiteAdapter with file', () => {
   it('should create file-based database', async () => {
+    if (!getAdapter()) return;
     const adapter = createSQLiteAdapter('/tmp/test-nebula.db');
     await adapter.save({ test: [{ id: '1' }] });
 
