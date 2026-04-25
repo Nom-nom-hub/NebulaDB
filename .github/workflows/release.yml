@@ -6,11 +6,8 @@ on:
       - 'v*'
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -22,11 +19,12 @@ jobs:
 
       - run: bun run build
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
+      - run: bun run lint
 
-      - run: bun run lerna publish from-git --yes
+      - run: bun run test
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
