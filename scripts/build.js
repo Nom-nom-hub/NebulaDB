@@ -2,9 +2,12 @@
 
 const { execSync } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
-console.log('Installing root dependencies...');
-execSync('npm install --ignore-scripts --legacy-peer-deps', { stdio: 'inherit' });
+if (fs.existsSync('package-lock.json')) {
+  console.log('Installing root dependencies...');
+  execSync('npm install --ignore-scripts --legacy-peer-deps', { stdio: 'inherit' });
+}
 
 console.log('\nBuilding core package...');
 process.chdir(path.join(__dirname, '..', 'packages', 'core'));
