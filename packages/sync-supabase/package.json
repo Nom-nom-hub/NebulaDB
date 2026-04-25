@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/sync-supabase",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Supabase sync adapter for NebulaDB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
