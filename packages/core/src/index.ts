@@ -4,9 +4,8 @@ export { Collection } from './collection';
 export { matchDocument, applyUpdate } from './optimized-query';
 export { EnhancedIndexManager as IndexManager, IndexType } from './enhanced-indexing';
 
-// Export adapters
+// Export adapters (browser-safe only)
 export { MemoryAdapter } from './memory-adapter';
-export { SQLiteAdapter } from './sqlite-adapter';
 
 // Export performance tools (Phase 4)
 export { QueryOptimizer } from './query-optimizer';
