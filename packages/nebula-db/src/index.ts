@@ -5,22 +5,62 @@
  * and commonly used adapters and plugins.
  */
 
-// Re-export everything from core
-export * from '@nebula-db/core';
+// Export only browser-safe core functionality
+export {
+  createDb,
+  Database,
+  Collection,
+  matchDocument,
+  applyUpdate,
+  EnhancedIndexManager as IndexManager,
+  IndexType,
+  MemoryAdapter,
+  QueryOptimizer,
+  AdaptiveWorkerPool,
+  BrowserWorkerPool,
+  createWorkerPool,
+  PerformanceProfiler,
+  getProfiler,
+} from '@nebula-db/core';
+
+export type {
+  Document,
+  Query,
+  QueryCondition,
+  QueryOperator,
+  LogicalOperator,
+  UpdateOperator,
+  UpdateOperation,
+  IndexDefinition,
+  CollectionOptions,
+  DbOptions,
+  Adapter,
+  Plugin,
+  SubscriptionCallback,
+  ICollection,
+  QueryPlan,
+  QueryPredicate,
+  ExecutionStep,
+  FieldStats,
+  WorkerTask,
+  WorkerResult,
+  PoolStats,
+  OperationMetrics,
+  ProfileSummary,
+  ProfileReport,
+} from '@nebula-db/core';
 
 // Export adapters
 export { MemoryAdapter } from '@nebula-db/adapter-memory';
 export { LocalStorageAdapter } from '@nebula-db/adapter-localstorage';
 export { IndexedDBAdapter } from '@nebula-db/adapter-indexeddb';
-export { FileSystemAdapter } from '@nebula-db/adapter-filesystem';
 
 // Export plugins
 export { createValidationPlugin } from '@nebula-db/plugin-validation';
 
-// Import all adapters and plugins for dynamic loading
+// Import adapters and plugins for dynamic loading
 import { LocalStorageAdapter as LocalStorageAdapterImport } from '@nebula-db/adapter-localstorage';
 import { IndexedDBAdapter as IndexedDBAdapterImport } from '@nebula-db/adapter-indexeddb';
-import { FileSystemAdapter as FileSystemAdapterImport } from '@nebula-db/adapter-filesystem';
 import { createValidationPlugin as createValidationPluginImport } from '@nebula-db/plugin-validation';
 
 /**
