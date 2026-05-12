@@ -5,6 +5,9 @@
  * and commonly used adapters and plugins.
  */
 
+// Export crypto polyfills for browser compatibility
+export { applyCryptoPolyfills, browserCrypto } from './polyfill';
+
 // Export only browser-safe core functionality
 export {
   createDb,
