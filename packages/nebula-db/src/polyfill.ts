@@ -26,9 +26,10 @@ function generateUUID(): string {
   return uuid;
 }
 
-function randomFillSync(buffer: Uint8Array): Uint8Array {
-  for (let i = 0; i < buffer.length; i++) {
-    buffer[i] = Math.floor(Math.random() * 256);
+function randomFillSync(buffer: ArrayBufferView): ArrayBufferView {
+  const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = Math.floor(Math.random() * 256);
   }
   return buffer;
 }
@@ -54,7 +55,7 @@ function getRandomValues<T extends Uint8Array | Uint16Array | Uint32Array>(array
 
 export interface BrowserCrypto {
   randomUUID: () => string;
-  randomFillSync: (buffer: Uint8Array) => Uint8Array;
+  randomFillSync: (buffer: ArrayBufferView) => ArrayBufferView;
   getRandomValues: <T extends Uint8Array | Uint16Array | Uint32Array>(array: T) => T;
 }
 
@@ -72,8 +73,9 @@ function buildBrowserCrypto(): BrowserCrypto {
       return nativeCrypto.getRandomValues(array);
     };
     
-    const cryptoBackedRandomFillSync = (buffer: Uint8Array): Uint8Array => {
-      return nativeGetRandomValues(buffer);
+    const cryptoBackedRandomFillSync = (buffer: ArrayBufferView): ArrayBufferView => {
+      nativeGetRandomValues(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength));
+      return buffer;
     };
     
     const cryptoBackedGenerateUUID = (): string => {
@@ -107,26 +109,36 @@ function buildBrowserCrypto(): BrowserCrypto {
 
 export const browserCrypto = buildBrowserCrypto();
 
-export function applyCryptoPolyfills(): void {
-  const target = (typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : null) as any;
+export function applyCryptoPolyfills(target?: any): void {
+  const context = target ?? (typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : null);
   
-  if (!target) {
+  if (!context) {
     return;
   }
 
-  target.crypto = target.crypto || {};
-
-  const crypto = target.crypto as Partial<BrowserCrypto>;
-
-  if (typeof crypto.randomUUID !== 'function') {
-    crypto.randomUUID = generateUUID;
+  try {
+    if (!context.crypto) {
+      context.crypto = {};
+    }
+  } catch {
+    return;
   }
 
-  if (typeof crypto.randomFillSync !== 'function') {
-    crypto.randomFillSync = randomFillSync;
-  }
+  const crypto = context.crypto as any;
 
-if (typeof crypto.getRandomValues !== 'function') {
-    (crypto as any).getRandomValues = getRandomValues;
+  try {
+    if (typeof crypto.randomUUID !== 'function') {
+      crypto.randomUUID = generateUUID;
+    }
+
+    if (typeof crypto.randomFillSync !== 'function') {
+      crypto.randomFillSync = randomFillSync;
+    }
+
+    if (typeof crypto.getRandomValues !== 'function') {
+      crypto.getRandomValues = getRandomValues;
+    }
+  } catch {
+    // Ignore - crypto properties may be non-writable in strict environments
   }
 }
