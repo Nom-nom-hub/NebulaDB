@@ -34,6 +34,12 @@ function randomFillSync(buffer: Uint8Array): Uint8Array {
 }
 
 function getRandomValues<T extends Uint8Array | Uint16Array | Uint32Array>(array: T): T {
+  if (array.byteLength > 65536) {
+    const error = new Error('QuotaExceededError');
+    error.name = 'QuotaExceededError';
+    throw error;
+  }
+  
   const maxValue = array instanceof Uint32Array 
     ? 0xFFFFFFFF 
     : array instanceof Uint16Array 
@@ -51,6 +57,55 @@ export interface BrowserCrypto {
   randomFillSync: (buffer: Uint8Array) => Uint8Array;
   getRandomValues: <T extends Uint8Array | Uint16Array | Uint32Array>(array: T) => T;
 }
+
+function buildBrowserCrypto(): BrowserCrypto {
+  const target = typeof globalThis !== 'undefined' ? globalThis : null;
+  const nativeCrypto = target && (target as any).crypto;
+  
+  if (nativeCrypto && typeof nativeCrypto.getRandomValues === 'function') {
+    const nativeGetRandomValues = <T extends Uint8Array | Uint16Array | Uint32Array>(array: T): T => {
+      if (array.byteLength > 65536) {
+        const error = new Error('QuotaExceededError');
+        error.name = 'QuotaExceededError';
+        throw error;
+      }
+      return nativeCrypto.getRandomValues(array);
+    };
+    
+    const cryptoBackedRandomFillSync = (buffer: Uint8Array): Uint8Array => {
+      return nativeGetRandomValues(buffer);
+    };
+    
+    const cryptoBackedGenerateUUID = (): string => {
+      const bytes = new Uint8Array(16);
+      nativeGetRandomValues(bytes);
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+      
+      const hex = '0123456789abcdef';
+      let uuid = '';
+      for (let i = 0; i < 16; i++) {
+        if (i === 4 || i === 6 || i === 8 || i === 10) uuid += '-';
+        uuid += hex[(bytes[i] >> 4) & 0x0f] + hex[bytes[i] & 0x0f];
+      }
+      return uuid;
+    };
+    
+    return {
+      randomUUID: cryptoBackedGenerateUUID,
+      randomFillSync: cryptoBackedRandomFillSync,
+      getRandomValues: nativeGetRandomValues
+    };
+  }
+  
+  return {
+    randomUUID: generateUUID,
+    randomFillSync,
+    getRandomValues
+  };
+}
+
+export const browserCrypto = buildBrowserCrypto();
 
 export function applyCryptoPolyfills(): void {
   const target = (typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : null) as any;
@@ -71,13 +126,7 @@ export function applyCryptoPolyfills(): void {
     crypto.randomFillSync = randomFillSync;
   }
 
-  if (typeof crypto.getRandomValues !== 'function') {
-    crypto.getRandomValues = getRandomValues;
+if (typeof crypto.getRandomValues !== 'function') {
+    (crypto as any).getRandomValues = getRandomValues;
   }
 }
-
-export const browserCrypto: BrowserCrypto = {
-  randomUUID: generateUUID,
-  randomFillSync,
-  getRandomValues
-};
