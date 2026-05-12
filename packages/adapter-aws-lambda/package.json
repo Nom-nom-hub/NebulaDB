@@ -1,0 +1,30 @@
+{
+  "name": "@nebula-db/adapter-aws-lambda",
+  "version": "0.6.0",
+  "description": "AWS Lambda/DynamoDB adapter for NebulaDB",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.500.0",
+    "@aws-sdk/lib-dynamodb": "^3.500.0",
+    "@nebula-db/core": "workspace:*"
+  },
+  "keywords": ["nebula-db", "aws", "lambda", "dynamodb", "adapter"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@nebula-db/adapter-hybrid",
+  "version": "0.6.0",
+  "description": "Hybrid adapter for NebulaDB - local with cloud fallback",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "dependencies": {
+    "@nebula-db/core": "workspace:*"
+  },
+  "keywords": ["nebula-db", "hybrid", "fallback", "adapter", "sync"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -5,6 +5,35 @@ All notable changes to NebulaDB will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - Unreleased - "Cumulus"
+
+### ☁️ Cloud & Edge Integration
+
+- **@nebula-db/adapter-vercel-kv**: Vercel KV (Redis) adapter for edge storage
+- **@nebula-db/adapter-aws-lambda**: AWS Lambda/DynamoDB adapter for serverless
+- **@nebula-db/adapter-hybrid**: Hybrid adapter with local/cloud fallback
+
+### 🔄 Sync & Hybrid Mode
+
+- Automatic failover between local and cloud adapters
+- Configurable sync strategies (local-first, cloud-first)
+- Periodic background synchronization
+- Real-time cloud connection status
+
+### 🛡️ Enterprise Features
+
+- **@nebula-db/plugin-backup**: Backup and restore utilities
+- **@nebula-db/plugin-audit**: Comprehensive audit logging system
+- **@nebula-db/plugin-streaming**: Real-time analytics and metrics
+
+### 📊 Improvements
+
+- Browser crypto polyfills with secure native fallback
+- QuotaExceededError compliance with Web Crypto API
+- ArrayBufferView support in crypto polyfills
+
+---
+
 ## [0.4.1] - Unreleased
 
 ### ✨ New Adapters
