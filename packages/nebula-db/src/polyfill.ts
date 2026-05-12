@@ -34,8 +34,14 @@ function randomFillSync(buffer: Uint8Array): Uint8Array {
 }
 
 function getRandomValues<T extends Uint8Array | Uint16Array | Uint32Array>(array: T): T {
+  const maxValue = array instanceof Uint32Array 
+    ? 0xFFFFFFFF 
+    : array instanceof Uint16Array 
+      ? 0xFFFF 
+      : 0xFF;
+  
   for (let i = 0; i < array.length; i++) {
-    array[i] = Math.floor(Math.random() * 256) as any;
+    array[i] = Math.floor(Math.random() * (maxValue + 1)) as any;
   }
   return array;
 }
@@ -47,26 +53,21 @@ export interface BrowserCrypto {
 }
 
 export function applyCryptoPolyfills(): void {
-  if (typeof window === 'undefined' && typeof globalThis === 'undefined') {
+  if (typeof window === 'undefined') {
     return;
   }
 
-  const target = typeof window !== 'undefined' ? window : globalThis;
-  const cryptoObj = (target as any).crypto || {};
+  const target = window as any;
   
-  if (!cryptoObj.randomUUID) {
-    (cryptoObj as any).randomUUID = generateUUID;
+  if (!target.crypto) {
+    target.crypto = {};
+  } else {
+    return;
   }
   
-  if (!cryptoObj.randomFillSync) {
-    (cryptoObj as any).randomFillSync = randomFillSync;
-  }
-  
-  if (!cryptoObj.getRandomValues) {
-    (cryptoObj as any).getRandomValues = getRandomValues;
-  }
-  
-  (target as any).crypto = cryptoObj;
+  target.crypto.randomUUID = generateUUID;
+  target.crypto.randomFillSync = randomFillSync;
+  target.crypto.getRandomValues = getRandomValues;
 }
 
 export const browserCrypto: BrowserCrypto = {
