@@ -9,28 +9,32 @@
  * library or ensure your environment provides secure crypto APIs.
  */
 
-function generateUUID(): string {
+function insecureRandomBytes(length: number): Uint8Array {
+  const bytes = new Uint8Array(length);
+  for (let i = 0; i < length; i++) {
+    bytes[i] = Math.floor(Math.random() * 256);
+  }
+  return bytes;
+}
+
+function generateUUID(rng: () => Uint8Array = () => insecureRandomBytes(16)): string {
+  const bytes = rng();
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  
   const hex = '0123456789abcdef';
   let uuid = '';
-  for (let i = 0; i < 36; i++) {
-    if (i === 8 || i === 13 || i === 18 || i === 23) {
-      uuid += '-';
-    } else if (i === 14) {
-      uuid += '4';
-    } else if (i === 19) {
-      uuid += hex[(Math.random() * 4) | 8];
-    } else {
-      uuid += hex[(Math.random() * 16) | 0];
-    }
+  for (let i = 0; i < 16; i++) {
+    if (i === 4 || i === 6 || i === 8 || i === 10) uuid += '-';
+    uuid += hex[(bytes[i] >> 4) & 0x0f] + hex[bytes[i] & 0x0f];
   }
   return uuid;
 }
 
-function randomFillSync(buffer: ArrayBufferView): ArrayBufferView {
-  const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = Math.floor(Math.random() * 256);
-  }
+function randomFillSync(buffer: ArrayBufferView, rng: () => Uint8Array = () => insecureRandomBytes(buffer.byteLength)): ArrayBufferView {
+  const randomBytes = rng();
+  const dest = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  dest.set(randomBytes);
   return buffer;
 }
 
@@ -43,20 +47,15 @@ function createQuotaExceededError(): Error {
   return error;
 }
 
-function getRandomValues<T extends Uint8Array | Uint16Array | Uint32Array>(array: T): T {
+function getRandomValues<T extends Uint8Array | Uint16Array | Uint32Array>(array: T, rng: () => Uint8Array = () => insecureRandomBytes(array.byteLength)): T {
   if (array.byteLength > 65536) {
     throw createQuotaExceededError();
   }
   
-  const maxValue = array instanceof Uint32Array 
-    ? 0xFFFFFFFF 
-    : array instanceof Uint16Array 
-      ? 0xFFFF 
-      : 0xFF;
+  const randomBytes = rng();
+  const view = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+  view.set(randomBytes);
   
-  for (let i = 0; i < array.length; i++) {
-    array[i] = Math.floor(Math.random() * (maxValue + 1)) as any;
-  }
   return array;
 }
 
@@ -66,22 +65,32 @@ export interface BrowserCrypto {
   getRandomValues: <T extends Uint8Array | Uint16Array | Uint32Array>(array: T) => T;
 }
 
-function buildBrowserCrypto(): BrowserCrypto {
-  const target = typeof globalThis !== 'undefined' ? globalThis : null;
-  const nativeCrypto = target && (target as any).crypto;
+function buildBrowserCrypto(target?: any): BrowserCrypto {
+  const context = target ?? (typeof globalThis !== 'undefined' ? globalThis : null);
+  const nativeCrypto = context && (context as any).crypto;
   
   if (nativeCrypto) {
-    const hasGetRandomValues = typeof nativeCrypto.getRandomValues === 'function';
-    const hasRandomUUID = typeof nativeCrypto.randomUUID === 'function';
+    const hasGetRandomValues = typeof (nativeCrypto as any).getRandomValues === 'function';
+    const hasRandomUUID = typeof (nativeCrypto as any).randomUUID === 'function';
     
     const nativeGetRandomValues = hasGetRandomValues 
       ? <T extends Uint8Array | Uint16Array | Uint32Array>(array: T): T => {
           if (array.byteLength > 65536) {
             throw createQuotaExceededError();
           }
-          return nativeCrypto.getRandomValues(array);
+          return (nativeCrypto as any).getRandomValues(array);
         }
       : null;
+    
+    const rng = () => {
+      const bytes = new Uint8Array(16);
+      if (nativeGetRandomValues) {
+        nativeGetRandomValues(bytes);
+      } else {
+        bytes.set(insecureRandomBytes(16));
+      }
+      return bytes;
+    };
     
     const cryptoBackedRandomFillSync = (buffer: ArrayBufferView): ArrayBufferView => {
       if (nativeGetRandomValues) {
@@ -94,23 +103,9 @@ function buildBrowserCrypto(): BrowserCrypto {
     
     const cryptoBackedGenerateUUID = (): string => {
       if (hasRandomUUID) {
-        return nativeCrypto.randomUUID();
+        return (nativeCrypto as any).randomUUID();
       }
-      if (nativeGetRandomValues) {
-        const bytes = new Uint8Array(16);
-        nativeGetRandomValues(bytes);
-        bytes[6] = (bytes[6] & 0x0f) | 0x40;
-        bytes[8] = (bytes[8] & 0x3f) | 0x80;
-        
-        const hex = '0123456789abcdef';
-        let uuid = '';
-        for (let i = 0; i < 16; i++) {
-          if (i === 4 || i === 6 || i === 8 || i === 10) uuid += '-';
-          uuid += hex[(bytes[i] >> 4) & 0x0f] + hex[bytes[i] & 0x0f];
-        }
-        return uuid;
-      }
-      return generateUUID();
+      return generateUUID(rng);
     };
     
     return {
@@ -121,7 +116,7 @@ function buildBrowserCrypto(): BrowserCrypto {
   }
   
   return {
-    randomUUID: generateUUID,
+    randomUUID: () => generateUUID(),
     randomFillSync,
     getRandomValues
   };
@@ -136,11 +131,13 @@ export function applyCryptoPolyfills(target?: any): void {
     return;
   }
 
-  const nativeCrypto = context.crypto;
-
+  let nativeCrypto: any;
+  
   try {
+    nativeCrypto = context.crypto;
     if (!nativeCrypto) {
       context.crypto = {};
+      nativeCrypto = context.crypto;
     }
   } catch {
     return;
@@ -148,8 +145,12 @@ export function applyCryptoPolyfills(target?: any): void {
 
   const crypto = context.crypto as any;
 
-  const useSecure = nativeCrypto && typeof (nativeCrypto as any).getRandomValues === 'function';
-  const polyfill = useSecure ? browserCrypto : { randomUUID: generateUUID, randomFillSync, getRandomValues };
+  const useSecure = nativeCrypto && typeof nativeCrypto.getRandomValues === 'function';
+  const polyfill = useSecure ? buildBrowserCrypto(context) : { 
+    randomUUID: () => generateUUID(), 
+    randomFillSync, 
+    getRandomValues 
+  };
 
   try {
     if (typeof crypto.randomUUID !== 'function') {
