@@ -53,21 +53,27 @@ export interface BrowserCrypto {
 }
 
 export function applyCryptoPolyfills(): void {
-  if (typeof window === 'undefined') {
+  const target = (typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : null) as any;
+  
+  if (!target) {
     return;
   }
 
-  const target = window as any;
-  
-  if (!target.crypto) {
-    target.crypto = {};
-  } else {
-    return;
+  target.crypto = target.crypto || {};
+
+  const crypto = target.crypto as Partial<BrowserCrypto>;
+
+  if (typeof crypto.randomUUID !== 'function') {
+    crypto.randomUUID = generateUUID;
   }
-  
-  target.crypto.randomUUID = generateUUID;
-  target.crypto.randomFillSync = randomFillSync;
-  target.crypto.getRandomValues = getRandomValues;
+
+  if (typeof crypto.randomFillSync !== 'function') {
+    crypto.randomFillSync = randomFillSync;
+  }
+
+  if (typeof crypto.getRandomValues !== 'function') {
+    crypto.getRandomValues = getRandomValues;
+  }
 }
 
 export const browserCrypto: BrowserCrypto = {
