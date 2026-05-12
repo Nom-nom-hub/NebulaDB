@@ -1,6 +1,6 @@
 import type { Adapter, Document } from '@nebula-db/core';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, ScanCommand, PutCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, ScanCommand, PutCommand, DeleteCommand, BatchWriteCommand } from '@aws-sdk/lib-dynamodb';
 
 /**
  * AWS Lambda/DynamoDB Adapter for NebulaDB
@@ -67,27 +67,35 @@ export class AwsLambdaAdapter implements Adapter {
 
   /**
    * Load all collections and documents from DynamoDB
+   * Uses pagination to ensure all items are loaded
    */
   async load(): Promise<Record<string, Document[]>> {
     try {
-      const result = await this.client.send(
-        new ScanCommand({
-          TableName: this.tableName
-        })
-      );
-
       const collections: Record<string, Document[]> = {};
-      const items = result.Items || [];
+      let lastKey: Record<string, any> | undefined;
 
-      for (const item of items) {
-        const collectionName = item.collectionName as string;
-        const documents = item.documents as Document[] || [];
+      do {
+        const result = await this.client.send(
+          new ScanCommand({
+            TableName: this.tableName,
+            ExclusiveStartKey: lastKey
+          })
+        );
 
-        if (!collections[collectionName]) {
-          collections[collectionName] = [];
+        const items = result.Items || [];
+        
+        for (const item of items) {
+          const collectionName = item.collectionName as string;
+          const documents = item.documents as Document[] || [];
+
+          if (!collections[collectionName]) {
+            collections[collectionName] = [];
+          }
+          collections[collectionName].push(...documents);
         }
-        collections[collectionName].push(...documents);
-      }
+
+        lastKey = result.LastEvaluatedKey;
+      } while (lastKey);
 
       this.data = collections;
       return collections;
@@ -98,36 +106,74 @@ export class AwsLambdaAdapter implements Adapter {
 
   /**
    * Save all collections and documents to DynamoDB
+   * Uses batch writes for better performance
    */
   async save(data: Record<string, Document[]>): Promise<void> {
     try {
-      // Delete all existing items first
-      const existing = await this.client.send(
-        new ScanCommand({ TableName: this.tableName })
-      );
+      // Delete all existing items first (batched for performance)
+      let lastKey: Record<string, any> | undefined;
+      
+      do {
+        const existing = await this.client.send(
+          new ScanCommand({ TableName: this.tableName, ExclusiveStartKey: lastKey })
+        );
 
-      if (existing.Items && existing.Items.length > 0) {
-        for (const item of existing.Items) {
-          await this.client.send(
-            new DeleteCommand({
-              TableName: this.tableName,
-              Key: { id: item.id }
-            })
-          );
+        if (existing.Items && existing.Items.length > 0) {
+          const BATCH_SIZE = 25;
+          
+          for (let i = 0; i < existing.Items.length; i += BATCH_SIZE) {
+            const batchItems = existing.Items.slice(i, i + BATCH_SIZE);
+            
+            const writeRequests = batchItems.map((item) => ({
+              DeleteRequest: {
+                Key: { id: item.id }
+              }
+            }));
+
+            await this.client.send(
+              new BatchWriteCommand({
+                RequestItems: {
+                  [this.tableName]: writeRequests
+                }
+              })
+            );
+          }
         }
-      }
 
-      // Insert all collections
+        lastKey = existing.LastEvaluatedKey;
+      } while (lastKey);
+
+      // Insert all collections (batched for performance)
+      const BATCH_SIZE = 25;
+      const putRequests: { PutRequest: { Item: any } }[] = [];
+
       for (const [collectionName, docs] of Object.entries(data)) {
-        await this.client.send(
-          new PutCommand({
-            TableName: this.tableName,
+        putRequests.push({
+          PutRequest: {
             Item: {
               id: collectionName,
               collectionName,
               documents: docs,
               timestamp: Date.now()
             }
+          }
+        });
+
+        if (putRequests.length >= BATCH_SIZE) {
+          await this.client.send(
+            new BatchWriteCommand({
+              RequestItems: { [this.tableName]: putRequests }
+            })
+          );
+          putRequests.length = 0;
+        }
+      }
+
+      // Insert remaining
+      if (putRequests.length > 0) {
+        await this.client.send(
+          new BatchWriteCommand({
+            RequestItems: { [this.tableName]: putRequests }
           })
         );
       }

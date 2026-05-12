@@ -14,7 +14,6 @@ export interface TimeSeriesPoint {
 
 export interface StreamingOptions {
   windowSize?: number;
-  flushInterval?: number;
 }
 
 interface StreamingState {
@@ -52,8 +51,7 @@ export function createStreamingPlugin(options: StreamingOptions = {}): Plugin {
     counters: new Map(),
     aggregations: new Map(),
     options: {
-      windowSize: options.windowSize || 1000,
-      flushInterval: options.flushInterval || 5000
+      windowSize: options.windowSize || 1000
     }
   };
 
@@ -183,7 +181,7 @@ export function createStreamingPlugin(options: StreamingOptions = {}): Plugin {
 /**
  * Get the streaming API from a database instance
  */
-export function getStreamingApi(db: any): ReturnType<typeof createStreamingPlugin>['getApi'] | null {
+export function getStreamingApi(db: any): ReturnType<ReturnType<typeof createStreamingPlugin>['getApi']> | null {
   const plugin = db.plugins?.find((p: any) => p.name === 'streaming');
   return plugin?.getApi?.() || null;
 }

@@ -190,9 +190,15 @@ export class HybridAdapter implements Adapter {
     }
 
     this.syncTimer = setInterval(async () => {
-      if (this.isCloudAvailable && !this.isSyncing) {
-        const localData = await this.localAdapter.load();
-        await this.syncToCloud(localData);
+      try {
+        if (this.isCloudAvailable && !this.isSyncing) {
+          const localData = await this.localAdapter.load();
+          await this.syncToCloud(localData);
+        }
+      } catch (error) {
+        console.warn('HybridAdapter: Periodic sync failed:', error);
+        // Mark cloud as unavailable on repeated failures
+        this.isCloudAvailable = false;
       }
     }, this.syncInterval);
   }

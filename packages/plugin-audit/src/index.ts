@@ -24,6 +24,7 @@ export interface AuditOptions {
 interface AuditState {
   entries: AuditEntry[];
   options: Required<AuditOptions>;
+  bypassAudit: boolean;
 }
 
 /**
@@ -50,7 +51,8 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
       trackReads: options.trackReads ?? false,
       maxEntries: options.maxEntries || 10000,
       onAudit: options.onAudit || (() => {})
-    }
+    },
+    bypassAudit: false
   };
 
   const generateId = () => `audit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -76,6 +78,8 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
     name: 'audit',
     
     onInsert: async ({ collection, documents }) => {
+      if (state.bypassAudit) return;
+      
       for (const doc of documents) {
         addEntry({
           collection: collection.name,
@@ -87,7 +91,13 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
     },
 
     onUpdate: async ({ collection, filter, update }) => {
+      if (state.bypassAudit) return;
+      
+      // Use bypass flag to prevent recursion when finding previous docs
+      state.bypassAudit = true;
       const docs = await collection.find(filter);
+      state.bypassAudit = false;
+      
       for (const doc of docs) {
         addEntry({
           collection: collection.name,
@@ -99,7 +109,13 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
     },
 
     onDelete: async ({ collection, filter }) => {
+      if (state.bypassAudit) return;
+      
+      // Use bypass flag to prevent recursion when finding docs to delete
+      state.bypassAudit = true;
       const docs = await collection.find(filter);
+      state.bypassAudit = false;
+      
       for (const doc of docs) {
         addEntry({
           collection: collection.name,
@@ -170,7 +186,7 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
 /**
  * Get the audit API from a database instance
  */
-export function getAuditApi(db: any): ReturnType<typeof createAuditPlugin>['getApi'] | null {
+export function getAuditApi(db: any): ReturnType<ReturnType<typeof createAuditPlugin>['getApi']> | null {
   const plugin = db.plugins?.find((p: any) => p.name === 'audit');
   return plugin?.getApi?.() || null;
 }

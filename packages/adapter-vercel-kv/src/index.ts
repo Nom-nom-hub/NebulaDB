@@ -54,6 +54,12 @@ export class VercelKvAdapter implements Adapter {
       throw new Error(`Vercel KV API error: ${response.status} ${response.statusText}`);
     }
 
+    // Handle empty or non-JSON responses
+    const contentType = response.headers.get('content-type');
+    if (response.status === 204 || !contentType || !contentType.includes('application/json')) {
+      return undefined as T;
+    }
+
     return response.json();
   }
 

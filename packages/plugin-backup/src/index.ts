@@ -13,7 +13,7 @@ export interface BackupMetadata {
 }
 
 export interface BackupData {
-  metadata: BackupMetadata;
+  metadata?: BackupMetadata;
   collections: Record<string, Document[]>;
 }
 
@@ -49,17 +49,20 @@ export class BackupManager {
   async backup(options?: BackupOptions): Promise<BackupData> {
     const collections = await this.adapter.load();
     
-    const metadata: BackupMetadata = {
-      version: this.version,
-      timestamp: Date.now(),
-      collections: Object.keys(collections),
-      documentCount: Object.values(collections).reduce((sum, docs) => sum + docs.length, 0)
-    };
-
-    return {
-      metadata: options?.includeMetadata !== false ? metadata : {} as BackupMetadata,
+    const result: BackupData = {
       collections
     };
+
+    if (options?.includeMetadata !== false) {
+      result.metadata = {
+        version: this.version,
+        timestamp: Date.now(),
+        collections: Object.keys(collections),
+        documentCount: Object.values(collections).reduce((sum, docs) => sum + docs.length, 0)
+      };
+    }
+
+    return result;
   }
 
   /**
