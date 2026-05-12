@@ -3,23 +3,55 @@ import { MemoryAdapter } from '@nebula-db/adapter-memory';
 import { setTheme, toggleTheme, getTheme } from 'flex-theme';
 import './styles.css';
 
-// Polyfill for crypto.randomFillSync if needed (for browser compatibility)
-// Note: This is a simple polyfill and does NOT provide cryptographically secure random values.
-// Some libraries may expect Node.js crypto.randomFillSync, which is not available in browsers.
-if (typeof window !== 'undefined' && !window.crypto) {
-  window.crypto = {};
-}
+// Polyfill for crypto APIs for browser compatibility
+// Note: These are simple polyfills and do NOT provide cryptographically secure random values.
+// For production, use a proper crypto library or ensure your environment provides secure crypto APIs.
+if (typeof window !== 'undefined') {
+  if (!window.crypto) {
+    window.crypto = {};
+  }
 
-if (typeof window !== 'undefined' && window.crypto && !window.crypto.randomFillSync) {
-  window.crypto.randomFillSync = function(buffer) {
-    // WARNING: This is NOT cryptographically secure!
-    const bytes = new Uint8Array(buffer.length);
-    for (let i = 0; i < bytes.length; i++) {
-      bytes[i] = Math.floor(Math.random() * 256);
-    }
-    buffer.set(bytes);
-    return buffer;
-  };
+  // Polyfill for crypto.randomFillSync (Node.js API)
+  if (!window.crypto.randomFillSync) {
+    window.crypto.randomFillSync = function(buffer) {
+      const bytes = new Uint8Array(buffer.length);
+      for (let i = 0; i < bytes.length; i++) {
+        bytes[i] = Math.floor(Math.random() * 256);
+      }
+      buffer.set(bytes);
+      return buffer;
+    };
+  }
+
+  // Polyfill for crypto.randomUUID() (Node.js API)
+  if (!window.crypto.randomUUID) {
+    window.crypto.randomUUID = function() {
+      const hex = '0123456789abcdef';
+      let uuid = '';
+      for (let i = 0; i < 36; i++) {
+        if (i === 8 || i === 13 || i === 18 || i === 23) {
+          uuid += '-';
+        } else if (i === 14) {
+          uuid += '4';
+        } else if (i === 19) {
+          uuid += hex[(Math.random() * 4) | 8];
+        } else {
+          uuid += hex[(Math.random() * 16) | 0];
+        }
+      }
+      return uuid;
+    };
+  }
+
+  // Polyfill for crypto.getRandomValues() if missing (should be available in modern browsers)
+  if (!window.crypto.getRandomValues) {
+    window.crypto.getRandomValues = function(array) {
+      for (let i = 0; i < array.length; i++) {
+        array[i] = Math.floor(Math.random() * 256);
+      }
+      return array;
+    };
+  }
 }
 
 // Logging functions
