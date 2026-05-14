@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "@nebula-db/core": "npm:@nebula-db/core@^0.4.0",
+    "@nebula-db/adapter-deno-kv": "npm:@nebula-db/adapter-deno-kv@^0.4.1"
+  },
+  "tasks": {
+    "start": "deno run --unstable-kv main.ts"
+  }
+}

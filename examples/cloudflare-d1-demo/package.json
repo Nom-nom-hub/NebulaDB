@@ -1,0 +1,21 @@
+{
+  "name": "nebula-cloudflare-d1-demo",
+  "version": "0.1.0",
+  "description": "Cloudflare D1 adapter demo for NebulaDB",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@nebula-db/core": "^0.4.0",
+    "@nebula-db/adapter-cloudflare-d1": "^0.4.1"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
