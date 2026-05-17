@@ -31,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Browser crypto polyfills with secure native fallback
 - QuotaExceededError compliance with Web Crypto API
 - ArrayBufferView support in crypto polyfills
+- **Enhanced adapter example READMEs** (MongoDB, MySQL, PostgreSQL, Redis) with Docker setup instructions, code walkthroughs, expected output, and Next Steps cross-links (thanks [@HirenGajjar](https://github.com/HirenGajjar)! — [PR #36](https://github.com/Nom-nom-hub/NebulaDB/pull/36))
+- **New CONTRIBUTORS.md** and Contributors section in README acknowledging community contributors
+
+### 🐛 Bug Fixes
+
+- Fixed npm install `EUNSUPPORTEDPROTOCOL` error by replacing pnpm-only `workspace:*` protocol with npm-compatible version refs across all package.json files
 
 ---
 
