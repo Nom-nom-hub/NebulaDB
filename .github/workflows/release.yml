@@ -20,7 +20,7 @@ jobs:
       - name: Create empty lockfile
         run: echo '{}' > bun.lock
 
-- name: Build core package
+      - name: Build core package
         run: |
           cd packages/core
           bun install
