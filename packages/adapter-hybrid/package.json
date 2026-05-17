@@ -20,7 +20,13 @@
   "dependencies": {
     "@nebula-db/core": "*"
   },
-  "keywords": ["nebula-db", "hybrid", "fallback", "adapter", "sync"],
+  "keywords": [
+    "nebula-db",
+    "hybrid",
+    "fallback",
+    "adapter",
+    "sync"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"

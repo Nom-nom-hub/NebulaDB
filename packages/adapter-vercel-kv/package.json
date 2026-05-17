@@ -26,7 +26,13 @@
   "devDependencies": {
     "@neondatabase/serverless": "^0.10.0"
   },
-  "keywords": ["nebula-db", "vercel", "kv", "edge", "adapter"],
+  "keywords": [
+    "nebula-db",
+    "vercel",
+    "kv",
+    "edge",
+    "adapter"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"

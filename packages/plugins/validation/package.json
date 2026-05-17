@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-validation",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "Schema validation plugin for NebulaDB using Zod",
   "repository": {
     "type": "git",
@@ -20,8 +20,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "prebuild": "rm -rf dist"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "database",
@@ -42,10 +41,5 @@
   },
   "peerDependencies": {
     "@nebula-db/core": "^0.4.1"
-  },
-  "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
-    "test": "vitest run",
-    "prepublishOnly": "npm run build"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/core",
-  "version": "0.4.4",
+  "version": "0.6.0",
   "description": "Core package for NebulaDB",
   "repository": {
     "type": "git",

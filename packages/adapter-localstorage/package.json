@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-localstorage",
-  "version": "0.4.2",
+  "version": "0.6.0",
   "description": "localStorage storage adapter for NebulaDB (browser)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

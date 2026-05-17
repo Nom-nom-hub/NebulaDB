@@ -20,7 +20,12 @@
   "dependencies": {
     "@nebula-db/core": "*"
   },
-  "keywords": ["nebula-db", "audit", "logging", "plugin"],
+  "keywords": [
+    "nebula-db",
+    "audit",
+    "logging",
+    "plugin"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"

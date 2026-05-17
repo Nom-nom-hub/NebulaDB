@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/vue",
-  "version": "0.4.1",
+  "version": "0.6.0",
   "description": "Vue composables for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

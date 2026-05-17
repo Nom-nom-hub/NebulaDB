@@ -20,7 +20,12 @@
   "dependencies": {
     "@nebula-db/core": "*"
   },
-  "keywords": ["nebula-db", "backup", "restore", "plugin"],
+  "keywords": [
+    "nebula-db",
+    "backup",
+    "restore",
+    "plugin"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"

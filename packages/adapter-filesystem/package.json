@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-filesystem",
-  "version": "0.4.2",
+  "version": "0.6.0",
   "description": "Filesystem storage adapter for NebulaDB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -20,7 +20,12 @@
   "dependencies": {
     "@nebula-db/core": "*"
   },
-  "keywords": ["nebula-db", "streaming", "analytics", "plugin"],
+  "keywords": [
+    "nebula-db",
+    "streaming",
+    "analytics",
+    "plugin"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
