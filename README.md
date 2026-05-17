@@ -260,6 +260,18 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Contributors 💙
+
+A huge thank you to everyone who has helped make NebulaDB better:
+
+| Contributor | Contributions |
+|---|---|
+| [**Teck**](https://github.com/Nom-nom-hub) | Creator & maintainer — core engine, adapters, plugins, docs |
+| [**blazeinstall**](https://github.com/blazeinstall) | Browser crypto compatibility fixes, CI improvements |
+| [**HirenGajjar**](https://github.com/HirenGajjar) | Enhanced adapter example READMEs with Docker setup, code walkthroughs & expected output ([PR #36](https://github.com/Nom-nom-hub/NebulaDB/pull/36)) |
+
+Want to see your name here? Check out [CONTRIBUTING.md](./CONTRIBUTING.md) and open a PR!
+
 ## Troubleshooting
 
 ### Node.js Version Issues
