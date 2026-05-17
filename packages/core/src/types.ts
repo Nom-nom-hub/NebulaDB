@@ -153,6 +153,22 @@ export interface Adapter {
    * Save all data to the storage backend.
    */
   save(data: Record<string, Document[]>): Promise<void>;
+  /** Optional: establish connection to the storage backend */
+  connect?(): Promise<void>;
+  /** Optional: close connection and cleanup */
+  close?(): Promise<void>;
+}
+
+/**
+ * Plugin context for simplified hooks
+ */
+export interface PluginHookContext {
+  collection: ICollection;
+  documents?: Document[];
+  filter?: Query;
+  update?: UpdateOperation;
+  operations?: any[];
+  query?: Query;
 }
 
 /**
@@ -170,6 +186,14 @@ export interface Plugin {
   onAfterDelete?(collection: string, query: Query, deletedDocs: Document[]): void | Promise<void>;
   onBeforeQuery?(collection: string, query: Query): Query | Promise<Query>;
   onAfterQuery?(collection: string, query: Query, results: Document[]): Document[] | Promise<Document[]>;
+  /** Simplified hooks for plugin convenience */
+  onInsert?(context: PluginHookContext): void | Promise<void>;
+  onUpdate?(context: PluginHookContext): void | Promise<void>;
+  onDelete?(context: PluginHookContext): void | Promise<void>;
+  onBulk?(context: PluginHookContext): void | Promise<void>;
+  onFind?(context: PluginHookContext): void | Promise<void>;
+  /** Get plugin API for external access */
+  getApi?(): any;
 }
 
 /**

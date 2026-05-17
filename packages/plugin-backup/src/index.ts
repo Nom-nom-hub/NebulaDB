@@ -103,7 +103,7 @@ export class BackupManager {
    * Get backup info without loading all data
    */
   async getBackupInfo(backup: BackupData): Promise<BackupMetadata | null> {
-    return backup.metadata;
+    return backup.metadata ?? null;
   }
 }
 

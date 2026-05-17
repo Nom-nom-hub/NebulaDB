@@ -84,7 +84,7 @@ export class AwsLambdaAdapter implements Adapter {
 
         const items = result.Items || [];
         
-        for (const item of items) {
+        for (const item of items as Record<string, any>[]) {
           const collectionName = item.collectionName as string;
           const documents = item.documents as Document[] || [];
 

@@ -45,6 +45,7 @@ export type {
   DbOptions,
   Adapter,
   Plugin,
+  PluginHookContext,
   SubscriptionCallback,
   ICollection
 } from './types';

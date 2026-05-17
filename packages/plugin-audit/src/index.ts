@@ -1,4 +1,4 @@
-import type { Plugin, Document } from '@nebula-db/core';
+import type { Plugin, Document, PluginHookContext } from '@nebula-db/core';
 
 export type AuditAction = 'create' | 'read' | 'update' | 'delete' | 'bulk';
 
@@ -77,10 +77,10 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
   return {
     name: 'audit',
     
-    onInsert: async ({ collection, documents }) => {
+    onInsert: async ({ collection, documents }: PluginHookContext) => {
       if (state.bypassAudit) return;
       
-      for (const doc of documents) {
+      for (const doc of (documents || [])) {
         addEntry({
           collection: collection.name,
           action: 'create',
@@ -90,12 +90,12 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
       }
     },
 
-    onUpdate: async ({ collection, filter, update }) => {
+    onUpdate: async ({ collection, filter, update }: PluginHookContext) => {
       if (state.bypassAudit) return;
       
       // Use bypass flag to prevent recursion when finding previous docs
       state.bypassAudit = true;
-      const docs = await collection.find(filter);
+      const docs = await collection.find(filter || {});
       state.bypassAudit = false;
       
       for (const doc of docs) {
@@ -108,12 +108,12 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
       }
     },
 
-    onDelete: async ({ collection, filter }) => {
+    onDelete: async ({ collection, filter }: PluginHookContext) => {
       if (state.bypassAudit) return;
       
       // Use bypass flag to prevent recursion when finding docs to delete
       state.bypassAudit = true;
-      const docs = await collection.find(filter);
+      const docs = await collection.find(filter || {});
       state.bypassAudit = false;
       
       for (const doc of docs) {
@@ -126,8 +126,8 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
       }
     },
 
-    onBulk: async ({ collection, operations }) => {
-      for (const op of operations) {
+    onBulk: async ({ collection, operations }: PluginHookContext) => {
+      for (const op of (operations || [])) {
         addEntry({
           collection: collection.name,
           action: 'bulk',
@@ -138,7 +138,7 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
 
     // Optional: track reads if enabled
     ...(state.options.trackReads ? {
-      onFind: async ({ collection }) => {
+      onFind: async ({ collection }: PluginHookContext) => {
         addEntry({
           collection: collection.name,
           action: 'read'
@@ -186,7 +186,7 @@ export function createAuditPlugin(options: AuditOptions = {}): Plugin {
 /**
  * Get the audit API from a database instance
  */
-export function getAuditApi(db: any): ReturnType<ReturnType<typeof createAuditPlugin>['getApi']> | null {
+export function getAuditApi(db: any): ReturnType<Exclude<ReturnType<typeof createAuditPlugin>['getApi'], undefined>> | null {
   const plugin = db.plugins?.find((p: any) => p.name === 'audit');
   return plugin?.getApi?.() || null;
 }

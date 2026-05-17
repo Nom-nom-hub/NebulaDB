@@ -1,4 +1,4 @@
-import type { Plugin, Document } from '@nebula-db/core';
+import type { Plugin, Document, PluginHookContext } from '@nebula-db/core';
 
 export interface Metric {
   name: string;
@@ -107,24 +107,24 @@ export function createStreamingPlugin(options: StreamingOptions = {}): Plugin {
   return {
     name: 'streaming',
     
-    onInsert: async ({ collection, documents }) => {
-      recordMetric('insert', documents.length, { collection: collection.name });
-      for (const doc of documents) {
+    onInsert: async ({ collection, documents }: PluginHookContext) => {
+      recordMetric('insert', (documents || []).length, { collection: collection.name });
+      for (const doc of (documents || [])) {
         recordAggregation(`${collection.name}_inserts`, 1);
       }
     },
 
-    onUpdate: async ({ collection }) => {
+    onUpdate: async ({ collection }: PluginHookContext) => {
       recordMetric('update', 1, { collection: collection.name });
       recordAggregation(`${collection.name}_updates`, 1);
     },
 
-    onDelete: async ({ collection }) => {
+    onDelete: async ({ collection }: PluginHookContext) => {
       recordMetric('delete', 1, { collection: collection.name });
       recordAggregation(`${collection.name}_deletes`, 1);
     },
 
-    onFind: async ({ collection, query }) => {
+    onFind: async ({ collection, query }: PluginHookContext) => {
       recordMetric('query', 1, { collection: collection.name });
     },
 
@@ -181,7 +181,7 @@ export function createStreamingPlugin(options: StreamingOptions = {}): Plugin {
 /**
  * Get the streaming API from a database instance
  */
-export function getStreamingApi(db: any): ReturnType<ReturnType<typeof createStreamingPlugin>['getApi']> | null {
+export function getStreamingApi(db: any): ReturnType<Exclude<ReturnType<typeof createStreamingPlugin>['getApi'], undefined>> | null {
   const plugin = db.plugins?.find((p: any) => p.name === 'streaming');
   return plugin?.getApi?.() || null;
 }

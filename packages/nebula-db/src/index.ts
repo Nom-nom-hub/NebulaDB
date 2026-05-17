@@ -15,7 +15,7 @@ export {
   Collection,
   matchDocument,
   applyUpdate,
-  EnhancedIndexManager as IndexManager,
+  IndexManager,
   IndexType,
   MemoryAdapter,
   QueryOptimizer,
@@ -54,7 +54,6 @@ export type {
 } from '@nebula-db/core';
 
 // Export adapters
-export { MemoryAdapter } from '@nebula-db/adapter-memory';
 export { LocalStorageAdapter } from '@nebula-db/adapter-localstorage';
 export { IndexedDBAdapter } from '@nebula-db/adapter-indexeddb';
 
@@ -64,13 +63,13 @@ export { createValidationPlugin } from '@nebula-db/plugin-validation';
 // Import adapters and plugins for dynamic loading
 import { LocalStorageAdapter as LocalStorageAdapterImport } from '@nebula-db/adapter-localstorage';
 import { IndexedDBAdapter as IndexedDBAdapterImport } from '@nebula-db/adapter-indexeddb';
+import { FilesystemAdapter as FileSystemAdapterImport } from '@nebula-db/adapter-filesystem';
 import { createValidationPlugin as createValidationPluginImport } from '@nebula-db/plugin-validation';
 
 /**
  * Create a database with sensible defaults
  */
-import { createDb as createCoreDb, DbOptions } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { createDb as createCoreDb, DbOptions, MemoryAdapter } from '@nebula-db/core';
 
 /**
  * Extended options for creating a database with defaults
