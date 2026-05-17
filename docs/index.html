@@ -3,404 +3,419 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NebulaDB v0.4.0 Cirrus — Fast, Flexible, Secure, and Enterprise-Ready. An embedded database with sync, encryption, and edge deployment." />
+  <meta name="description" content="NebulaDB v0.6.0 Cumulus — Cloud & Edge Integration. A high-performance, reactive, TypeScript-first, embeddable NoSQL database for browser, Node.js, and Edge environments." />
   <meta name="author" content="NebulaDB Team" />
-  <title>NebulaDB v0.4.0 Cirrus - Sync, Security & Performance</title>
+  <title>NebulaDB v0.6.0 Cumulus — Cloud & Edge Integration</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="logo-altocumulus.svg">
 </head>
 <body>
-  <header>
-    <nav>
-      <div class="logo">
-         <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
-         <span>NebulaDB</span>
-         <div class="version-badge">v0.4.0 Cirrus</div>
-       </div>
+  <!-- Cloud Background -->
+  <div class="clouds-bg">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+    <div class="cloud cloud-5"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
+        <span>NebulaDB</span>
+        <div class="version-badge">v0.6.0 Cumulus</div>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
       <div class="nav-links">
-        <a href="#release">Release</a>
         <a href="#features">Features</a>
+        <a href="#adapters">Adapters</a>
+        <a href="#code">Code Demo</a>
         <a href="#docs">Docs</a>
         <a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a>
+        <a href="https://github.com/Nom-nom-hub/NebulaDB/discussions" target="_blank">Discussions</a>
+        <a href="#docs" class="nav-cta">Get Started</a>
       </div>
-    </nav>
-  </header>
+    </div>
+  </nav>
 
+  <!-- Hero -->
   <section class="hero">
-    <div class="hero-bg"></div>
     <div class="hero-content">
       <div class="hero-text">
-        <div class="logo-container">
-           <img src="nebuladb_v0.4.0_cirrus.svg" alt="NebulaDB Cirrus Hero" class="hero-logo" onerror="this.onerror=null;this.src='hero-altocumulus.svg';">
-           <img src="version-badge.svg" alt="v0.4.0 Cirrus" class="version-img">
-         </div>
-        <h1><span class="gradient-text" data-text="Sync. Secure.">Sync. Secure.</span><br>Enterprise-Ready.</h1>
-        <p class="subtitle">Global synchronization meets enterprise encryption.</p>
-        <p class="description">
-          NebulaDB v0.4.0 "Cirrus" brings enterprise-grade features: real-time sync with conflict resolution,
-          AES-256-GCM encryption, edge deployment (Deno, Cloudflare), and 4-8x performance improvements.
+        <div class="hero-badge">
+          <span class="dot"></span> Now Available — v0.6.0 "Cumulus"
+        </div>
+        <h1>
+          The database that<br>
+          <span class="gradient-text">runs everywhere</span>
+        </h1>
+        <p class="hero-subtitle">
+          Browser, Node.js, Edge. One API. Zero compromises.
         </p>
-        <div class="cta-buttons">
-          <a href="#getting-started" class="btn primary">Get Started</a>
-          <a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank" class="btn outline">GitHub</a>
+        <p class="hero-description">
+          NebulaDB v0.6.0 "Cumulus" brings first-class cloud and edge support — 
+          Cloudflare D1, Deno KV, Vercel KV, AWS Lambda, and hybrid deployment. 
+          40+ packages, 15+ adapters, TypeScript-first, reactive, and MIT-licensed.
+        </p>
+        <div class="hero-cta">
+          <a href="README.html" class="btn btn-primary">Get Started →</a>
+          <a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank" class="btn btn-secondary">⭐ Star on GitHub</a>
         </div>
       </div>
-      <div class="code-container">
+      <div class="hero-code">
         <div class="code-header">
-          <div class="code-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="code-title">Terminal</div>
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-title">Terminal</span>
         </div>
-        <pre class="terminal-block"><code id="typed-terminal"></code><noscript>
-        $ npm install @nebula-db/core@0.4.0
-        ✔ NebulaDB v0.4.0 "Cirrus" installed
-        $ node
-        > import { createDb, QueryOptimizer, SyncPlugin } from "@nebula-db/core";
-        > import { EncryptionAdapter } from "@nebula-db/core";
-        > import { SQLiteAdapter } from "@nebula-db/sqlite";
-        > // Cirrus v0.4.0: Sync, Encryption, Performance
-        > const db = createDb({
-        >   adapter: new EncryptionAdapter({
-        >     baseAdapter: new SQLiteAdapter("app.db"),
-        >     encryptionKey: process.env.DB_KEY,
-        >     algorithm: "aes-256-gcm"
-        >   })
-        > });
-        > // Real-time sync with conflict resolution
-        > const sync = new SyncPlugin({
-        >   serverUrl: "https://sync.example.com",
-        >   conflictResolution: "last-write-wins"
-        > });
-        > db.use(sync);
-        > await sync.start();
-        > // Performance optimization
-        > const optimizer = new QueryOptimizer();
-        > const users = db.collection("users");
-        > const plan = optimizer.analyzeQuery({id: "123"}, users.getIndexes(), 10000);
-        > console.log(optimizer.formatPlan(plan));
-        > // Transparent encryption/decryption
-        > await users.insert({ id: "123", name: "Alice", ssn: "sensitive" });
-        > const result = await users.find({ id: "123" });
-        > console.log(result[0].ssn); // Auto-decrypted ✔</noscript></pre>
+        <pre><code id="typed-terminal"></code></pre>
       </div>
     </div>
   </section>
 
-  <section id="release" class="release">
-    <div class="container">
-      <h2>Introducing <span class="gradient-text" data-text='v0.4.0 "Cirrus"'>v0.4.0 "Cirrus"</span></h2>
-      <p class="section-intro">
-        Our latest release brings enterprise-grade sync & replication, AES-256-GCM encryption, edge deployment (Deno/Cloudflare), and performance improvements—delivered in production-ready code with zero breaking changes.
-      </p>
-
-      <div class="release-content">
-        <div class="release-info">
-          <h3>Cloud-Themed Releases</h3>
-          <p>
-            All NebulaDB releases are named after types of clouds, reflecting our commitment to building a database that's as flexible and powerful as the sky.
-          </p>
-          <p>
-            "Cirrus" represents thin, delicate cloud formations at high altitude—symbolizing our approach to enterprise features: lightweight, elegant, and powerful.
-          </p>
-          <div class="release-timeline">
-            <div class="release-item previous">
-              <div class="release-dot"></div>
-              <p>v0.2.2 "Altocumulus"</p>
-            </div>
-            <div class="release-item previous">
-              <div class="release-dot"></div>
-              <p>v0.3.0 "Billow"</p>
-            </div>
-            <div class="release-item current">
-              <div class="release-dot"></div>
-              <p>Current: v0.4.0 "Cirrus" <span style="font-size:0.7em;color:#888;">(January 11, 2026)</span></p>
-            </div>
-          </div>
-        </div>
-        <div class="release-image">
-           <img src="nebuladb_v0.4.0_cirrus.svg" alt="NebulaDB v0.4.0 Cirrus" onerror="this.onerror=null;this.src='nebuladb_v0.2.2_altocumulus_no_button.png';">
-         </div>
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-number" data-count="40" data-suffix="+">0+</div>
+        <div class="stat-label">npm Packages</div>
       </div>
-
-      <div class="feature-cards">
-         <div class="feature-card">
-           <div class="feature-icon">🔄</div>
-           <h3>Real-Time Sync & Replication</h3>
-           <p>Multi-strategy conflict resolution (LWWM, server-wins, client-wins, custom merge). Peer-to-peer sync, offline queues, sync servers with webhooks.</p>
-         </div>
-         <div class="feature-card">
-           <div class="feature-icon">🔒</div>
-           <h3>AES-256-GCM Encryption</h3>
-           <p>Transparent encryption at rest. Field-level encryption for sensitive data. Searchable encryption. PBKDF2 key derivation. HIPAA/PCI/GDPR ready.</p>
-         </div>
-         <div class="feature-card">
-           <div class="feature-icon">⚡</div>
-           <h3>Performance Optimizations</h3>
-           <p>Query optimizer with automatic index selection. Worker pool parallelization (4-8x speedup). Performance profiler with memory tracking.</p>
-         </div>
-         <div class="feature-card">
-           <div class="feature-icon">🌐</div>
-           <h3>Edge Deployment</h3>
-           <p>Deno KV adapter for Deno edge runtime. Cloudflare D1 adapter for Workers and Pages. Production-ready, zero breaking changes.</p>
-         </div>
-       </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-number" data-count="15" data-suffix="+">0+</div>
+        <div class="stat-label">Storage Adapters</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-number" data-count="6" data-suffix="">0</div>
+        <div class="stat-label">Runtime Environments</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-number" data-count="10" data-suffix="+">0+</div>
+        <div class="stat-label">Plugin Extensions</div>
+      </div>
     </div>
   </section>
 
-  <section id="features" class="features">
-    <div class="container">
-      <h2>Key Features</h2>
-      <p class="section-intro">
-        NebulaDB combines the best of NoSQL databases with modern TypeScript features.
-      </p>
-      <div class="feature-grid">
-        <div class="feature-item">
-          <h3>TypeScript-First</h3>
-          <p>Built from the ground up with TypeScript, providing excellent type safety and developer experience.</p>
+  <!-- Features -->
+  <section id="features" class="features-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-tag">Why NebulaDB</div>
+        <h2>Built for the modern stack</h2>
+        <p>From browser to server to edge — one consistent, reactive, TypeScript-first API.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">☁️</div>
+          <h3>Cloud & Edge Native</h3>
+          <p>First-class support for Cloudflare D1, Deno KV, Vercel KV, and AWS Lambda. Deploy anywhere with zero configuration changes.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">🔀</div>
+          <h3>Hybrid Adapter</h3>
+          <p>Combine local and remote storage — SQLite locally, Cloudflare D1 in production. Automatic sync with conflict resolution.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">⚡</div>
           <h3>Reactive Queries</h3>
-          <p>Subscribe to data changes and automatically update your UI when the underlying data changes.</p>
+          <p>Live subscriptions push updates to your UI when data changes. Subscribe to any query and get real-time results.</p>
         </div>
-        <div class="feature-item">
-          <h3>Multiple Adapters</h3>
-          <p>Use the same API with different storage backends: Memory, IndexedDB, SQLite, FileSystem, Redis, and more.</p>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon">🔒</div>
+          <h3>AES-256-GCM Encryption</h3>
+          <p>Transparent encryption at rest with field-level control. PBKDF2 key derivation. HIPAA/PCI/GDPR ready.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-card reveal">
+          <div class="feature-icon">🔌</div>
+          <h3>Modular Adapters</h3>
+          <p>Swap storage backends without changing code. Memory, IndexedDB, SQLite, PostgreSQL, MongoDB, Redis, and more.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">🧩</div>
           <h3>Plugin Architecture</h3>
-          <p>Extend functionality with plugins for validation, encryption, versioning, caching, and more.</p>
+          <p>Extend with plugins: encryption, sync, audit, backup, streaming, geospatial, auth, and more. Compose functionality.</p>
         </div>
-        <div class="feature-item">
-          <h3>Schema Optional</h3>
-          <p>Work with or without schemas, with full support for runtime validation when needed.</p>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">📊</div>
+          <h3>Advanced Indexing</h3>
+          <p>B-tree, hash, geospatial, and full-text indexes. Automatic index selection and query optimization.</p>
         </div>
-        <div class="feature-item">
-          <h3>Edge Compatible</h3>
-          <p>Run in browsers, Node.js, or edge environments with the same consistent API.</p>
-        </div>
-        <div class="feature-item">
-           <h3>Real-Time Sync & Replication</h3>
-           <p>Multi-strategy conflict resolution with automatic merging. Offline queue support. Peer-to-peer and server-based sync with progress tracking.</p>
-         </div>
-         <div class="feature-item">
-           <h3>AES-256-GCM Encryption</h3>
-           <p>Transparent encryption at rest. Field-level encryption for sensitive data. Searchable encryption for privacy-preserving queries.</p>
-         </div>
-         <div class="feature-item">
-           <h3>Query Optimizer</h3>
-           <p>Automatic index selection, query plan generation, cost estimation, and plan caching for optimal performance.</p>
-         </div>
-         <div class="feature-item">
-           <h3>Worker Pool Parallelization</h3>
-           <p>Batch processing with Web Workers (browser) and Worker Threads (Node.js). 4-8x speedup on multi-core systems.</p>
-         </div>
-        <div class="feature-item">
-          <h3>Batch Operations</h3>
-          <p>Insert, update, or delete many documents at once for high performance and reduced overhead.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Adaptive Concurrency</h3>
-          <p>Automatically tunes concurrency for optimal throughput based on system performance and workload.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Document Compression</h3>
-          <p>Automatically compresses large documents to save memory and improve performance.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Memory Management</h3>
-          <p>Efficient memory usage, chunked processing, and memory-efficient indexes for large datasets.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Query Optimization</h3>
-          <p>Query planning, caching, and short-circuit evaluation for fast and efficient queries.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Live Query Subscriptions</h3>
-          <p>Subscribe to any query and receive real-time updates as data changes.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Cloud-Themed Branding</h3>
-          <p>Each release is named after a cloud type, with unique visuals and a clear roadmap.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Extensive Test Coverage</h3>
-          <p>Robust tests for all features, including advanced indexing and migrations, ensure reliability.</p>
-        </div>
-        <div class="feature-item">
-          <h3>Open Source</h3>
-          <p>MIT-licensed and community-driven. Contributions and feedback are welcome!</p>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon">🌐</div>
+          <h3>Browser Compatible</h3>
+          <p>Runs natively in browsers with full crypto support. IndexedDB, LocalStorage, and Memory adapters included.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="docs" class="docs">
-    <div class="container">
-      <h2>Documentation</h2>
-      <p class="section-intro">
-        Get started quickly with our comprehensive documentation.
-      </p>
-      <div class="docs-links">
-        <a href="README.html" class="docs-link">
-           <h3>Getting Started</h3>
-           <p>Learn the basics of NebulaDB and set up your first database.</p>
-         </a>
-         <a href="MIGRATION_v0.3_to_v0.4.html" class="docs-link">
-           <h3>Migration Guide (v0.3 → v0.4)</h3>
-           <p>Upgrade from v0.3.0 to v0.4.0 Cirrus. Zero breaking changes, easy upgrade path.</p>
-         </a>
-         <a href="SYNC_REPLICATION.html" class="docs-link">
-           <h3>Sync & Replication</h3>
-           <p>Real-time data sync with conflict resolution, P2P sync, offline support, and sync servers.</p>
-         </a>
-         <a href="ENCRYPTION.html" class="docs-link">
-           <h3>Encryption & Security</h3>
-           <p>AES-256-GCM encryption at rest, field-level encryption, key management, compliance guides.</p>
-         </a>
-        <a href="PERFORMANCE.html" class="docs-link">
-          <h3>Performance Guide</h3>
-          <p>Query optimizer, worker pools, profiler, benchmarks, and optimization techniques.</p>
+  <!-- Adapters -->
+  <section id="adapters" class="adapters-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-tag">Storage Adapters</div>
+        <h2>15+ adapters. One API.</h2>
+        <p>Choose the right storage for every environment — all with the same NebulaDB interface.</p>
+      </div>
+      <div class="adapters-grid">
+        <a href="adapters.html" class="adapter-card reveal">
+          <div class="adapter-icon">🧠</div><h4>Memory</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-browser">Browser</span><span class="adapter-badge badge-node">Node</span><span class="adapter-badge badge-edge">Edge</span></div>
         </a>
-        <a href="PHASE4_QUICK_START.html" class="docs-link">
-          <h3>Performance Tools Quick Start</h3>
-          <p>Quick reference for QueryOptimizer, WorkerPool, and PerformanceProfiler APIs.</p>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-1">
+          <div class="adapter-icon">💾</div><h4>SQLite</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span></div>
         </a>
-        <a href="api-reference.html" class="docs-link">
-          <h3>API Reference</h3>
-          <p>Complete API documentation for all NebulaDB components and methods.</p>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-2">
+          <div class="adapter-icon">🐘</div><h4>PostgreSQL</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span></div>
         </a>
-        <a href="examples.html" class="docs-link">
-          <h3>Examples</h3>
-          <p>Real-world examples: sync, encryption, performance optimization, and edge deployment.</p>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-3">
+          <div class="adapter-icon">🍃</div><h4>MongoDB</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span></div>
         </a>
-        <a href="indexing.html" class="docs-link">
-          <h3>Indexing</h3>
-          <p>Deep dive into NebulaDB's indexing system and best practices.</p>
+        <a href="adapters.html" class="adapter-card reveal">
+          <div class="adapter-icon">🔴</div><h4>Redis</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span></div>
         </a>
-        <a href="new-adapters.html" class="docs-link">
-          <h3>Writing New Adapters</h3>
-          <p>Step-by-step guide to creating your own storage adapters.</p>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-1">
+          <div class="adapter-icon">🐬</div><h4>MySQL</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span></div>
         </a>
-        <a href="new-plugins.html" class="docs-link">
-          <h3>Writing New Plugins</h3>
-          <p>How to build and integrate custom plugins for NebulaDB.</p>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-2">
+          <div class="adapter-icon">☁️</div><h4>Cloudflare D1</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-edge">Edge</span><span class="adapter-badge badge-new">New</span></div>
+        </a>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-3">
+          <div class="adapter-icon">🦕</div><h4>Deno KV</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-edge">Edge</span><span class="adapter-badge badge-new">New</span></div>
+        </a>
+        <a href="adapters.html" class="adapter-card reveal">
+          <div class="adapter-icon">▲</div><h4>Vercel KV</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-edge">Edge</span><span class="adapter-badge badge-new">New</span></div>
+        </a>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-1">
+          <div class="adapter-icon">λ</div><h4>AWS Lambda</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span><span class="adapter-badge badge-new">New</span></div>
+        </a>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-2">
+          <div class="adapter-icon">🔀</div><h4>Hybrid</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span><span class="adapter-badge badge-new">New</span></div>
+        </a>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-3">
+          <div class="adapter-icon">📁</div><h4>Filesystem</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-node">Node</span><span class="adapter-badge badge-new">New</span></div>
+        </a>
+        <a href="adapters.html" class="adapter-card reveal">
+          <div class="adapter-icon">🗄️</div><h4>IndexedDB</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-browser">Browser</span></div>
+        </a>
+        <a href="adapters.html" class="adapter-card reveal reveal-delay-1">
+          <div class="adapter-icon">📦</div><h4>LocalStorage</h4>
+          <div class="adapter-badges"><span class="adapter-badge badge-browser">Browser</span></div>
         </a>
       </div>
     </div>
   </section>
 
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
-          <span>NebulaDB</span>
+  <!-- Code Demo -->
+  <section id="code" class="code-demo-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-tag">Code Demo</div>
+        <h2>Write once, run everywhere</h2>
+        <p>Same API across all environments. No lock-in. No vendor-specific code.</p>
+      </div>
+      <div class="code-demo-grid">
+        <div class="code-demo-info reveal">
+          <h3>Edge-ready in seconds</h3>
+          <p>NebulaDB adapters abstract away the storage layer so your database code stays the same whether you're running in the browser, on Node.js, or at the edge.</p>
+          <ul class="feature-list">
+            <li>Zero-config adapter swapping</li>
+            <li>Hybrid mode: local + remote sync</li>
+            <li>TypeScript autocomplete everywhere</li>
+            <li>Same query API across 15+ backends</li>
+            <li>Reactive subscriptions work everywhere</li>
+          </ul>
         </div>
-        <div class="footer-links">
-            <div>
-              <h3>Cirrus Features</h3>
-              <ul>
-                <li><a href="MIGRATION_v0.3_to_v0.4.html">Migration Guide</a></li>
-                <li><a href="SYNC_REPLICATION.html">Sync & Replication</a></li>
-                <li><a href="ENCRYPTION.html">Encryption</a></li>
-                <li><a href="PERFORMANCE.html">Performance</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3>Community</h3>
-              <ul>
-                <li><a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a></li>
-                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/issues" target="_blank">Issues</a></li>
-                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/discussions" target="_blank">Discussions</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3>Latest Release</h3>
-              <ul>
-                <li><span class="current-release">v0.4.0 "Cirrus"</span></li>
-                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/releases/tag/v0.4.0" target="_blank">Release Notes</a></li>
-                <li><a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/LICENSE" target="_blank">MIT License</a></li>
-              </ul>
-            </div>
+        <div class="code-block-wrapper reveal reveal-delay-1">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-filename">app.ts</span>
           </div>
+          <pre><code>import { createDb } from '@nebula-db/core';
+import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { CloudflareD1Adapter } from '@nebula-db/adapter-cloudflare-d1';
+import { HybridAdapter } from '@nebula-db/adapter-hybrid';
+
+// Development: in-memory
+const devDb = createDb({ adapter: new MemoryAdapter() });
+
+// Production edge: Cloudflare D1
+const prodDb = createDb({
+  adapter: new CloudflareD1Adapter({
+    databaseId: env.D1_ID,
+    accountId: env.CF_ACCOUNT,
+    apiToken: env.CF_TOKEN
+  })
+});
+
+// Hybrid: local SQLite + remote sync
+const hybridDb = createDb({
+  adapter: new HybridAdapter({
+    local: new SQLiteAdapter('app.db'),
+    remote: new CloudflareD1Adapter({...}),
+    sync: { mode: 'read-through', ttl: 30000 }
+  })
+});
+
+// Same API — any adapter
+const users = hybridDb.collection('users');
+await users.insert({ name: 'Alice', role: 'admin' });
+const admins = await users.find({ role: 'admin' });</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Docs -->
+  <section id="docs" class="docs-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <div class="section-tag">Documentation</div>
+        <h2>Everything you need</h2>
+        <p>Comprehensive guides, API references, and examples to get you building fast.</p>
+      </div>
+      <div class="docs-grid">
+        <a href="README.html" class="doc-card reveal">
+          <h4>🚀 Getting Started</h4>
+          <p>Quick setup guide — install, create a database, and run your first query in minutes.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="api-reference.html" class="doc-card reveal reveal-delay-1">
+          <h4>📖 API Reference</h4>
+          <p>Complete API documentation for all NebulaDB components, types, and methods.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="adapters.html" class="doc-card reveal reveal-delay-2">
+          <h4>🔌 Adapters Guide</h4>
+          <p>Choose and configure storage backends — Memory, SQLite, PostgreSQL, Redis, and more.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="plugins.html" class="doc-card reveal reveal-delay-3">
+          <h4>🧩 Plugins Guide</h4>
+          <p>Extend NebulaDB with encryption, sync, audit, backup, streaming, and custom plugins.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="examples.html" class="doc-card reveal">
+          <h4>💡 Examples</h4>
+          <p>Real-world code: todo app, blog, chat, e-commerce inventory — with full source.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="indexing.html" class="doc-card reveal reveal-delay-1">
+          <h4>📊 Indexing</h4>
+          <p>B-tree, hash, geospatial, and full-text indexes — optimize your queries.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="performance.html" class="doc-card reveal reveal-delay-2">
+          <h4>⚡ Performance</h4>
+          <p>Query optimization, worker pools, profiling, benchmarks, and best practices.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="advanced-usage.html" class="doc-card reveal reveal-delay-3">
+          <h4>🔧 Advanced Usage</h4>
+          <p>Relationships, transactions, migrations, streaming, and custom adapters.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="migration-guide.html" class="doc-card reveal">
+          <h4>🔄 Migration Guide</h4>
+          <p>Migrate from LokiJS, PouchDB, Lowdb, and other embedded databases.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="new-adapters.html" class="doc-card reveal reveal-delay-1">
+          <h4>🛠️ Writing Adapters</h4>
+          <p>Build custom storage adapters — step-by-step guide with full examples.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="new-plugins.html" class="doc-card reveal reveal-delay-2">
+          <h4>🔌 Writing Plugins</h4>
+          <p>Create custom plugins — cache, logger, migration, and more patterns.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+        <a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/COMPARISON.md" target="_blank" class="doc-card reveal reveal-delay-3">
+          <h4>📋 Comparison</h4>
+          <p>How NebulaDB compares to LokiJS, PouchDB, Dexie, RxDB, and other databases.</p>
+          <span class="doc-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="section-container">
+      <div class="reveal">
+        <h2>Ready to build for the cloud?</h2>
+        <p>Get started with NebulaDB v0.6.0 "Cumulus" — the database that runs everywhere.</p>
+        <div class="btn-group">
+          <a href="README.html" class="btn btn-primary">📖 Read the Docs</a>
+          <a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank" class="btn btn-secondary">⭐ Star on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <img src="logo-altocumulus.svg" alt="NebulaDB Logo">
+            <span>NebulaDB</span>
+          </div>
+          <p class="footer-about">
+            High-performance, reactive, TypeScript-first NoSQL database for browser, Node.js, and Edge. v0.6.0 "Cumulus" — Cloud & Edge Integration.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#adapters">Adapters</a></li>
+            <li><a href="#code">Code Demo</a></li>
+            <li><a href="#docs">Documentation</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://github.com/Nom-nom-hub/NebulaDB" target="_blank">GitHub</a></li>
+            <li><a href="https://github.com/Nom-nom-hub/NebulaDB/issues" target="_blank">Issues</a></li>
+            <li><a href="https://github.com/Nom-nom-hub/NebulaDB/discussions" target="_blank">Discussions</a></li>
+            <li><a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/LICENSE" target="_blank">MIT License</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Release</h4>
+          <ul>
+            <li><a href="https://github.com/Nom-nom-hub/NebulaDB/releases/tag/v0.6.0" target="_blank">v0.6.0 Cumulus</a></li>
+            <li><a href="https://github.com/Nom-nom-hub/NebulaDB/releases" target="_blank">All Releases</a></li>
+            <li><a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/CHANGELOG.md" target="_blank">Changelog</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 NebulaDB. All rights reserved.</p>
+        <p>&copy; 2026 NebulaDB. Built with ☁️ for the cloud era.</p>
       </div>
     </div>
   </footer>
 
   <script src="main.js"></script>
-  <script>
-   const terminalLines = [
-     '$ npm install @nebula-db/core@0.4.0',
-     '✔ NebulaDB v0.4.0 "Cirrus" installed',
-     '$ node',
-     '> import { createDb, QueryOptimizer, SyncPlugin } from "@nebula-db/core";',
-     '> import { EncryptionAdapter } from "@nebula-db/core";',
-     '> import { SQLiteAdapter } from "@nebula-db/sqlite";',
-     '> // Cirrus v0.4.0: Sync, Encryption, Performance',
-     '> const db = createDb({',
-     '>   adapter: new EncryptionAdapter({',
-     '>     baseAdapter: new SQLiteAdapter("app.db"),',
-     '>     encryptionKey: process.env.DB_KEY,',
-     '>     algorithm: "aes-256-gcm"',
-     '>   })',
-     '> });',
-     '> // Real-time sync with conflict resolution',
-     '> const sync = new SyncPlugin({',
-     '>   serverUrl: "https://sync.example.com",',
-     '>   conflictResolution: "last-write-wins"',
-     '> });',
-     '> db.use(sync);',
-     '> await sync.start();',
-     '> // Performance optimization',
-     '> const optimizer = new QueryOptimizer();',
-     '> const users = db.collection("users");',
-     '> const plan = optimizer.analyzeQuery({id: "123"}, users.getIndexes(), 10000);',
-     '> console.log(optimizer.formatPlan(plan));',
-     '> // Transparent encryption/decryption',
-     '> await users.insert({ id: "123", name: "Alice", ssn: "sensitive" });',
-     '> const result = await users.find({ id: "123" });',
-     '> console.log(result[0].ssn); // Auto-decrypted ✔',
-   ];
-  const terminalElem = document.getElementById('typed-terminal');
-  let tLine = 0;
-  let terminalOutput = [];
-  function typeTerminalLine() {
-    if (tLine < terminalLines.length) {
-      let line = terminalLines[tLine];
-      let i = 0;
-      function typeChar() {
-        if (i <= line.length) {
-          let prompt = '';
-          if (line.startsWith('$')) prompt = '<span style="color:#22d3ee">$</span>';
-          else if (line.startsWith('✔')) prompt = '<span style="color:#a7f3d0">✔</span>';
-          else if (line.startsWith('>')) prompt = '<span style="color:#a3e635">&gt;</span>';
-          // Build up the output as an array of lines
-          let lines = terminalOutput.slice();
-          lines[tLine] = prompt + line.replace(/^[$✔>]/, '').slice(0, i);
-          terminalElem.innerHTML = lines.join('<br>');
-          i++;
-          setTimeout(typeChar, line[i-1] === '\n' ? 60 : 12);
-        } else {
-          // After finishing the line, add it to the output and move to next
-          let prompt = '';
-          if (line.startsWith('$')) prompt = '<span style="color:#22d3ee">$</span>';
-          else if (line.startsWith('✔')) prompt = '<span style="color:#a7f3d0">✔</span>';
-          else if (line.startsWith('>')) prompt = '<span style="color:#a3e635">&gt;</span>';
-          terminalOutput[tLine] = prompt + line.replace(/^[$✔>]/, '');
-          tLine++;
-          setTimeout(typeTerminalLine, 250);
-        }
-      }
-      typeChar();
-    }
-  }
-  if (terminalElem) typeTerminalLine();
-  </script>
 </body>
 </html>
