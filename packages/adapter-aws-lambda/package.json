@@ -20,7 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.500.0",
     "@aws-sdk/lib-dynamodb": "^3.500.0",
-    "@nebula-db/core": "workspace:*"
+    "@nebula-db/core": "*"
   },
   "keywords": ["nebula-db", "aws", "lambda", "dynamodb", "adapter"],
   "license": "MIT",
