@@ -8,7 +8,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/badge/npm-v0.4.0-blue)](https://www.npmjs.com/package/@nebula-db/core)
+[![npm version](https://img.shields.io/badge/npm-v0.6.0-blue)](https://www.npmjs.com/package/@nebula-db/core)
 [![Product Hunt](https://img.shields.io/badge/Product%20Hunt-NebulaDB-orange)](https://www.producthunt.com/products/nebuladb)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/NebulaDB/build.yml?branch=main)](https://github.com/Nom-nom-hub/NebulaDB/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Nom-nom-hub/NebulaDB)](https://codecov.io/gh/Nom-nom-hub/NebulaDB)
@@ -24,17 +24,18 @@
 
 NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, embeddable NoSQL database that runs in the browser, Node.js, and Edge environments. It features advanced indexing, optimized query processing, modular adapters for persistence, reactive live queries, extensibility via plugins, real-time sync & replication, enterprise-grade encryption, and blazing-fast in-memory operations with adaptive concurrency control.
 
-## Latest Release: v0.4.0 "Cirrus" (January 11, 2026)
+## Latest Release: v0.6.0 "Cumulus" (May 2026)
 
-A major release bringing enterprise-grade features:
+A major release bringing cloud & edge integration:
 
-✨ **Real-Time Sync & Replication** - Multi-strategy conflict resolution, P2P sync, offline queuing
-🔐 **Enterprise Encryption** - AES-256-GCM encryption at rest, field-level encryption, searchable encryption
-🌍 **Edge Deployment** - Deno KV and Cloudflare D1 adapters for edge environments
-⚡ **Performance Boost** - Query optimizer, worker pools (4-8x speedup), performance profiler
-📊 **Production Ready** - 248 tests (85.3% coverage), zero breaking changes, fully backward compatible
+☁️ **Cloud & Edge Adapters** — Cloudflare D1, Deno KV, Vercel KV, AWS Lambda, Hybrid, Filesystem
+🔧 **Build Fixes** — Resolved TypeScript errors across all 40 packages, expanded Adapter/Plugin interfaces
+🌐 **Website Redesign** — New Cumulus cloud/sky themed documentation site with glassmorphism design
+🛠️ **Release Automation** — GitHub Actions release workflow with auto-generated release notes
+💬 **Community** — GitHub Discussions enabled, repository topics for discoverability
+🧪 **CI Improvements** — Fixed npm workspace protocol compatibility, browser crypto polyfills
 
-[Read the full Release Notes](./RELEASE_NOTES_v0.4.0.md) | [Migration Guide](./docs/MIGRATION_v0.3_to_v0.4.md)
+[Read the full Release Notes](./RELEASE_NOTES_v0.6.0.md) | [Migration Guide](./docs/migration-guide.html)
 
 ## Project Status
 
