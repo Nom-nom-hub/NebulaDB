@@ -91,3 +91,4 @@ bun.lock
 .history/
 packages/*/dist/
 packages/*/build/
+.kilo/

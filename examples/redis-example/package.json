@@ -1,0 +1,18 @@
+{
+  "name": "nebula-db-redis-example",
+  "version": "1.0.0",
+  "description": "NebulaDB Redis Adapter Example",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@nebula-db/core": "^0.6.0",
+    "@nebula-db/nebula-db": "^0.6.0",
+    "@nebula-db/adapter-redis": "^0.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

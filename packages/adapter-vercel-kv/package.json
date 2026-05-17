@@ -1,0 +1,34 @@
+{
+  "name": "@nebula-db/adapter-vercel-kv",
+  "version": "0.6.0",
+  "description": "Vercel KV adapter for NebulaDB - Edge storage with Redis",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "dependencies": {
+    "@nebula-db/core": "*"
+  },
+  "peerDependencies": {
+    "@neondatabase/serverless": ">=0.10.0"
+  },
+  "devDependencies": {
+    "@neondatabase/serverless": "^0.10.0"
+  },
+  "keywords": ["nebula-db", "vercel", "kv", "edge", "adapter"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
