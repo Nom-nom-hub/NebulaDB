@@ -1,0 +1,28 @@
+{
+  "name": "swarm-jsonl-ingest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ingest swarm-orchestrator JSONL ledgers into NebulaDB for querying and analytics",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "ingest": "node dist/index.js ingest",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@nebula-db/adapter-filesystem": "file:../../packages/adapter-filesystem",
+    "@nebula-db/core": "file:../../packages/core"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
