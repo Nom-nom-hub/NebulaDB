@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NebulaDB v0.6.0 Cumulus — Product Hunt Launch</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1270px;
+    height: 760px;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(170deg, #0f172a 0%, #1e3a5f 30%, #2d5a87 60%, #4a90c4 85%, #7bb3dc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Cloud shapes */
+  .clouds {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .cloud-1 { width: 400px; height: 120px; top: 60px; left: -80px; filter: blur(30px); }
+  .cloud-2 { width: 350px; height: 100px; top: 200px; right: -60px; filter: blur(35px); }
+  .cloud-3 { width: 500px; height: 140px; bottom: 100px; left: 30%; filter: blur(40px); }
+  .cloud-4 { width: 280px; height: 90px; top: 400px; left: -40px; filter: blur(25px); }
+  .cloud-5 { width: 320px; height: 110px; bottom: 50px; right: 10%; filter: blur(30px); }
+  .cloud-6 { width: 450px; height: 130px; top: -20px; left: 40%; filter: blur(45px); }
+
+  /* Stars */
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+
+  .card {
+    position: relative;
+    z-index: 10;
+    width: 1120px;
+    height: 620px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .version-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(74, 144, 196, 0.2);
+    border: 1px solid rgba(74, 144, 196, 0.4);
+    color: #7bb3dc;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+  }
+  .version-badge .dot {
+    width: 8px;
+    height: 8px;
+    background: #4a90c4;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4a90c4;
+  }
+
+  h1 {
+    font-size: 72px;
+    font-weight: 800;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.15;
+    letter-spacing: -2px;
+    margin-bottom: 4px;
+  }
+  h1 .highlight {
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .tagline {
+    font-size: 24px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    margin-bottom: 40px;
+    letter-spacing: -0.3px;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 44px;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 48px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-value.accent { color: #60a5fa; }
+  .stat-value.purple { color: #a78bfa; }
+  .stat-value.teal { color: #5eead4; }
+
+  .stat-label {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .feature-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 36px;
+    max-width: 800px;
+  }
+  .pill {
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .pill.blue  { background: rgba(96, 165, 250, 0.15); color: #93c5fd; border: 1px solid rgba(96, 165, 250, 0.2); }
+  .pill.green { background: rgba(94, 234, 212, 0.12); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.15); }
+  .pill.purple { background: rgba(167, 139, 250, 0.12); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.15); }
+
+  .footer-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .github-link {
+    color: rgba(255,255,255,0.5);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+  }
+  .npm-badge {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    letter-spacing: 0.3px;
+  }
+
+  .corner-accents { position: absolute; inset: 0; pointer-events: none; }
+  .accent-line {
+    position: absolute;
+    background: linear-gradient(90deg, rgba(96,165,250,0.3), transparent);
+  }
+  .accent-line.top { top: 0; left: 40px; right: 40px; height: 1px; }
+  .accent-line.bottom { bottom: 0; left: 40px; right: 40px; height: 1px; }
+</style>
+</head>
+<body>
+
+<div class="clouds">
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+  <div class="cloud cloud-4"></div>
+  <div class="cloud cloud-5"></div>
+  <div class="cloud cloud-6"></div>
+</div>
+
+<div class="card">
+  <div class="version-badge">
+    <span class="dot"></span>
+    v0.6.0 CUMULUS — NOW AVAILABLE
+  </div>
+
+  <h1>Nebula<span class="highlight">DB</span></h1>
+
+  <p class="tagline">One database. Every runtime. Zero servers.</p>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-value accent">14</div>
+      <div class="stat-label">Storage Adapters</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value purple">12</div>
+      <div class="stat-label">Plugins</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value teal">40</div>
+      <div class="stat-label">Packages</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Runtimes</div>
+    </div>
+  </div>
+
+  <div class="feature-pills">
+    <span class="pill blue">Cloudflare D1</span>
+    <span class="pill blue">Deno KV</span>
+    <span class="pill blue">Vercel KV</span>
+    <span class="pill blue">AWS Lambda</span>
+    <span class="pill green">Reactive Queries</span>
+    <span class="pill green">AES-256 Encryption</span>
+    <span class="pill green">B-Tree Indexing</span>
+    <span class="pill purple">TypeScript-First</span>
+    <span class="pill purple">Hybrid Adapter</span>
+    <span class="pill purple">Tree-Shakeable</span>
+  </div>
+
+  <div class="footer-row">
+    <span class="github-link">github.com/Nom-nom-hub/NebulaDB</span>
+    <span class="npm-badge">npm i @nebula-db/nebula-db</span>
+  </div>
+</div>
+
+</body>
+</html>
