@@ -1,135 +1,160 @@
-# NebulaDB Deno KV Adapter Demo
+# NebulaDB Vercel KV Adapter Example
 
-This example demonstrates using NebulaDB with the Deno KV adapter for persistent edge storage in the Deno runtime.
-
-> **Note:** This example requires [Deno](https://deno.com/) and cannot be run with Node.js. Deno KV is a built-in key-value store available in Deno runtime and Deno Deploy.
+This example demonstrates how to use NebulaDB with the Vercel KV adapter for persistent, Redis-compatible edge storage via Vercel's REST API.
 
 ## Features Demonstrated
 
-1. **Deno KV Storage** - Using Deno's built-in key-value store for persistence
-2. **CRUD Operations** - Insert, find, update, and delete documents
-3. **Filtered Queries** - Query by field values
-4. **TypeScript Native** - No compilation step needed, Deno runs TypeScript directly
-5. **Connection Cleanup** - Properly closing the KV store after use
+- Creating a database with Vercel KV adapter
+- Defining collections with schemas
+- Inserting documents (link shortener collection)
+- Querying with filters (equality matching)
+- Updating documents with `$set`
+- Deleting documents with filter conditions
 
-## Requirements
+## Prerequisites
 
-- [Deno](https://deno.com/) v1.38 or higher (for `--unstable-kv` support)
+- Node.js 18+
+- A [Vercel](https://vercel.com) account with a KV store
 
 ## Setup
 
-### Install Deno
+### 1. Create a Vercel KV Store
+
+1. Go to your [Vercel Dashboard](https://vercel.com/dashboard)
+2. Navigate to **Storage → Create → KV Database**
+3. Choose a name and region
+4. Once created, go to the **Settings** tab and copy:
+   - `KV_REST_API_URL` (the REST API endpoint)
+   - `KV_REST_API_TOKEN` (the authentication token)
+
+### 2. Install Dependencies
 
 ```bash
-# macOS / Linux
-curl -fsSL https://deno.land/install.sh | sh
-
-# macOS with Homebrew
-brew install deno
-
-# Windows
-irm https://deno.land/install.ps1 | iex
+cd examples/vercel-kv-example
+npm install
 ```
 
-Verify installation:
+### 3. Configure Environment Variables
 
 ```bash
-deno --version
+export KV_REST_API_URL="https://your-project.kv.vercel-storage.com"
+export KV_REST_API_TOKEN="your_api_token_here"
 ```
 
-## Running the Demo
+> **Tip:** Copy `.env.example` to `.env` and fill in your credentials for convenience.
+
+### 4. Run
 
 ```bash
-cd examples/deno-kv-demo
-deno task start
+npm start
 ```
 
-Or directly:
+## Environment Variables
 
-```bash
-deno run --unstable-kv main.ts
-```
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `KV_REST_API_URL` | Vercel KV REST API endpoint | Yes |
+| `KV_REST_API_TOKEN` | Vercel KV authentication token | Yes |
 
 ## Code Explanation
 
 ### Adapter Setup
 
-```typescript
-const adapter = createDenoKvAdapter();
-const db = createDb({ adapter });
+```javascript
+import { createDatabase } from '@nebula-db/nebula-db';
+import { VercelKvAdapter } from '@nebula-db/adapter-vercel-kv';
+
+const adapter = new VercelKvAdapter(KV_URL, KV_TOKEN, {
+  namespacePrefix: 'nebula_',
+});
+
+const db = createDatabase({ adapter, options: {} });
 ```
 
-No connection string needed — Deno KV opens the default local store automatically.
+The `namespacePrefix` option adds a prefix to all keys in Vercel KV, preventing collisions with other data in the same store.
 
 ### Collection with Schema
 
-```typescript
-const notes = db.collection('notes', {
+```javascript
+const links = db.collection('links', {
   schema: {
-    title: { type: 'string' },
-    content: { type: 'string' },
-    pinned: { type: 'boolean' },
+    id: { type: 'string', optional: true },
+    slug: { type: 'string' },
+    url: { type: 'string' },
+    clicks: { type: 'number' },
+    active: { type: 'boolean' },
   },
 });
 ```
 
 ### Filtered Query
 
-```typescript
-const pinned = await notes.find({ pinned: true });
+```javascript
+const activeLinks = await links.find({ active: true });
 ```
 
-### Always Close the Store
+### Update Documents
 
-```typescript
-await adapter.close();
+```javascript
+await links.update({ slug: 'gh' }, { $set: { clicks: 1 } });
 ```
 
-## How Deno KV Storage Works
+### Delete Documents
 
-Each document is stored as a separate KV entry with a structured key:
-
-```
-[prefix, collectionName, documentId] → JSON object
+```javascript
+await links.delete({ active: false });
 ```
 
-For example:
+## How Vercel KV Storage Works
+
+Each document is stored as a key-value pair via Vercel's REST API:
 
 ```
-["nebula-db", "notes", "abc123"] → { title: "Welcome", pinned: true }
+nebula_links:<documentId> → { slug: "gh", url: "https://github.com", clicks: 0, active: true }
 ```
 
-## Deno Deploy
-
-This example also works on [Deno Deploy](https://deno.com/deploy) — Cloudflare's edge alternative. Deno KV is available natively in the cloud environment with zero config.
+The `namespacePrefix` becomes the key prefix, followed by the collection name and document ID.
 
 ## Expected Output
 
 ```
-=== NebulaDB Deno KV Adapter Demo ===
-ℹ️  Using Deno KV for persistent edge storage
+=== NebulaDB Vercel KV Adapter Demo ===
+ℹ️  Connecting to Vercel KV...
 --------------------------------------------------
 
-=== Inserting Data ===
-✅ 3 notes inserted
+=== Creating Sample Links ===
+ℹ️  Inserting sample links into Vercel KV...
+✅ Inserted: /gh → https://github.com
+✅ Inserted: /docs → https://docs.example.com
+✅ Inserted: /old → https://old.example.com
 
-=== Querying All Records ===
-✅ Found 3 notes: [...]
+=== Querying Links ===
+ℹ️  Finding all links...
+✅ Found 3 links
+[
+  { "slug": "gh", "url": "https://github.com", "clicks": 0, "active": true },
+  ...
+]
+ℹ️  Finding active links...
+✅ Found 2 active links
 
-=== Filtered Query ===
-✅ Found 1 pinned notes: [...]
+=== Updating Links ===
+ℹ️  Incrementing click count for /gh...
+✅ Updated link
 
-=== Updating Data ===
-✅ Note updated: [...]
-
-=== Deleting Data ===
-✅ 2 notes remaining
+=== Deleting Links ===
+ℹ️  Removing inactive links...
+✅ 2 links remaining
 --------------------------------------------------
-✅ All operations completed successfully!
+✅ Vercel KV adapter demo completed successfully!
 ```
 
 ## Next Steps
 
-- Try the [Cloudflare D1 demo](../cloudflare-d1-demo) for another edge storage option
-- Deploy to [Deno Deploy](https://deno.com/deploy) for serverless edge hosting
+- Try the [Redis example](../redis-example) for a self-hosted alternative
+- Try the [Cloudflare D1 example](../cloudflare-d1-example) for another edge storage option
 - Explore the [NebulaDB docs](https://github.com/Nom-nom-hub/NebulaDB)
+
+---
+
+*Original contribution by [@HirenGajjar](https://github.com/HirenGajjar) ([PR #46](https://github.com/Nom-nom-hub/NebulaDB/pull/46)).*
