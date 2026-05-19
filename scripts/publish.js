@@ -15,6 +15,8 @@ const path = require('path');
 
 const packagesDir = path.join(__dirname, '..', 'packages');
 const dryRun = process.argv.includes('--dry-run');
+const otpIndex = process.argv.indexOf('--otp');
+const otp = otpIndex !== -1 ? process.argv[otpIndex + 1] : process.env.NPM_OTP || null;
 
 // Get version from core package
 const corePkg = JSON.parse(fs.readFileSync(path.join(packagesDir, 'core', 'package.json')));
@@ -88,7 +90,10 @@ if (!dryRun) {
   for (const { name, path: pkgPath } of allPackages) {
     try {
       console.log(`\nPublishing ${name}...`);
-      execSync('npm publish --access public', { stdio: 'inherit', cwd: pkgPath });
+      const publishCmd = otp
+        ? `npm publish --access public --otp=${otp}`
+        : 'npm publish --access public';
+      execSync(publishCmd, { stdio: 'inherit', cwd: pkgPath });
       console.log(`✅ ${name} published`);
     } catch (err) {
       console.error(`❌ Failed to publish ${name}: ${err.message}`);
