@@ -92,12 +92,8 @@ export class VercelKvAdapter implements Adapter {
       for (const { key } of keys) {
         if (!key.startsWith(this.namespacePrefix)) continue;
         
-        // Parse collection name from key
-        // Format: nebula_{collection}
-        const match = key.match(/^nebula_(.+)$/);
-        if (!match) continue;
-        
-        const collectionName = match[1];
+        const collectionName = key.slice(this.namespacePrefix.length);
+        if (!collectionName) continue;
         
         try {
           const result = await this.request<{ data: string }>(`/get/${key}`);

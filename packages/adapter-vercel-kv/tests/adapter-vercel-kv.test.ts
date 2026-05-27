@@ -97,6 +97,23 @@ describe('VercelKvAdapter', () => {
     expect(adapter.getData()).toEqual({ users });
   });
 
+  it('should load collections with a custom namespace prefix', async () => {
+    const users: Document[] = [{ id: '1', name: 'Alice' }];
+    stubFetch({
+      '/keys': [],
+      '/keys?limit=1000': [{ key: 'app_users' }],
+      '/get/app_users': { data: JSON.stringify(users) }
+    });
+    const adapter = createVercelKvAdapter(API_URL, API_TOKEN, {
+      namespacePrefix: 'app_'
+    });
+
+    const data = await adapter.load();
+
+    expect(data).toEqual({ users });
+    expect(adapter.getData()).toEqual({ users });
+  });
+
   it('should save each collection with the configured namespace', async () => {
     const calls = stubFetch({ '/keys': [], '/set/app_users': undefined });
     const adapter = createVercelKvAdapter(API_URL, API_TOKEN, {
