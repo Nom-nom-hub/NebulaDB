@@ -270,6 +270,7 @@ A huge thank you to everyone who has helped make NebulaDB better:
 | [**Teck**](https://github.com/Nom-nom-hub) | Creator & maintainer — core engine, adapters, plugins, docs |
 | [**blazeinstall**](https://github.com/blazeinstall) | Browser crypto compatibility fixes, CI improvements |
 | [**HirenGajjar**](https://github.com/HirenGajjar) | Enhanced adapter example READMEs with Docker setup, code walkthroughs & expected output ([PR #36](https://github.com/Nom-nom-hub/NebulaDB/pull/36)) |
+| [**shivam2931120**](https://github.com/shivam2931120) | Improved Vercel KV adapter test coverage with fetch-backed testing ([PR #48](https://github.com/Nom-nom-hub/NebulaDB/pull/48)) |
 
 Want to see your name here? Check out [CONTRIBUTING.md](./CONTRIBUTING.md) and open a PR!
 
