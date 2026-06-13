@@ -242,6 +242,13 @@ describe('CryptoUtil', () => {
       expect(encrypted.iterations).toBe(50000);
       expect(encrypted.hashAlgorithm).toBe('sha512');
     });
+
+    it('should accept salt in factory options', () => {
+      const salt = CryptoUtil.generateKey(32);
+      const util = createCryptoUtil('password', { salt });
+
+      expect(util.getSalt().toString('hex')).toBe(salt.toString('hex'));
+    });
   });
 
   describe('large data', () => {
@@ -267,6 +274,190 @@ describe('CryptoUtil', () => {
 
       expect(Object.keys(decrypted)).toHaveLength(10000);
       expect(decrypted.key0.value).toBe('value0');
+    });
+  });
+
+  describe('key rotation scenarios', () => {
+    it('should create crypto with explicit salt for key recovery', () => {
+      const salt = CryptoUtil.generateKey(32);
+      const crypto1 = new CryptoUtil({ password: 'my-password', salt });
+
+      const encrypted = crypto1.encrypt('secret data');
+
+      // Recreate with same salt (simulating key recovery)
+      const crypto2 = new CryptoUtil({ password: 'my-password', salt });
+      const decrypted = crypto2.decrypt(encrypted);
+      expect(decrypted).toBe('secret data');
+    });
+
+    it('should fail decryption after password change without salt migration', () => {
+      const oldCrypto = new CryptoUtil({ password: 'old-password' });
+      const encrypted = oldCrypto.encrypt('sensitive data');
+
+      const newCrypto = new CryptoUtil({ password: 'new-password' });
+      expect(() => newCrypto.decrypt(encrypted)).toThrow('Decryption failed');
+    });
+
+    it('should support re-encrypting data during key rotation', () => {
+      // Old key
+      const oldCrypto = new CryptoUtil({ password: 'old-key' });
+      const oldSalt = oldCrypto.getSalt();
+      const encrypted = oldCrypto.encrypt('migrate me');
+
+      // Decrypt with old key
+      const oldCrypto2 = new CryptoUtil({ password: 'old-key', salt: oldSalt });
+      const plaintext = oldCrypto2.decrypt(encrypted);
+
+      // Re-encrypt with new key
+      const newCrypto = new CryptoUtil({ password: 'new-key' });
+      const reEncrypted = newCrypto.encrypt(plaintext);
+
+      // Verify new key works
+      const newCrypto2 = new CryptoUtil({
+        password: 'new-key',
+        salt: newCrypto.getSalt()
+      });
+      const decrypted = newCrypto2.decrypt(reEncrypted);
+      expect(decrypted).toBe('migrate me');
+    });
+
+    it('should handle multiple key rotations', () => {
+      let salt: Buffer;
+      let encrypted: any;
+      let plaintext = 'data-through-multiple-rotations';
+
+      // Key version 1
+      const v1 = new CryptoUtil({ password: 'key-v1' });
+      salt = v1.getSalt();
+      encrypted = v1.encrypt(plaintext);
+
+      // Decrypt with v1, re-encrypt with v2
+      const v1Reader = new CryptoUtil({ password: 'key-v1', salt });
+      plaintext = v1Reader.decrypt(encrypted);
+
+      const v2 = new CryptoUtil({ password: 'key-v2' });
+      salt = v2.getSalt();
+      encrypted = v2.encrypt(plaintext);
+
+      // Decrypt with v2, re-encrypt with v3
+      const v2Reader = new CryptoUtil({ password: 'key-v2', salt });
+      plaintext = v2Reader.decrypt(encrypted);
+
+      const v3 = new CryptoUtil({ password: 'key-v3' });
+      encrypted = v3.encrypt(plaintext);
+
+      // Final verification
+      const v3Reader = new CryptoUtil({ password: 'key-v3', salt: v3.getSalt() });
+      expect(v3Reader.decrypt(encrypted)).toBe('data-through-multiple-rotations');
+    });
+
+    it('should generate unique salt for each crypto instance', () => {
+      const crypto1 = new CryptoUtil({ password: 'test' });
+      const crypto2 = new CryptoUtil({ password: 'test' });
+
+      expect(crypto1.getSalt().toString('hex')).not.toBe(crypto2.getSalt().toString('hex'));
+    });
+  });
+
+  describe('searchable encryption (hashing)', () => {
+    it('should produce deterministic hashes', () => {
+      const hash1 = CryptoUtil.hash('search-term');
+      const hash2 = CryptoUtil.hash('search-term');
+
+      expect(hash1).toBe(hash2);
+    });
+
+    it('should produce different hashes for different inputs', () => {
+      const hash1 = CryptoUtil.hash('term-a');
+      const hash2 = CryptoUtil.hash('term-b');
+
+      expect(hash1).not.toBe(hash2);
+    });
+
+    it('should produce different hashes with different salts', () => {
+      const hash1 = CryptoUtil.hash('value', 'salt-a');
+      const hash2 = CryptoUtil.hash('value', 'salt-b');
+
+      expect(hash1).not.toBe(hash2);
+    });
+
+    it('should produce consistent hashes with same salt', () => {
+      const hash1 = CryptoUtil.hash('value', 'my-salt');
+      const hash2 = CryptoUtil.hash('value', 'my-salt');
+
+      expect(hash1).toBe(hash2);
+    });
+
+    it('should handle empty strings', () => {
+      const hash1 = CryptoUtil.hash('');
+      const hash2 = CryptoUtil.hash('');
+
+      expect(hash1).toBe(hash2);
+      expect(typeof hash1).toBe('string');
+      expect(hash1.length).toBe(64);
+    });
+
+    it('should handle special characters', () => {
+      const hash = CryptoUtil.hash('hello world!@#$%^&*()');
+
+      expect(typeof hash).toBe('string');
+      expect(hash.length).toBe(64);
+    });
+
+    it('should handle unicode characters', () => {
+      const hash = CryptoUtil.hash('你好世界 🎉');
+
+      expect(typeof hash).toBe('string');
+      expect(hash.length).toBe(64);
+    });
+
+    it('should hash consistently for long strings', () => {
+      const long = 'a'.repeat(10000);
+      const hash1 = CryptoUtil.hash(long);
+      const hash2 = CryptoUtil.hash(long);
+
+      expect(hash1).toBe(hash2);
+    });
+
+    it('should hash case-sensitively by default', () => {
+      const hashLower = CryptoUtil.hash('test');
+      const hashUpper = CryptoUtil.hash('TEST');
+
+      expect(hashLower).not.toBe(hashUpper);
+    });
+  });
+
+  describe('concurrent operations', () => {
+    it('should handle multiple concurrent encryptions', async () => {
+      const promises = Array.from({ length: 50 }, (_, i) => {
+        const c = new CryptoUtil({ password: `pass-${i}` });
+        return Promise.resolve(c.encrypt(`data-${i}`));
+      });
+
+      const results = await Promise.all(promises);
+      expect(results).toHaveLength(50);
+      results.forEach((r, i) => {
+        expect(r.data).toBeTruthy();
+        expect(r.algorithm).toBe('aes-256-gcm');
+      });
+    });
+
+    it('should handle concurrent encrypt/decrypt on same instance', async () => {
+      const shared = new CryptoUtil({ password: 'shared' });
+
+      const encrypted = await Promise.all(
+        Array.from({ length: 20 }, (_, i) =>
+          Promise.resolve(shared.encrypt(`data-${i}`))
+        )
+      );
+
+      const decrypted = await Promise.all(
+        encrypted.map(e => Promise.resolve(shared.decrypt(e)))
+      );
+
+      decrypted.forEach((d, i) => {
+        expect(d).toBe(`data-${i}`);
+      });
     });
   });
 });

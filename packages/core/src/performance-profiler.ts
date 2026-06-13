@@ -1,7 +1,24 @@
 /**
- * Performance Profiler for NebulaDB operations
+ * Performance Profiler for NebulaDB operations.
+ *
+ * Tracks timing, memory usage, and success rates of database operations.
+ * Use `getProfiler()` to access a global singleton instance.
+ *
+ * @example
+ * ```typescript
+ * import { getProfiler } from '@nebula-db/core';
+ *
+ * const profiler = getProfiler();
+ * profiler.startOperation('op1', 'query');
+ * // ... do work ...
+ * profiler.endOperation('op1', true);
+ *
+ * const report = profiler.generateReport();
+ * console.log(profiler.formatReport(report));
+ * ```
  */
 
+/** Single operation measurement */
 export interface OperationMetrics {
   operationId: string;
   operationType: string;
@@ -16,6 +33,7 @@ export interface OperationMetrics {
   metadata?: Record<string, any>;
 }
 
+/** Aggregated summary for a type of operation */
 export interface ProfileSummary {
   operationType: string;
   count: number;
@@ -27,6 +45,7 @@ export interface ProfileSummary {
   totalMemoryDelta: number;
 }
 
+/** Complete profile report */
 export interface ProfileReport {
   timestamp: number;
   duration: number;
@@ -36,7 +55,7 @@ export interface ProfileReport {
 }
 
 /**
- * Performance profiler for tracking operation metrics
+ * Performance profiler for tracking and analyzing operation metrics.
  */
 export class PerformanceProfiler {
   private operations: OperationMetrics[] = [];
@@ -45,7 +64,11 @@ export class PerformanceProfiler {
   private enabled: boolean = true;
 
   /**
-   * Start profiling an operation
+   * Start profiling an operation.
+   *
+   * @param operationId - Unique identifier for this operation
+   * @param operationType - Type/category of the operation (e.g., 'query', 'insert')
+   * @returns The operation ID (same as input)
    */
   startOperation(operationId: string, operationType: string): string {
     if (!this.enabled) return operationId;
@@ -66,7 +89,13 @@ export class PerformanceProfiler {
   }
 
   /**
-   * End profiling an operation
+   * End profiling an operation and record its metrics.
+   *
+   * @param operationId - ID of the operation to end (from startOperation)
+   * @param success - Whether the operation succeeded
+   * @param error - Optional error message if the operation failed
+   * @param metadata - Optional additional data to attach
+   * @returns The completed OperationMetrics, or null if profiling is disabled
    */
   endOperation(
     operationId: string,
@@ -105,7 +134,12 @@ export class PerformanceProfiler {
   }
 
   /**
-   * Measure a synchronous function
+   * Measure execution of a synchronous function.
+   *
+   * @param operationType - Type of operation being measured
+   * @param fn - Function to measure
+   * @param metadata - Optional metadata to attach
+   * @returns The return value of the function
    */
   measure<T>(
     operationType: string,
@@ -126,7 +160,12 @@ export class PerformanceProfiler {
   }
 
   /**
-   * Measure an async function
+   * Measure execution of an async function.
+   *
+   * @param operationType - Type of operation being measured
+   * @param fn - Async function to measure
+   * @param metadata - Optional metadata to attach
+   * @returns The return value of the async function
    */
   async measureAsync<T>(
     operationType: string,
@@ -161,7 +200,9 @@ export class PerformanceProfiler {
   }
 
   /**
-   * Get summary of operations by type
+   * Get aggregated summary of operations grouped by type.
+   *
+   * @returns Map of operation type to ProfileSummary
    */
   getSummary(): Map<string, ProfileSummary> {
     const summary = new Map<string, ProfileSummary>();
@@ -213,7 +254,9 @@ export class PerformanceProfiler {
   }
 
   /**
-   * Generate a full report
+   * Generate a complete performance report.
+   *
+   * @returns Full ProfileReport with summaries, slowest operations, and memory stats
    */
   generateReport(): ProfileReport {
     return {
@@ -331,13 +374,13 @@ export class PerformanceProfiler {
   }
 }
 
-/**
- * Global profiler instance
- */
+/** Global profiler singleton */
 let globalProfiler: PerformanceProfiler | null = null;
 
 /**
- * Get or create global profiler
+ * Get or create the global performance profiler singleton.
+ *
+ * @returns The global PerformanceProfiler instance
  */
 export function getProfiler(): PerformanceProfiler {
   if (!globalProfiler) {

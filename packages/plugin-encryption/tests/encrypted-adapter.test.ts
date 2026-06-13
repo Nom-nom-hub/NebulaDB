@@ -270,4 +270,125 @@ describe('EncryptedAdapter', () => {
       expect(adapter).toBeInstanceOf(EncryptedAdapter);
     });
   });
+
+  describe('integration with MemoryAdapter', () => {
+    it('should work with a real MemoryAdapter end-to-end', async () => {
+      // We use the real memory adapter for integration testing
+      const { MemoryAdapter } = await import('@nebula-db/adapter-memory');
+      const memoryAdapter = new MemoryAdapter();
+
+      const encryptedAdapter = createEncryptedAdapter({
+        adapter: memoryAdapter,
+        password: 'integration-test-key'
+      });
+
+      const data = {
+        users: [
+          { id: '1', name: 'Alice', secret: 'alice-secret' },
+          { id: '2', name: 'Bob', secret: 'bob-secret' }
+        ],
+        logs: [
+          { id: '3', message: 'system started' }
+        ]
+      };
+
+      await encryptedAdapter.save(data);
+      const loaded = await encryptedAdapter.load();
+
+      expect(loaded.users).toHaveLength(2);
+      expect(loaded.users[0].secret).toBe('alice-secret');
+      expect(loaded.users[1].secret).toBe('bob-secret');
+      expect(loaded.logs[0].message).toBe('system started');
+    });
+
+    it('should handle round-trip with large number of documents', async () => {
+      const { MemoryAdapter } = await import('@nebula-db/adapter-memory');
+      const memoryAdapter = new MemoryAdapter();
+
+      const encryptedAdapter = createEncryptedAdapter({
+        adapter: memoryAdapter,
+        password: 'large-test-key'
+      });
+
+      const users = Array.from({ length: 100 }, (_, i) => ({
+        id: String(i),
+        name: `User ${i}`,
+        email: `user${i}@example.com`,
+        data: `sensitive-data-${i}`
+      }));
+
+      await encryptedAdapter.save({ users });
+      const loaded = await encryptedAdapter.load();
+
+      expect(loaded.users).toHaveLength(100);
+      expect(loaded.users[0].name).toBe('User 0');
+      expect(loaded.users[99].name).toBe('User 99');
+    });
+
+    it('should handle empty collections with MemoryAdapter', async () => {
+      const { MemoryAdapter } = await import('@nebula-db/adapter-memory');
+      const memoryAdapter = new MemoryAdapter();
+
+      const encryptedAdapter = createEncryptedAdapter({
+        adapter: memoryAdapter,
+        password: 'test-key'
+      });
+
+      await encryptedAdapter.save({});
+      const loaded = await encryptedAdapter.load();
+      expect(loaded).toEqual({});
+    });
+  });
+
+  describe('concurrent operations', () => {
+    it('should handle concurrent save operations', async () => {
+      const operations = Array.from({ length: 10 }, (_, i) => {
+        const data = { [`collection${i}`]: [{ id: String(i), value: `test-${i}` }] };
+        return encryptedAdapter.save(data);
+      });
+
+      await Promise.all(operations);
+      // Should not throw
+    });
+  });
+
+  describe('metadata encryption key', () => {
+    it('should use consistent metadata key across operations', async () => {
+      const data = { users: [{ id: '1', name: 'Test' }] };
+
+      await encryptedAdapter.save(data);
+
+      const stored = mockAdapter.getData().users;
+      const metadata = stored[0].__encryption_metadata__;
+
+      expect(metadata).toBeDefined();
+      expect(metadata.version).toBe(1);
+      expect(metadata.algorithm).toBe('aes-256-gcm');
+    });
+
+    it('should not confuse encrypted and unencrypted documents', async () => {
+      const encryptedAdapter2 = createEncryptedAdapter({
+        adapter: mockAdapter as any,
+        password: 'test-password',
+        encryptedCollections: ['sensitive']
+      });
+
+      // Mix encrypted and unencrypted in the same adapter
+      mockAdapter.save = async (data: Record<string, any[]>) => {
+        // Some documents have __encryption_metadata__, some don't
+        mockAdapter['data'] = data;
+      };
+
+      const data = {
+        sensitive: [{ id: '1', data: 'secret' }],
+        public: [{ id: '2', data: 'visible' }]
+      };
+
+      await encryptedAdapter2.save(data);
+      const loaded = await encryptedAdapter2.load();
+
+      expect(loaded.sensitive[0].data).toBe('secret');
+      expect(loaded.public[0].data).toBe('visible');
+    });
+  });
 });

@@ -28,7 +28,26 @@ import { AdaptiveConcurrencyControl, AdaptiveConcurrencyOptions } from './adapti
 // import { NestedPropertyIndex } from './index/nested-property-index';
 // import { QueryProcessor } from './query/query-processor';
 
+/**
+ * A Collection represents a group of documents with shared indexing,
+ * querying, and reactivity capabilities.
+ *
+ * Collections support CRUD operations, batch operations, indexes,
+ * reactive subscriptions, query caching, document compression, and
+ * adaptive concurrency control.
+ *
+ * @example
+ * ```typescript
+ * const users = db.collection('users', {
+ *   indexes: [{ name: 'email_idx', fields: ['email'], type: 'unique' }]
+ * });
+ *
+ * await users.insert({ name: 'Alice', email: 'alice@example.com' });
+ * const results = await users.find({ name: 'Alice' });
+ * ```
+ */
 export class Collection implements ICollection {
+  /** The collection name */
   name: string;
   private documents: Document[];
   private memoryManager = new MemoryManager();
@@ -125,7 +144,21 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Insert a document into the collection
+   * Insert a document into the collection.
+   *
+   * Generates a unique ID if one is not provided. The document passes
+   * through plugin `onBeforeInsert` hooks before storage and
+   * `onAfterInsert` hooks afterward. If compression is enabled, the
+   * document is compressed before storage.
+   *
+   * @param doc - The document to insert (id is optional; auto-generated if omitted)
+   * @returns The inserted document with its generated or provided id
+   *
+   * @example
+   * ```typescript
+   * const user = await users.insert({ name: 'Alice', email: 'alice@example.com' });
+   * console.log(user.id); // auto-generated UUID
+   * ```
    */
   async insert(doc: Omit<Document, 'id'> & { id?: string }): Promise<Document> {
     // Use write lock for insert operations
@@ -177,7 +210,23 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Find documents matching a query
+   * Find documents matching a query.
+   *
+   * Supports a MongoDB-like query syntax with operators ($eq, $gt, $lt,
+   * $in, $regex, etc.), logical operators ($and, $or, $not), and nested
+   * field queries. Results are cached when query caching is enabled.
+   *
+   * @param query - Query filter object (default: {} returns all documents)
+   * @returns Array of matching documents (decompressed if compression is enabled)
+   *
+   * @example
+   * ```typescript
+   * // Find all active users over 30
+   * const results = await users.find({
+   *   active: true,
+   *   age: { $gt: 30 }
+   * });
+   * ```
    */
   async find(query: Query = {}): Promise<Document[]> {
     // Use read lock for query operations
@@ -230,7 +279,12 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Find a single document matching a query
+   * Find a single document matching a query.
+   *
+   * Returns the first matching document or null if none found.
+   *
+   * @param query - Query filter object
+   * @returns The first matching document, or null
    */
   async findOne(query: Query): Promise<Document | null> {
     const results = await this.find(query);
@@ -238,7 +292,22 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Update documents matching a query
+   * Update documents matching a query.
+   *
+   * Supports MongoDB-like update operators: $set, $unset, $inc, $push, $pull.
+   * Passes through plugin `onBeforeUpdate` and `onAfterUpdate` hooks.
+   *
+   * @param query - Query to match documents to update
+   * @param update - Update operation with operators
+   * @returns Number of documents updated
+   *
+   * @example
+   * ```typescript
+   * const count = await users.update(
+   *   { name: 'Alice' },
+   *   { $set: { email: 'new@example.com' }, $inc: { loginCount: 1 } }
+   * );
+   * ```
    */
   async update(query: Query, update: UpdateOperation): Promise<number> {
     // Use write lock for update operations
@@ -306,7 +375,10 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Delete documents matching a query
+   * Delete documents matching a query.
+   *
+   * @param query - Query to match documents to delete
+   * @returns Number of documents deleted
    */
   async delete(query: Query): Promise<number> {
     // Use write lock for delete operations
@@ -371,7 +443,10 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Count documents matching a query
+   * Count documents matching a query.
+   *
+   * @param query - Query filter object (default: {} counts all documents)
+   * @returns Number of matching documents
    */
   async count(query: Query = {}): Promise<number> {
     const results = await this.find(query);
@@ -379,7 +454,9 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Unsubscribe from changes
+   * Unsubscribe from a previously registered subscription.
+   *
+   * @param id - Subscription ID returned by {@link subscribe}
    */
   unsubscribe(id: string): void {
     // Remove subscription
@@ -394,7 +471,22 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Subscribe to changes in documents matching a query
+   * Subscribe to real-time changes in documents matching a query.
+   *
+   * The callback is invoked immediately with current matching documents,
+   * and again whenever documents matching the query are inserted, updated,
+   * or deleted.
+   *
+   * @param query - Query to filter documents to watch
+   * @param callback - Function called with updated matching documents
+   * @returns Subscription ID for use with {@link unsubscribe}
+   *
+   * @example
+   * ```typescript
+   * const subId = users.subscribe({ active: true }, (docs) => {
+   *   console.log(`Active users: ${docs.length}`);
+   * });
+   * ```
    */
   subscribe(query: Query, callback: SubscriptionCallback): string {
     const subscriptionId = uuidv4();
@@ -477,7 +569,13 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Insert multiple documents in a batch
+   * Insert multiple documents in a single batch operation.
+   *
+   * Batch operations are more efficient than individual inserts when
+   * adding many documents. Uses adaptive concurrency when enabled.
+   *
+   * @param docs - Array of documents to insert
+   * @returns Array of inserted documents with their IDs
    */
   async insertBatch(docs: (Omit<Document, 'id'> & { id?: string })[]): Promise<Document[]> {
     if (!docs.length) return [];
@@ -508,7 +606,14 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Update multiple documents in a batch
+   * Update multiple documents matching different queries in a batch.
+   *
+   * Optimized to process all updates in a single pass over the document
+   * collection. Queries and updates arrays must be the same length.
+   *
+   * @param queries - Array of queries to match documents
+   * @param updates - Array of update operations (one per query)
+   * @returns Total number of documents updated
    */
   async updateBatch(queries: Query[], updates: UpdateOperation[]): Promise<number> {
     if (!queries.length || !updates.length || queries.length !== updates.length) {
@@ -606,7 +711,10 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Delete multiple documents in a batch
+   * Delete multiple documents matching different queries in a batch.
+   *
+   * @param queries - Array of queries to match documents for deletion
+   * @returns Total number of documents deleted
    */
   async deleteBatch(queries: Query[]): Promise<number> {
     if (!queries.length) return 0;
@@ -676,7 +784,20 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Create an index on the collection
+   * Create an index on the collection to speed up queries.
+   *
+   * Supports single-field, compound, unique, and text indexes.
+   *
+   * @param definition - Index configuration (name, fields, type)
+   *
+   * @example
+   * ```typescript
+   * users.createIndex({
+   *   name: 'email_unique',
+   *   fields: ['email'],
+   *   type: 'unique'
+   * });
+   * ```
    */
   createIndex(definition: IndexDefinition): void {
     // Convert from types.IndexDefinition to enhanced-indexing.IndexDefinition
@@ -698,15 +819,20 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Drop an index from the collection
+   * Drop (remove) an index by name.
+   *
+   * @param name - Name of the index to drop
+   * @returns true if the index was found and removed, false otherwise
    */
   dropIndex(name: string): boolean {
     return this.indexManager.dropIndex(name);
   }
 
   /**
-    * Get all indexes on the collection
-    */
+   * Get all indexes defined on this collection.
+   *
+   * @returns Array of index definitions
+   */
   getIndexes(): IndexDefinition[] {
     return this.indexManager.getAllIndexes().map(index => {
       // Convert from enhanced-indexing.IndexType to types.IndexType
@@ -746,7 +872,14 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Process documents in chunks to avoid blocking the main thread
+   * Process documents in chunks to avoid blocking the main thread.
+   *
+   * Useful for large datasets where processing all documents at once
+   * would cause performance issues.
+   *
+   * @param processor - Async function that processes a chunk of documents
+   * @param chunkSize - Number of documents per chunk (default: 1000)
+   * @returns Array of processed results
    */
   async processInChunks<T>(
     processor: (docs: Document[]) => Promise<T[]>,
@@ -756,14 +889,18 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Configure document compression
+   * Configure document compression options.
+   *
+   * @param options - Partial compression options to update
    */
   setCompressionOptions(options: Partial<CompressionOptions>): void {
     this.compression.setOptions(options);
   }
 
   /**
-   * Get current compression options
+   * Get current compression options.
+   *
+   * @returns Current compression configuration
    */
   getCompressionOptions(): CompressionOptions {
     return this.compression.getOptions();
@@ -866,9 +1003,12 @@ export class Collection implements ICollection {
   }
 
   /**
-   * Force a refresh of the collection's indexes
-   * This ensures all indexes are up-to-date with the latest document changes
-   * @returns Promise that resolves when the refresh is complete
+   * Refresh the collection by rebuilding all indexes from current documents.
+   *
+   * Useful when the index state might be stale. Acquires a write lock
+   * during the refresh operation.
+   *
+   * @returns Promise that resolves when refresh is complete
    */
   async refresh(): Promise<void> {
     return this.lock.withWriteLock(async () => {

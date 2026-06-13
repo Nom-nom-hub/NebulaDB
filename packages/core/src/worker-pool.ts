@@ -1,14 +1,28 @@
 /**
- * Worker Pool Manager for parallel operations
- * Supports both Web Workers (browser) and Worker Threads (Node.js)
+ * Worker Pool Manager for parallel batch operations.
+ *
+ * Automatically detects the runtime environment and uses either Web
+ * Workers (browser) or Worker Threads (Node.js) for parallel processing.
+ *
+ * @example
+ * ```typescript
+ * import { createWorkerPool } from '@nebula-db/core';
+ *
+ * const pool = createWorkerPool(8);
+ * const results = await pool.processBatch(items, async (item) => {
+ *   return heavyProcessing(item);
+ * });
+ * ```
  */
 
+/** Task submitted to the worker pool */
 export interface WorkerTask<T = any> {
   id: string;
   data: T;
   timestamp: number;
 }
 
+/** Result returned from a worker task */
 export interface WorkerResult<T = any> {
   taskId: string;
   result: T;
@@ -17,7 +31,7 @@ export interface WorkerResult<T = any> {
 }
 
 /**
- * Abstract base for worker implementations
+ * Abstract base class for worker pool implementations.
  */
 export abstract class BaseWorkerPool {
   protected poolSize: number;
@@ -232,7 +246,13 @@ export interface PoolStats {
 }
 
 /**
- * Create an adaptive worker pool instance
+ * Create an adaptive worker pool that auto-detects the runtime.
+ *
+ * Uses Web Workers in browsers, Worker Threads in Node.js, and falls
+ * back to single-threaded processing in other environments.
+ *
+ * @param poolSize - Number of workers (default: hardware concurrency)
+ * @returns An AdaptiveWorkerPool instance
  */
 export function createWorkerPool(poolSize?: number): AdaptiveWorkerPool {
   return new AdaptiveWorkerPool(poolSize);

@@ -8,11 +8,40 @@ import {
   Plugin
 } from './types';
 
+/**
+ * Core Database class for NebulaDB.
+ *
+ * Manages collections, adapters, and plugins. Provides the main entry point
+ * for all database operations including creating/retrieving collections and
+ * persisting data through adapters.
+ *
+ * @example
+ * ```typescript
+ * import { createDb } from '@nebula-db/core';
+ * import { MemoryAdapter } from '@nebula-db/adapter-memory';
+ *
+ * const db = createDb({ adapter: new MemoryAdapter() });
+ * const users = db.collection('users');
+ * await users.insert({ name: 'Alice' });
+ * ```
+ */
 export class Database implements IDatabase {
+  /** Map of collection names to their instances */
   collections: Map<string, ICollection> = new Map();
+
+  /** The storage adapter used for persistence */
   adapter: Adapter;
+
+  /** Array of plugins registered with this database */
   plugins: Plugin[];
 
+  /**
+   * Creates a new Database instance.
+   *
+   * @param options - Configuration options including adapter and optional plugins
+   * @param options.adapter - Storage adapter for persisting data
+   * @param options.plugins - Optional array of plugins to register
+   */
   constructor(options: DbOptions) {
     this.adapter = options.adapter;
     this.plugins = options.plugins || [];
@@ -32,7 +61,14 @@ export class Database implements IDatabase {
   }
 
   /**
-   * Get or create a collection
+   * Get or create a collection by name.
+   *
+   * If a collection with the given name already exists, it is returned.
+   * Otherwise, a new collection is created with the specified options.
+   *
+   * @param name - Name of the collection
+   * @param options - Optional collection configuration (indexes, compression, etc.)
+   * @returns The requested or newly created collection
    */
   collection(name: string, options: CollectionOptions = {}): ICollection {
     if (this.collections.has(name)) {
@@ -45,7 +81,12 @@ export class Database implements IDatabase {
   }
 
   /**
-   * Load data from the adapter
+   * Load data from the adapter into memory.
+   *
+   * Iterates over all collections stored in the adapter and populates
+   * the in-memory collections with the loaded documents.
+   *
+   * @internal
    */
   private async loadFromAdapter(): Promise<void> {
     try {
@@ -62,7 +103,18 @@ export class Database implements IDatabase {
   }
 
   /**
-   * Save data to the adapter
+   * Persist all collections and their documents to the configured adapter.
+   *
+   * Collects all documents from every collection and passes them to the
+   * adapter's `save` method for storage.
+   *
+   * @returns A promise that resolves when all data has been saved
+   *
+   * @example
+   * ```typescript
+   * await db.save();
+   * console.log('All data persisted');
+   * ```
    */
   async save(): Promise<void> {
     const data: Record<string, any[]> = {};
@@ -83,7 +135,28 @@ export class Database implements IDatabase {
 }
 
 /**
- * Create a new database instance
+ * Create a new NebulaDB database instance.
+ *
+ * This is the recommended entry point for creating a database.
+ *
+ * @param options - Configuration options for the database
+ * @param options.adapter - Storage adapter for persistence (required)
+ * @param options.plugins - Optional array of plugins to enable
+ * @returns A new Database instance ready for use
+ *
+ * @example
+ * ```typescript
+ * import { createDb } from '@nebula-db/core';
+ * import { MemoryAdapter } from '@nebula-db/adapter-memory';
+ *
+ * const db = createDb({
+ *   adapter: new MemoryAdapter(),
+ *   plugins: []
+ * });
+ *
+ * const users = db.collection('users');
+ * await users.insert({ name: 'Alice', age: 30 });
+ * ```
  */
 export function createDb(options: DbOptions): Database {
   return new Database(options);
