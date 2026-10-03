@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-memory",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "In-memory storage adapter for NebulaDB \u2014 zero-setup, perfect for testing and development",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

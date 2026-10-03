@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-indexeddb",
-  "version": "0.6.0",
-  "description": "IndexedDB storage adapter for NebulaDB \u2014 persistent browser storage",
+  "version": "0.6.1",
+  "description": "IndexedDB storage adapter for NebulaDB — persistent browser storage",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

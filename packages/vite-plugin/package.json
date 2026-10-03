@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/vite-plugin",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Vite plugin for NebulaDB \u2014 seamless integration with Vite projects",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

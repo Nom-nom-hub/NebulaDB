@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-geospatial",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Geospatial plugin for NebulaDB \u2014 geo-indexes, $near queries, and bounding box search",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

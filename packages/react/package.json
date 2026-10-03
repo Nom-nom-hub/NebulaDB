@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/react",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "React hooks and bindings for NebulaDB \u2014 reactive data in your components",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-sync",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Sync plugin for NebulaDB \u2014 bidirectional sync with conflict resolution and offline support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

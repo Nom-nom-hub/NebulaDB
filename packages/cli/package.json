@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/cli",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Command-line tools for NebulaDB \u2014 manage databases from your terminal",
   "main": "dist/index.js",
   "bin": {

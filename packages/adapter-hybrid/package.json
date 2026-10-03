@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-hybrid",
-  "version": "0.6.0",
-  "description": "Hybrid adapter for NebulaDB \u2014 local-first with automatic cloud fallback",
+  "version": "0.6.1",
+  "description": "Hybrid adapter for NebulaDB — local-first with automatic cloud fallback",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

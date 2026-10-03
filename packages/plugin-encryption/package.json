@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-encryption",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Encryption plugin for NebulaDB \u2014 transparent at-rest and field-level encryption",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

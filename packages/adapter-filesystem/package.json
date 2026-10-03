@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-filesystem",
-  "version": "0.6.0",
-  "description": "Filesystem adapter for NebulaDB \u2014 file-based persistence for Node.js",
+  "version": "0.6.1",
+  "description": "Filesystem adapter for NebulaDB — file-based persistence for Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

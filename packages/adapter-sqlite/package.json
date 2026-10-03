@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-sqlite",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "SQLite storage adapter for NebulaDB \u2014 persistent local file storage for Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-deno-kv",
-  "version": "0.6.0",
-  "description": "Deno KV adapter for NebulaDB \u2014 native persistent storage for Deno",
+  "version": "0.6.1",
+  "description": "Deno KV adapter for NebulaDB — native persistent storage for Deno",
   "type": "module",
   "files": [
     "dist",

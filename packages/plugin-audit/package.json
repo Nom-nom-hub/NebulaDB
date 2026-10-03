@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-audit",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Audit logging plugin for NebulaDB \u2014 comprehensive operation tracking for compliance",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-auth",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Authentication and authorization plugin for NebulaDB \u2014 users, sessions, RBAC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

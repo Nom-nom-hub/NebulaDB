@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/nebula-db",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "NebulaDB \u2014 fast, flexible embedded NoSQL database for browser, Node.js, and Edge. TypeScript-first, reactive, zero-config.",
   "repository": {
     "type": "git",

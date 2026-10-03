@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-backup",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Backup and restore plugin for NebulaDB \u2014 snapshots and incremental backups",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

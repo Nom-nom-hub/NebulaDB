@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/core",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "TypeScript-first embedded NoSQL database core \u2014 reactive, schema-optional, runs everywhere",
   "repository": {
     "type": "git",

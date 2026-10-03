@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-localstorage",
-  "version": "0.6.0",
-  "description": "localStorage adapter for NebulaDB \u2014 simple key-value browser persistence",
+  "version": "0.6.1",
+  "description": "localStorage adapter for NebulaDB — simple key-value browser persistence",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

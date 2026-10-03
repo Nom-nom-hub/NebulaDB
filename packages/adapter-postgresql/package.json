@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-postgresql",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "PostgreSQL adapter for NebulaDB \u2014 production-grade SQL persistence",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

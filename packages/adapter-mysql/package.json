@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-mysql",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "MySQL adapter for NebulaDB \u2014 reliable relational persistence",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

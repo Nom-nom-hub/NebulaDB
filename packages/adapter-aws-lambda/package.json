@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-aws-lambda",
-  "version": "0.6.0",
-  "description": "AWS Lambda adapter for NebulaDB \u2014 serverless persistent storage",
+  "version": "0.6.1",
+  "description": "AWS Lambda adapter for NebulaDB — serverless persistent storage",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

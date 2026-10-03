@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-mongodb",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "MongoDB adapter for NebulaDB \u2014 document store persistence",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

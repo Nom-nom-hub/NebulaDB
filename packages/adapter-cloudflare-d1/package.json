@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-cloudflare-d1",
-  "version": "0.6.0",
-  "description": "Cloudflare D1 adapter for NebulaDB \u2014 serverless SQL at the edge",
+  "version": "0.6.1",
+  "description": "Cloudflare D1 adapter for NebulaDB — serverless SQL at the edge",
   "type": "module",
   "files": [
     "dist",
