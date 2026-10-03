@@ -3,294 +3,503 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NebulaDB — Fast. Flexible. Secure. The embedded TypeScript-first database for the modern stack. Runs in the browser, Node.js, and Edge.">
-  <title>NebulaDB — The Embedded Database for the Modern Stack</title>
+  <meta name="description" content="NebulaDB — the embedded database for the modern stack. TypeScript-first, runs everywhere, no server required.">
+  <title>NebulaDB — Data, Everywhere You Are</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0a12;
-      --bg2: #12121e;
-      --bg3: #1a1a2e;
-      --accent: #00d4ff;
-      --accent2: #7c3aed;
-      --text: #e8e8f0;
-      --muted: #8a8a9e;
-      --border: #23233a;
-      --green: #22c55e;
+      --bg: #06060d;
+      --bg-card: #0c0c17;
+      --bg-elev: #12121f;
+      --nebula-1: #00d4ff;
+      --nebula-2: #7c3aed;
+      --nebula-3: #f472b6;
+      --text: #f0f0f8;
+      --muted: #8b8ba3;
+      --dim: #5a5a72;
+      --border: rgba(255,255,255,0.08);
+      --green: #34d399;
+      --amber: #fbbf24;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
-    .stars {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 0; opacity: 0.4;
+    ::selection { background: rgba(0,212,255,0.3); }
+
+    /* ---- Nebula background ---- */
+    .nebula-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 600px 400px at 15% 10%, rgba(124,58,237,0.12), transparent 70%),
+        radial-gradient(ellipse 800px 500px at 85% 30%, rgba(0,212,255,0.08), transparent 70%),
+        radial-gradient(ellipse 500px 600px at 50% 90%, rgba(244,114,182,0.06), transparent 70%);
+    }
+    .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5;
       background-image:
-        radial-gradient(1px 1px at 10% 20%, #fff 100%, transparent 100%),
-        radial-gradient(1px 1px at 30% 60%, #fff 100%, transparent 100%),
-        radial-gradient(1px 1px at 50% 10%, #fff 100%, transparent 100%),
-        radial-gradient(1px 1px at 70% 40%, #fff 100%, transparent 100%),
-        radial-gradient(1px 1px at 90% 80%, #fff 100%, transparent 100%),
-        radial-gradient(2px 2px at 20% 80%, #00d4ff 100%, transparent 100%),
-        radial-gradient(2px 2px at 80% 15%, #7c3aed 100%, transparent 100%);
-      background-size: 800px 800px;
+        radial-gradient(1px 1px at 5% 15%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 15% 45%, #fff 100%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 25% 75%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 35% 25%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 45% 55%, #fff 100%, transparent 100%),
+        radial-gradient(2px 2px at 55% 15%, var(--nebula-1) 100%, transparent 100%),
+        radial-gradient(1px 1px at 65% 85%, #fff 100%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 75% 35%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 85% 65%, #fff 100%, transparent 100%),
+        radial-gradient(2px 2px at 95% 20%, var(--nebula-2) 100%, transparent 100%);
+      background-size: 1200px 1200px;
+      animation: twinkle 8s ease-in-out infinite alternate;
     }
+    @keyframes twinkle { from { opacity: 0.3; } to { opacity: 0.55; } }
+
+    /* ---- Nav ---- */
     nav {
-      position: relative; z-index: 1;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 20px 40px; max-width: 1200px; margin: 0 auto;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(6,6,13,0.7); border-bottom: 1px solid var(--border);
     }
-    .nav-logo { font-size: 1.4em; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-    .nav-logo img { width: 36px; height: 36px; }
-    .nav-links { display: flex; gap: 28px; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.95em; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--text); }
-    .nav-cta {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; padding: 10px 24px; border-radius: 8px;
-      text-decoration: none; font-weight: 600; font-size: 0.95em;
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto; padding: 16px 32px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .hero {
-      position: relative; z-index: 1;
-      text-align: center; padding: 80px 20px 60px;
-      max-width: 900px; margin: 0 auto;
-    }
-    .badge {
-      display: inline-block; padding: 6px 16px; border-radius: 20px;
-      background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3);
-      color: var(--accent); font-size: 0.85em; font-weight: 600; margin-bottom: 24px;
-    }
-    .hero h1 {
-      font-size: 3.5em; font-weight: 800; line-height: 1.15; margin-bottom: 20px;
-      background: linear-gradient(135deg, #fff 20%, var(--accent) 60%, var(--accent2) 100%);
+    .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.25em; text-decoration: none; color: var(--text); }
+    .logo img { width: 38px; height: 38px; border-radius: 10px; }
+    .logo span.grad {
+      background: linear-gradient(135deg, var(--nebula-1), var(--nebula-2));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .hero p { font-size: 1.25em; color: var(--muted); max-width: 640px; margin: 0 auto 36px; }
-    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.92em; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px; border-radius: 12px; font-weight: 700;
+      text-decoration: none; font-size: 0.95em; transition: all 0.2s;
+      border: none; cursor: pointer;
+    }
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #0099ff);
-      color: #04121a; padding: 14px 32px; border-radius: 10px;
-      text-decoration: none; font-weight: 700; font-size: 1.05em;
+      background: linear-gradient(135deg, var(--nebula-1), #0090ff);
+      color: #031318; box-shadow: 0 4px 24px rgba(0,212,255,0.3);
     }
-    .btn-secondary {
-      border: 1px solid var(--border); color: var(--text);
-      padding: 14px 32px; border-radius: 10px; text-decoration: none;
-      font-weight: 600; font-size: 1.05em; background: var(--bg2);
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,212,255,0.4); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.04); color: var(--text);
+      border: 1px solid var(--border);
     }
-    .stats {
-      position: relative; z-index: 1;
-      display: flex; justify-content: center; gap: 60px;
-      padding: 40px 20px; flex-wrap: wrap;
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      max-width: 1000px; margin: 0 auto;
-    }
-    .stat { text-align: center; }
-    .stat-num { font-size: 2em; font-weight: 800; color: var(--accent); }
-    .stat-label { color: var(--muted); font-size: 0.9em; }
-    section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
-    section h2 { font-size: 2.2em; font-weight: 800; text-align: center; margin-bottom: 16px; }
-    section .subtitle { text-align: center; color: var(--muted); margin-bottom: 48px; font-size: 1.1em; }
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-    .feature {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 32px;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-    .feature:hover { transform: translateY(-4px); border-color: var(--accent); }
-    .feature-icon { font-size: 2em; margin-bottom: 16px; }
-    .feature h3 { font-size: 1.2em; margin-bottom: 10px; }
-    .feature p { color: var(--muted); font-size: 0.95em; }
-    .code-block {
-      background: #0d0d18; border: 1px solid var(--border); border-radius: 16px;
-      padding: 32px; overflow-x: auto; margin: 0 auto; max-width: 720px;
-    }
-    .code-block pre { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.92em; line-height: 1.7; }
-    .code-block .k { color: #c792ea; } .code-block .s { color: #c3e88d; }
-    .code-block .f { color: #82aaff; } .code-block .c { color: #5a5a72; }
-    .adapters { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
-    .adapter {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 12px; padding: 20px; text-align: center;
-      transition: border-color 0.2s;
-    }
-    .adapter:hover { border-color: var(--accent2); }
-    .adapter-name { font-weight: 700; margin-bottom: 4px; }
-    .adapter-desc { color: var(--muted); font-size: 0.82em; }
-    .plugins { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-    .plugin {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 12px; padding: 24px;
-    }
-    .plugin h4 { margin-bottom: 8px; }
-    .plugin p { color: var(--muted); font-size: 0.88em; }
-    .plugin .tag {
-      display: inline-block; font-size: 0.72em; padding: 3px 10px; border-radius: 12px;
-      margin-top: 12px; font-weight: 600;
-    }
-    .tag.tested { background: rgba(34, 197, 94, 0.15); color: var(--green); }
-    .tag.beta { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
-    .install {
-      background: var(--bg3); border: 1px solid var(--border); border-radius: 16px;
-      padding: 48px; text-align: center; max-width: 720px; margin: 0 auto;
-    }
-    .install code {
-      display: inline-block; background: #0d0d18; padding: 16px 32px;
-      border-radius: 10px; font-family: monospace; font-size: 1.1em;
-      margin: 24px 0; border: 1px solid var(--border); color: var(--accent);
-    }
-    footer {
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+    .btn-sm { padding: 9px 20px; font-size: 0.88em; border-radius: 10px; }
+
+    /* ---- Hero ---- */
+    .hero {
       position: relative; z-index: 1; text-align: center;
-      padding: 40px 20px; color: var(--muted); font-size: 0.9em;
-      border-top: 1px solid var(--border);
+      padding: 180px 24px 80px; max-width: 960px; margin: 0 auto;
     }
-    footer a { color: var(--accent); text-decoration: none; }
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 2.2em; }
-      nav { padding: 16px 20px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 18px; border-radius: 100px; font-size: 0.82em; font-weight: 600;
+      background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25);
+      color: var(--nebula-1); margin-bottom: 28px;
+    }
+    .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .hero h1 {
+      font-size: clamp(2.8em, 6vw, 4.8em); font-weight: 900;
+      line-height: 1.08; letter-spacing: -0.03em; margin-bottom: 24px;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(135deg, var(--nebula-1) 0%, var(--nebula-2) 55%, var(--nebula-3) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero .lede { font-size: 1.28em; color: var(--muted); max-width: 620px; margin: 0 auto 40px; line-height: 1.7; }
+    .hero-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+    .hero-meta { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; color: var(--dim); font-size: 0.88em; }
+    .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* ---- Terminal ---- */
+    .terminal-wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 24px; }
+    .terminal {
+      background: #0a0a14; border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.05);
+    }
+    .term-bar { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+    .term-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .term-dot.r { background: #ff5f57; } .term-dot.y { background: #febc2e; } .term-dot.g { background: #28c840; }
+    .term-title { margin-left: 8px; color: var(--dim); font-size: 0.82em; font-family: 'JetBrains Mono', monospace; }
+    .term-body { padding: 28px; font-family: 'JetBrains Mono', monospace; font-size: 0.9em; line-height: 1.8; overflow-x: auto; }
+    .term-body .p { color: var(--nebula-1); } .term-body .c { color: var(--dim); }
+    .term-body .s { color: #a7f3d0; } .term-body .k { color: #c4b5fd; } .term-body .f { color: #93c5fd; }
+
+    /* ---- Logos / trust ---- */
+    .trust { position: relative; z-index: 1; text-align: center; padding: 72px 24px 0; }
+    .trust p { color: var(--dim); font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 28px; }
+    .trust-row { display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; align-items: center; }
+    .trust-row span { color: var(--muted); font-weight: 700; font-size: 1.05em; opacity: 0.6; }
+
+    /* ---- Sections ---- */
+    section { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 120px 32px; }
+    .eyebrow {
+      text-align: center; color: var(--nebula-1); font-size: 0.82em; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 16px;
+    }
+    section h2 { font-size: clamp(1.8em, 3.5vw, 2.8em); font-weight: 800; text-align: center; letter-spacing: -0.02em; margin-bottom: 16px; }
+    section .sub { text-align: center; color: var(--muted); font-size: 1.12em; max-width: 600px; margin: 0 auto 64px; }
+
+    /* ---- Bento grid ---- */
+    .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .bento-card {
+      background: linear-gradient(180deg, var(--bg-elev), var(--bg-card));
+      border: 1px solid var(--border); border-radius: 20px; padding: 36px;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .bento-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(400px 200px at 50% -50%, rgba(0,212,255,0.08), transparent 70%);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .bento-card:hover { transform: translateY(-4px); border-color: rgba(0,212,255,0.3); }
+    .bento-card:hover::before { opacity: 1; }
+    .bento-card.wide { grid-column: span 2; }
+    .bento-icon {
+      width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.5em; margin-bottom: 20px;
+      background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+      border: 1px solid rgba(0,212,255,0.2);
+    }
+    .bento-card h3 { font-size: 1.25em; margin-bottom: 10px; font-weight: 700; }
+    .bento-card p { color: var(--muted); font-size: 0.95em; }
+    .bento-card code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82em;
+      background: rgba(0,212,255,0.08); color: var(--nebula-1);
+      padding: 2px 8px; border-radius: 6px;
+    }
+
+    /* ---- Code showcase ---- */
+    .code-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+    .code-copy h3 { font-size: 1.6em; margin-bottom: 16px; font-weight: 800; }
+    .code-copy p { color: var(--muted); margin-bottom: 20px; }
+    .code-copy ul { list-style: none; }
+    .code-copy li { padding: 10px 0; color: var(--muted); display: flex; gap: 12px; align-items: flex-start; }
+    .code-copy li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    /* ---- Adapters ---- */
+    .adapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .adapter {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px 20px; text-align: center; transition: all 0.25s;
+    }
+    .adapter:hover { border-color: var(--nebula-2); transform: translateY(-3px); }
+    .adapter .a-icon { font-size: 1.8em; margin-bottom: 10px; }
+    .adapter .a-name { font-weight: 700; font-size: 0.95em; }
+    .adapter .a-desc { color: var(--dim); font-size: 0.8em; margin-top: 4px; }
+
+    /* ---- Plugins table ---- */
+    .plugin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .plugin {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px; transition: all 0.25s;
+    }
+    .plugin:hover { border-color: rgba(244,114,182,0.3); transform: translateY(-3px); }
+    .plugin-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .plugin-top h4 { font-size: 1.05em; }
+    .badge-t { font-size: 0.7em; font-weight: 700; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .badge-t.ok { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+    .badge-t.beta { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+    .plugin p { color: var(--muted); font-size: 0.9em; }
+    .plugin code { font-family: 'JetBrains Mono', monospace; font-size: 0.78em; color: var(--nebula-1); display: block; margin-top: 12px; }
+
+    /* ---- Comparison ---- */
+    .compare { max-width: 860px; margin: 0 auto; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+    .compare table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+    .compare th, .compare td { padding: 18px 24px; text-align: left; border-bottom: 1px solid var(--border); }
+    .compare th { background: rgba(255,255,255,0.02); font-weight: 700; }
+    .compare th.hl { color: var(--nebula-1); }
+    .compare tr:last-child td { border-bottom: none; }
+    .compare td:first-child { color: var(--muted); }
+    .yes { color: var(--green); font-weight: 700; } .no { color: var(--dim); } .mid { color: var(--amber); }
+
+    /* ---- CTA ---- */
+    .cta-box {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08));
+      border: 1px solid rgba(0,212,255,0.2); border-radius: 28px;
+      padding: 80px 40px; text-align: center; max-width: 960px; margin: 0 auto;
+    }
+    .cta-box::before {
+      content: ''; position: absolute; inset: -100px;
+      background: radial-gradient(ellipse 500px 300px at 50% 0%, rgba(0,212,255,0.12), transparent 70%);
+      pointer-events: none;
+    }
+    .cta-box h2 { margin-bottom: 16px; position: relative; }
+    .cta-box p { color: var(--muted); margin-bottom: 32px; position: relative; }
+    .cta-box .cmd {
+      display: inline-block; font-family: 'JetBrains Mono', monospace;
+      background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+      padding: 16px 36px; border-radius: 12px; color: var(--nebula-1);
+      font-size: 1.05em; margin-bottom: 32px; position: relative;
+    }
+
+    /* ---- Footer ---- */
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); margin-top: 40px; }
+    .foot-inner { max-width: 1280px; margin: 0 auto; padding: 56px 32px 32px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+    .foot-brand p { color: var(--dim); font-size: 0.9em; margin-top: 12px; max-width: 280px; }
+    .foot-col h5 { font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dim); margin-bottom: 16px; }
+    .foot-col a { display: block; color: var(--muted); text-decoration: none; font-size: 0.9em; padding: 5px 0; }
+    .foot-col a:hover { color: var(--text); }
+    .foot-bottom { max-width: 1280px; margin: 0 auto; padding: 24px 32px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--dim); font-size: 0.82em; flex-wrap: wrap; gap: 12px; }
+
+    @media (max-width: 900px) {
+      .bento { grid-template-columns: 1fr; }
+      .bento-card.wide { grid-column: span 1; }
+      .code-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
-      section { padding: 48px 20px; }
+      .foot-inner { grid-template-columns: 1fr 1fr; }
+      section { padding: 72px 20px; }
     }
   </style>
 </head>
 <body>
+  <div class="nebula-bg"></div>
   <div class="stars"></div>
 
   <nav>
-    <div class="nav-logo"><img src="assets/nebulalogo.png" alt="NebulaDB"> NebulaDB</div>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#code">Quick Start</a>
-      <a href="#adapters">Adapters</a>
-      <a href="#plugins">Plugins</a>
-      <a href="docs/">Docs</a>
+    <div class="nav-inner">
+      <a class="logo" href="#"><img src="assets/nebulalogo.png" alt="">Nebula<span class="grad">DB</span></a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#developers">Developers</a>
+        <a href="#adapters">Adapters</a>
+        <a href="#plugins">Plugins</a>
+        <a href="#compare">Compare</a>
+        <a href="docs/">Docs</a>
+      </div>
+      <a class="btn btn-primary btn-sm" href="https://github.com/Nom-nom-hub/NebulaDB">★ Star on GitHub</a>
     </div>
-    <a class="nav-cta" href="https://github.com/Nom-nom-hub/NebulaDB">GitHub →</a>
   </nav>
 
   <div class="hero">
-    <div class="badge">v0.6.0 "Cumulus" — now with Cloud &amp; Edge support</div>
-    <h1>The embedded database<br>for the modern stack</h1>
-    <p>Fast. Flexible. Secure. TypeScript-first, schema-optional NoSQL that runs in the browser, Node.js, and Edge — no server required.</p>
-    <div class="hero-buttons">
-      <a class="btn-primary" href="https://github.com/Nom-nom-hub/NebulaDB">Get Started</a>
-      <a class="btn-secondary" href="docs/">Read the Docs</a>
+    <div class="pill"><span class="dot"></span> v0.6.0 "Cumulus" is live — Cloud &amp; Edge support</div>
+    <h1>Your data,<br><span class="grad">everywhere you are.</span></h1>
+    <p class="lede">NebulaDB is the TypeScript-first embedded database that runs in the browser, on the server, and at the edge. No server to manage. No config to wrestle. Just fast, reactive data — wherever your code runs.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/Nom-nom-hub/NebulaDB">Get Started →</a>
+      <a class="btn btn-ghost" href="#developers">See it in action</a>
+    </div>
+    <div class="hero-meta">
+      <span>✓ MIT Open Source</span>
+      <span>✓ 424 tests passing</span>
+      <span>✓ Zero-config setup</span>
     </div>
   </div>
 
-  <div class="stats">
-    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Packages</div></div>
-    <div class="stat"><div class="stat-num">14</div><div class="stat-label">Storage Adapters</div></div>
-    <div class="stat"><div class="stat-num">424</div><div class="stat-label">Tests Passing</div></div>
-    <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">Open Source</div></div>
+  <div class="terminal-wrap">
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div>
+        <div class="term-title">terminal — zsh</div>
+      </div>
+      <div class="term-body">
+<span class="p">$</span> npm install @nebula-db/nebula-db
+<br><span class="c"># ✓ installed in 1.2s — no server, no config</span>
+<br><br><span class="p">$</span> <span class="k">node</span> -e <span class="s">"</span><span class="k">import</span>(<span class="s">'@nebula-db/core'</span>).then(<span class="f">m</span> =&gt; {
+<br>  <span class="k">const</span> db = m.<span class="f">createDb</span>({ adapter: <span class="k">new</span> m.<span class="f">MemoryAdapter</span>() });
+<br>  db.<span class="f">collection</span>(<span class="s">'users'</span>).<span class="f">insert</span>({ name: <span class="s">'Ada'</span> });
+<br>  console.<span class="f">log</span>(<span class="s">'🚀 NebulaDB ready'</span>);
+<br>})<span class="s">"</span>
+<br><span class="c"># 🚀 NebulaDB ready</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="trust">
+    <p>Powering local-first apps across the stack</p>
+    <div class="trust-row">
+      <span>Browser</span><span>Node.js</span><span>Deno</span><span>Cloudflare Workers</span><span>Vercel Edge</span><span>AWS Lambda</span>
+    </div>
   </div>
 
   <section id="features">
-    <h2>Built for developers</h2>
-    <p class="subtitle">Everything you need, nothing you don't.</p>
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon">⚡</div>
-        <h3>TypeScript-First</h3>
-        <p>Fully typed APIs with inference. Your editor knows your schema before you do. No more runtime surprises.</p>
+    <div class="eyebrow">Why NebulaDB</div>
+    <h2>Designed for how you actually build</h2>
+    <p class="sub">We obsessed over the details so you don't have to think about your database.</p>
+    <div class="bento">
+      <div class="bento-card wide">
+        <div class="bento-icon">⚡</div>
+        <h3>TypeScript-first, not TypeScript-afterthought</h3>
+        <p>Every API is fully typed with inference. Your collections, queries, and plugins all carry their types through. Write <code>db.collection('users').find({ role: 'admin' })</code> and your editor already knows the shape of every result.</p>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🌍</div>
-        <h3>Runs Everywhere</h3>
-        <p>Browser, Node.js, Deno, Cloudflare Workers, Vercel Edge, AWS Lambda. Same code, zero friction.</p>
+      <div class="bento-card">
+        <div class="bento-icon">🔄</div>
+        <h3>Reactive by default</h3>
+        <p>Subscribe to any query. When data changes, your UI knows instantly. No polling, no websockets to wire up.</p>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🔄</div>
-        <h3>Reactive Live Queries</h3>
-        <p>Subscribe to data changes in real time. Your UI updates the moment your data does.</p>
+      <div class="bento-card">
+        <div class="bento-icon">🌍</div>
+        <h3>Truly portable</h3>
+        <p>Same code in the browser, Node, Deno, and edge runtimes. Swap adapters without touching your queries.</p>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🔌</div>
-        <h3>Pluggable Everything</h3>
-        <p>Swap storage adapters, add auth, encryption, sync, or geospatial — all through a clean plugin API.</p>
+      <div class="bento-card">
+        <div class="bento-icon">🔌</div>
+        <h3>Plugins, not forks</h3>
+        <p>Auth, encryption, sync, geospatial, audit logging — drop in what you need. Build your own in minutes.</p>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🔍</div>
-        <h3>Smart Indexing</h3>
-        <p>Full-text search, geo-indexes, compound indexes, and an AI-assisted query optimizer.</p>
+      <div class="bento-card">
+        <div class="bento-icon">🔍</div>
+        <h3>Queries that think</h3>
+        <p>Full-text search, geo queries, compound indexes, and a query optimizer that learns your access patterns.</p>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🔒</div>
-        <h3>Security by Default</h3>
-        <p>Transparent encryption at rest, field-level encryption, audit logging, and access control.</p>
+      <div class="bento-card">
+        <div class="bento-icon">🔒</div>
+        <h3>Secure from line one</h3>
+        <p>Encryption at rest, field-level encryption, and audit trails — not bolted on, built in.</p>
       </div>
     </div>
   </section>
 
-  <section id="code">
-    <h2>Get running in seconds</h2>
-    <p class="subtitle">No server. No config. Just code.</p>
-    <div class="code-block"><pre><span class="k">import</span> { <span class="f">createDb</span> } <span class="k">from</span> <span class="s">'@nebula-db/core'</span>;
-<span class="k">import</span> { <span class="f">MemoryAdapter</span> } <span class="k">from</span> <span class="s">'@nebula-db/adapter-memory'</span>;
-
-<span class="c">// Create a database</span>
-<span class="k">const</span> db = <span class="f">createDb</span>({ adapter: <span class="k">new</span> <span class="f">MemoryAdapter</span>() });
-<span class="k">const</span> users = db.<span class="f">collection</span>(<span class="s">'users'</span>);
-
-<span class="c">// Insert and query with full type safety</span>
-<span class="k">await</span> users.<span class="f">insert</span>({ name: <span class="s">'Ada'</span>, role: <span class="s">'admin'</span> });
-<span class="k">const</span> admins = <span class="k">await</span> users.<span class="f">find</span>({ role: <span class="s">'admin'</span> });
-
-<span class="c">// Reactive — subscribe to changes</span>
-users.<span class="f">subscribe</span>({}, (docs) =&gt; {
-  console.<span class="f">log</span>(<span class="s">'Updated:'</span>, docs);
-});</pre></div>
+  <section id="developers">
+    <div class="eyebrow">Developer Experience</div>
+    <h2>Feels like it was made for you</h2>
+    <p class="sub">Because it was. Every API decision starts with: "would a developer love this?"</p>
+    <div class="code-grid">
+      <div class="code-copy">
+        <h3>The database that disappears</h3>
+        <p>You shouldn't think about your database. NebulaDB handles the hard parts — indexing, reactivity, persistence — so you can focus on your app.</p>
+        <ul>
+          <li>Schema-optional: start schemaless, add structure when you're ready</li>
+          <li>Zero-config: working database in under 10 lines of code</li>
+          <li>Offline-first: your app works without a connection, syncs when it can</li>
+          <li>Framework bindings for React and Vue with hooks built in</li>
+        </ul>
+      </div>
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div>
+          <div class="term-title">app.ts</div>
+        </div>
+        <div class="term-body">
+<span class="k">import</span> { <span class="f">createDb</span> } <span class="k">from</span> <span class="s">'@nebula-db/core'</span>;
+<br><span class="k">import</span> { <span class="f">SQLiteAdapter</span> } <span class="k">from</span> <span class="s">'@nebula-db/adapter-sqlite'</span>;
+<br><span class="k">import</span> { <span class="f">createSyncPlugin</span> } <span class="k">from</span> <span class="s">'@nebula-db/plugin-sync'</span>;
+<br><br><span class="c">// Persistent + synced in 12 lines</span>
+<br><span class="k">const</span> db = <span class="f">createDb</span>({
+<br>  adapter: <span class="k">new</span> <span class="f">SQLiteAdapter</span>(<span class="s">'./app.db'</span>),
+<br>  plugins: [<span class="f">createSyncPlugin</span>({ serverUrl })]
+<br>});
+<br><br><span class="k">const</span> todos = db.<span class="f">collection</span>(<span class="s">'todos'</span>);
+<br><span class="k">await</span> todos.<span class="f">insert</span>({ text: <span class="s">'Ship it 🚀'</span>, done: <span class="k">false</span> });
+<br><br><span class="c">// Live UI updates — no refresh needed</span>
+<br>todos.<span class="f">subscribe</span>({}, docs =&gt; <span class="f">render</span>(docs));
+        </div>
+      </div>
+    </div>
   </section>
 
   <section id="adapters">
-    <h2>14 storage adapters</h2>
-    <p class="subtitle">Pick your persistence. Swap anytime.</p>
-    <div class="adapters">
-      <div class="adapter"><div class="adapter-name">Memory</div><div class="adapter-desc">In-memory, zero setup</div></div>
-      <div class="adapter"><div class="adapter-name">SQLite</div><div class="adapter-desc">Local file persistence</div></div>
-      <div class="adapter"><div class="adapter-name">IndexedDB</div><div class="adapter-desc">Browser storage</div></div>
-      <div class="adapter"><div class="adapter-name">LocalStorage</div><div class="adapter-desc">Simple browser KV</div></div>
-      <div class="adapter"><div class="adapter-name">Filesystem</div><div class="adapter-desc">Node.js file-based</div></div>
-      <div class="adapter"><div class="adapter-name">PostgreSQL</div><div class="adapter-desc">Production SQL</div></div>
-      <div class="adapter"><div class="adapter-name">MongoDB</div><div class="adapter-desc">Document store</div></div>
-      <div class="adapter"><div class="adapter-name">MySQL</div><div class="adapter-desc">Classic relational</div></div>
-      <div class="adapter"><div class="adapter-name">Redis</div><div class="adapter-desc">Blazing cache layer</div></div>
-      <div class="adapter"><div class="adapter-name">Cloudflare D1</div><div class="adapter-desc">Edge SQL</div></div>
-      <div class="adapter"><div class="adapter-name">Vercel KV</div><div class="adapter-desc">Serverless Redis</div></div>
-      <div class="adapter"><div class="adapter-name">Deno KV</div><div class="adapter-desc">Deno native</div></div>
-      <div class="adapter"><div class="adapter-name">AWS Lambda</div><div class="adapter-desc">Serverless persistent</div></div>
-      <div class="adapter"><div class="adapter-name">Hybrid</div><div class="adapter-desc">Local + cloud fallback</div></div>
+    <div class="eyebrow">Storage Adapters</div>
+    <h2>One API, fourteen backends</h2>
+    <p class="sub">Start with memory. Ship with Postgres. Move to the edge. Your code never changes.</p>
+    <div class="adapter-grid">
+      <div class="adapter"><div class="a-icon">🧠</div><div class="a-name">Memory</div><div class="a-desc">Zero-setup dev</div></div>
+      <div class="adapter"><div class="a-icon">💾</div><div class="a-name">SQLite</div><div class="a-desc">Local persistence</div></div>
+      <div class="adapter"><div class="a-icon">🌐</div><div class="a-name">IndexedDB</div><div class="a-desc">Browser storage</div></div>
+      <div class="adapter"><div class="a-icon">📦</div><div class="a-name">LocalStorage</div><div class="a-desc">Simple browser KV</div></div>
+      <div class="adapter"><div class="a-icon">📁</div><div class="a-name">Filesystem</div><div class="a-desc">Node.js files</div></div>
+      <div class="adapter"><div class="a-icon">🐘</div><div class="a-name">PostgreSQL</div><div class="a-desc">Production SQL</div></div>
+      <div class="adapter"><div class="a-icon">🍃</div><div class="a-name">MongoDB</div><div class="a-desc">Document store</div></div>
+      <div class="adapter"><div class="a-icon">🐬</div><div class="a-name">MySQL</div><div class="a-desc">Classic relational</div></div>
+      <div class="adapter"><div class="a-icon">⚡</div><div class="a-name">Redis</div><div class="a-desc">Cache layer</div></div>
+      <div class="adapter"><div class="a-icon">☁️</div><div class="a-name">Cloudflare D1</div><div class="a-desc">Edge SQL</div></div>
+      <div class="adapter"><div class="a-icon">▲</div><div class="a-name">Vercel KV</div><div class="a-desc">Serverless Redis</div></div>
+      <div class="adapter"><div class="a-icon">🦕</div><div class="a-name">Deno KV</div><div class="a-desc">Deno native</div></div>
+      <div class="adapter"><div class="a-icon">λ</div><div class="a-name">AWS Lambda</div><div class="a-desc">Serverless</div></div>
+      <div class="adapter"><div class="a-icon">🔀</div><div class="a-name">Hybrid</div><div class="a-desc">Local + cloud</div></div>
     </div>
   </section>
 
   <section id="plugins">
-    <h2>Powerful plugins</h2>
-    <p class="subtitle">Extend NebulaDB for your use case.</p>
-    <div class="plugins">
-      <div class="plugin"><h4>🔐 Auth</h4><p>User management, sessions, role-based access control.</p><span class="tag beta">Beta</span></div>
-      <div class="plugin"><h4>🛡️ Encryption</h4><p>Transparent encryption at rest and field-level encryption.</p><span class="tag tested">Tested</span></div>
-      <div class="plugin"><h4>📝 Audit</h4><p>Comprehensive operation logging for compliance and debugging.</p><span class="tag beta">Beta</span></div>
-      <div class="plugin"><h4>💾 Backup</h4><p>Full and incremental backups with multiple storage targets.</p><span class="tag beta">Beta</span></div>
-      <div class="plugin"><h4>📡 Streaming</h4><p>Real-time metrics, aggregations, and windowed computations.</p><span class="tag beta">Beta</span></div>
-      <div class="plugin"><h4>🔄 Sync</h4><p>Local-to-remote sync with conflict resolution and offline queue.</p><span class="tag tested">Tested</span></div>
-      <div class="plugin"><h4>🗺️ Geospatial</h4><p>Geo-indexes, $near queries, and bounding box searches.</p><span class="tag beta">Beta</span></div>
+    <div class="eyebrow">Ecosystem</div>
+    <h2>Plugins for every need</h2>
+    <p class="sub">Official plugins, maintained with the core. Community plugins welcome.</p>
+    <div class="plugin-grid">
+      <div class="plugin"><div class="plugin-top"><h4>🔐 Auth</h4><span class="badge-t beta">Beta</span></div><p>Users, sessions, and role-based access control.</p><code>@nebula-db/plugin-auth</code></div>
+      <div class="plugin"><div class="plugin-top"><h4>🛡️ Encryption</h4><span class="badge-t ok">Tested</span></div><p>Transparent at-rest and field-level encryption.</p><code>@nebula-db/plugin-encryption</code></div>
+      <div class="plugin"><div class="plugin-top"><h4>📝 Audit</h4><span class="badge-t beta">Beta</span></div><p>Full operation logging for compliance.</p><code>@nebula-db/plugin-audit</code></div>
+      <div class="plugin"><div class="plugin-top"><h4>💾 Backup</h4><span class="badge-t beta">Beta</span></div><p>Snapshots, incremental backups, multi-target.</p><code>@nebula-db/plugin-backup</code></div>
+      <div class="plugin"><div class="plugin-top"><h4>📡 Streaming</h4><span class="badge-t beta">Beta</span></div><p>Real-time metrics and windowed analytics.</p><code>@nebula-db/plugin-streaming</code></div>
+      <div class="plugin"><div class="plugin-top"><h4>🔄 Sync</h4><span class="badge-t ok">Tested</span></div><p>Bidirectional sync with conflict resolution.</p><code>@nebula-db/plugin-sync</code></div>
+      <div class="plugin"><div class="plugin-top"><h4>🗺️ Geospatial</h4><span class="badge-t beta">Beta</span></div><p>$near queries, bounding boxes, geo-indexes.</p><code>@nebula-db/plugin-geospatial</code></div>
+      <div class="plugin"><div class="plugin-top"><h4>🔍 Full-Text</h4><span class="badge-t beta">Beta</span></div><p>Stemming, ranking, and fuzzy search.</p><code>@nebula-db/plugin-fulltext</code></div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="eyebrow">Comparison</div>
+    <h2>How NebulaDB stacks up</h2>
+    <p class="sub">Honest comparison with the alternatives.</p>
+    <div class="compare">
+      <table>
+        <tr><th></th><th class="hl">NebulaDB</th><th>SQLite</th><th>IndexedDB</th><th>Firebase</th></tr>
+        <tr><td>Zero-config setup</td><td class="yes">✓</td><td class="yes">✓</td><td class="mid">~</td><td class="no">✗</td></tr>
+        <tr><td>TypeScript-first</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="mid">~</td></tr>
+        <tr><td>Runs in browser</td><td class="yes">✓</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Runs on edge</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="mid">~</td></tr>
+        <tr><td>Reactive queries</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
+        <tr><td>Offline-first</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="mid">~</td></tr>
+        <tr><td>No vendor lock-in</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td></tr>
+        <tr><td>Self-hostable</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td></tr>
+      </table>
     </div>
   </section>
 
   <section>
-    <div class="install">
-      <h2>Install it</h2>
-      <p class="subtitle">One command. Zero config.</p>
-      <code>npm install @nebula-db/nebula-db</code>
-      <p style="color: var(--muted); font-size: 0.95em; margin-top: 16px;">MIT licensed. Open source. <a href="https://github.com/Nom-nom-hub/NebulaDB" style="color: var(--accent);">Star us on GitHub →</a></p>
+    <div class="cta-box">
+      <div class="eyebrow">Get Started</div>
+      <h2>Your database is one<br>command away.</h2>
+      <p>Join developers building local-first apps with NebulaDB.</p>
+      <div><span class="cmd">npm install @nebula-db/nebula-db</span></div>
+      <br>
+      <a class="btn btn-primary" href="https://github.com/Nom-nom-hub/NebulaDB">★ Star on GitHub</a>
+      &nbsp;
+      <a class="btn btn-ghost" href="docs/">Read Documentation</a>
     </div>
   </section>
 
   <footer>
-    NebulaDB is open source under the <a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/LICENSE">MIT License</a>.<br>
-    Built with ♥ by <a href="https://github.com/Nom-nom-hub">Nom-nom-hub</a> and contributors.
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <a class="logo" href="#"><img src="assets/nebulalogo.png" alt="" style="width:32px;height:32px;border-radius:8px;">Nebula<span class="grad">DB</span></a>
+        <p>The embedded database for the modern stack. Fast, flexible, and open source.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Project</h5>
+        <a href="https://github.com/Nom-nom-hub/NebulaDB">GitHub</a>
+        <a href="https://www.npmjs.com/package/@nebula-db/core">npm</a>
+        <a href="https://www.producthunt.com/products/nebuladb">Product Hunt</a>
+        <a href="ROADMAP.md">Roadmap</a>
+      </div>
+      <div class="foot-col">
+        <h5>Resources</h5>
+        <a href="docs/">Documentation</a>
+        <a href="docs/adapters.md">Adapters</a>
+        <a href="docs/COMPARISON.md">Comparison</a>
+        <a href="examples/">Examples</a>
+      </div>
+      <div class="foot-col">
+        <h5>Community</h5>
+        <a href="https://github.com/Nom-nom-hub/NebulaDB/discussions">Discussions</a>
+        <a href="https://github.com/Nom-nom-hub/NebulaDB/issues">Issues</a>
+        <a href="CONTRIBUTING.md">Contributing</a>
+        <a href="CODE_OF_CONDUCT.md">Code of Conduct</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 NebulaDB. Open source under the MIT License.</span>
+      <span>v0.6.0 "Cumulus"</span>
+    </div>
   </footer>
 </body>
 </html>
