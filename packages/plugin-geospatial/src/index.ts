@@ -81,16 +81,17 @@ export class GeoSpatialPlugin implements Plugin {
     query: Query,
     results: Document[]
   ): Promise<Document[]> {
-    if (!query.$geo) return results;
+    const geoQuery = (query as { $geo?: { $near?: any; $within?: any } }).$geo;
+    if (!geoQuery) return results;
 
-    const { $geo } = query;
+    const { $near, $within } = geoQuery;
 
-    if ($geo.$near) {
-      return this.filterByNear(results, $geo.$near);
+    if ($near) {
+      return this.filterByNear(results, $near);
     }
 
-    if ($geo.$within) {
-      return this.filterByWithin(results, $geo.$within);
+    if ($within) {
+      return this.filterByWithin(results, $within);
     }
 
     return results;

@@ -56,6 +56,11 @@ export type LogicalQuery = {
  */
 export type Query = {
   [key: string]: QueryCondition | any;
+  /** Geospatial query operators (used by @nebula-db/plugin-geospatial) */
+  $geo?: {
+    $near?: { lat: number; lng: number; maxDistance?: number; minDistance?: number };
+    $within?: { box?: [number, number, number, number]; center?: [number, number, number]; polygon?: Array<[number, number]> };
+  };
 } | LogicalQuery;
 
 /**
@@ -194,6 +199,8 @@ export interface Plugin {
   onFind?(context: PluginHookContext): void | Promise<void>;
   /** Get plugin API for external access */
   getApi?(): any;
+  /** Cleanup hook called when the plugin is being destroyed */
+  onDestroy?(): void | Promise<void>;
 }
 
 /**

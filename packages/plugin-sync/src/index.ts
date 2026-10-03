@@ -223,14 +223,15 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin & { api: an
   function log(level: 'debug' | 'info' | 'warn' | 'error', message: string, data?: any) {
     if (!logging.enabled) return;
 
-    const levels = {
+    const levels: Record<'debug' | 'info' | 'warn' | 'error', number> = {
       debug: 0,
       info: 1,
       warn: 2,
       error: 3
     };
 
-    if (levels[level] >= levels[logging.level]) {
+    const currentLevel: 'debug' | 'info' | 'warn' | 'error' = logging.level ?? 'info';
+    if (levels[level] >= levels[currentLevel]) {
       const logMessage = `[NebulaSync] ${message}`;
 
       switch (level) {
@@ -262,7 +263,7 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin & { api: an
 
     try {
       const collection = db.collection(collectionName);
-      const existing = await (collection.findById as any)?.(event.documentId);
+      const existing = await collection.findOne({ id: event.documentId });
 
       if (!existing) {
         // No existing document, no conflict
@@ -301,8 +302,8 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin & { api: an
       auth: authToken ? { token: authToken } : undefined,
       reconnection: true,
       reconnectionAttempts: retry.maxRetries,
-      reconnectionDelay: retry.retryDelay,
-      reconnectionDelayMax: retry.useExponentialBackoff ? retry.retryDelay * 10 : retry.retryDelay
+      reconnectionDelay: retry.retryDelay ?? 1000,
+      reconnectionDelayMax: retry.useExponentialBackoff ? (retry.retryDelay ?? 1000) * 10 : (retry.retryDelay ?? 1000)
     });
 
     // Handle connection events
@@ -480,7 +481,7 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin & { api: an
   return {
     name: 'sync',
 
-    onInit: (database) => {
+    onInit: (database: Database) => {
       db = database;
 
       log('info', 'Initializing sync plugin');

@@ -25,12 +25,12 @@ export class QueryProcessor {
     // Handle special operators
     if (query.$or) {
       const orMatchers = query.$or.map((subQuery: any) => this.createMatcher(subQuery));
-      return (doc: any) => orMatchers.some(matcher => matcher(doc));
+      return (doc: any) => orMatchers.some((matcher: (doc: any) => boolean) => matcher(doc));
     }
     
     if (query.$and) {
       const andMatchers = query.$and.map((subQuery: any) => this.createMatcher(subQuery));
-      return (doc: any) => andMatchers.every(matcher => matcher(doc));
+      return (doc: any) => andMatchers.every((matcher: (doc: any) => boolean) => matcher(doc));
     }
     
     // Handle regular field conditions
