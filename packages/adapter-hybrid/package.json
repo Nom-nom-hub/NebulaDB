@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-hybrid",
   "version": "0.6.0",
-  "description": "Hybrid adapter for NebulaDB - local with cloud fallback",
+  "description": "Hybrid adapter for NebulaDB \u2014 local-first with automatic cloud fallback",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -30,5 +30,13 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

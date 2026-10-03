@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/plugin-encryption",
   "version": "0.6.0",
-  "description": "Encryption plugin for NebulaDB - provides encryption at rest and field-level encryption",
+  "description": "Encryption plugin for NebulaDB \u2014 transparent at-rest and field-level encryption",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -21,7 +21,8 @@
     "encryption",
     "security",
     "aes-256-gcm",
-    "field-level-encryption"
+    "field-level-encryption",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -41,5 +42,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

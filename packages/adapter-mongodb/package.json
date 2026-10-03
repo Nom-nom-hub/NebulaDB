@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-mongodb",
   "version": "0.6.0",
-  "description": "MongoDB adapter for NebulaDB",
+  "description": "MongoDB adapter for NebulaDB \u2014 document store persistence",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -19,5 +19,13 @@
     "mongodb",
     "mongo"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

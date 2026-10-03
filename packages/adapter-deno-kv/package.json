@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-deno-kv",
   "version": "0.6.0",
-  "description": "Deno KV adapter for NebulaDB - provides persistent key-value storage for Deno runtime",
+  "description": "Deno KV adapter for NebulaDB \u2014 native persistent storage for Deno",
   "type": "module",
   "files": [
     "dist",
@@ -13,5 +13,16 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
-  }
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  },
+  "keywords": [
+    "nebula-db"
+  ]
 }

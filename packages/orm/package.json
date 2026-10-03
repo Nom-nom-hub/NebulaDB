@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/orm",
   "version": "0.6.0",
-  "description": "ORM-style modeling for NebulaDB",
+  "description": "ORM-style data modeling for NebulaDB \u2014 schemas, relations, and type-safe models",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -21,7 +21,8 @@
     "nosql",
     "orm",
     "model",
-    "decorator"
+    "decorator",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -44,5 +45,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

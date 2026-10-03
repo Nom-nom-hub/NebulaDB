@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/plugin-sync",
   "version": "0.6.0",
-  "description": "Synchronization plugin for NebulaDB",
+  "description": "Sync plugin for NebulaDB \u2014 bidirectional sync with conflict resolution and offline support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -20,7 +20,8 @@
     "nosql",
     "sync",
     "offline",
-    "realtime"
+    "realtime",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -42,5 +43,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-mysql",
   "version": "0.6.0",
-  "description": "MySQL adapter for NebulaDB",
+  "description": "MySQL adapter for NebulaDB \u2014 reliable relational persistence",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -18,5 +18,13 @@
     "adapter",
     "mysql"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

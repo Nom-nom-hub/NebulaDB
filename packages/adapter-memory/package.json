@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-memory",
   "version": "0.6.0",
-  "description": "In-memory storage adapter for NebulaDB",
+  "description": "In-memory storage adapter for NebulaDB \u2014 zero-setup, perfect for testing and development",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -27,5 +27,13 @@
     "memory",
     "in-memory"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

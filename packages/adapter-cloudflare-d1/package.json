@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-cloudflare-d1",
   "version": "0.6.0",
-  "description": "Cloudflare D1 adapter for NebulaDB - provides SQL storage for edge computing",
+  "description": "Cloudflare D1 adapter for NebulaDB \u2014 serverless SQL at the edge",
   "type": "module",
   "files": [
     "dist",
@@ -17,5 +17,16 @@
   "peerDependencies": {
     "@cloudflare/workers-types": "^4.0.0"
   },
-  "peerDependenciesOptional": true
+  "peerDependenciesOptional": true,
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  },
+  "keywords": [
+    "nebula-db"
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/react",
   "version": "0.6.0",
-  "description": "React hooks for NebulaDB",
+  "description": "React hooks and bindings for NebulaDB \u2014 reactive data in your components",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -26,5 +26,13 @@
   "peerDependencies": {
     "react": ">=18.0.0"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

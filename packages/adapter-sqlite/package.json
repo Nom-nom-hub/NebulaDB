@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-sqlite",
   "version": "0.6.0",
-  "description": "SQLite storage adapter for NebulaDB",
+  "description": "SQLite storage adapter for NebulaDB \u2014 persistent local file storage for Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -28,5 +28,13 @@
     "sqlite",
     "database"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

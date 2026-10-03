@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/vue",
   "version": "0.6.0",
-  "description": "Vue composables for NebulaDB",
+  "description": "Vue composables for NebulaDB \u2014 reactive data with the Composition API",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -27,5 +27,13 @@
   "peerDependencies": {
     "vue": ">=3.0.0"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

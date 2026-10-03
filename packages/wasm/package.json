@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/wasm",
   "version": "0.6.0",
-  "description": "WebAssembly support for NebulaDB",
+  "description": "WebAssembly build of NebulaDB \u2014 near-native performance in the browser",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -22,7 +22,8 @@
     "nosql",
     "wasm",
     "webassembly",
-    "performance"
+    "performance",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -42,5 +43,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

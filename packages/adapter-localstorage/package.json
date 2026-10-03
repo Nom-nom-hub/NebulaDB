@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-localstorage",
   "version": "0.6.0",
-  "description": "localStorage storage adapter for NebulaDB (browser)",
+  "description": "localStorage adapter for NebulaDB \u2014 simple key-value browser persistence",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -27,5 +27,13 @@
     "localstorage",
     "browser"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

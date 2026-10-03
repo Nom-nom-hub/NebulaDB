@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/json-schema",
   "version": "0.6.0",
-  "description": "JSON Schema utilities for NebulaDB",
+  "description": "JSON Schema utilities for NebulaDB \u2014 validation and schema management",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -20,7 +20,8 @@
     "json-schema",
     "zod",
     "validation",
-    "nebula"
+    "nebula",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -43,5 +44,9 @@
   },
   "dependencies": {
     "vite": "^6.4.1"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

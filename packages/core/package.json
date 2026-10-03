@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/core",
   "version": "0.6.0",
-  "description": "Core package for NebulaDB",
+  "description": "TypeScript-first embedded NoSQL database core \u2014 reactive, schema-optional, runs everywhere",
   "repository": {
     "type": "git",
     "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
@@ -27,7 +27,8 @@
     "database",
     "nosql",
     "embedded",
-    "typescript"
+    "typescript",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -39,5 +40,9 @@
   },
   "dependencies": {
     "@preact/signals-core": "^1.5.1"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

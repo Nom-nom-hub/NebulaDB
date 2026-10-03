@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/plugin-auth",
   "version": "0.6.0",
-  "description": "Authentication and authorization plugin for NebulaDB",
+  "description": "Authentication and authorization plugin for NebulaDB \u2014 users, sessions, RBAC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -28,5 +28,13 @@
     "typescript": "^5.3.3",
     "vitest": "^3.1.2"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/devtools",
   "version": "0.6.0",
-  "description": "DevTools for NebulaDB",
+  "description": "Developer tools for NebulaDB \u2014 inspect, debug, and profile your database",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -20,7 +20,8 @@
     "database",
     "nosql",
     "devtools",
-    "debugging"
+    "debugging",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -49,5 +50,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/cli",
   "version": "0.6.0",
-  "description": "CLI tools for NebulaDB",
+  "description": "Command-line tools for NebulaDB \u2014 manage databases from your terminal",
   "main": "dist/index.js",
   "bin": {
     "nebula": "dist/index.js"
@@ -22,7 +22,8 @@
     "database",
     "nosql",
     "cli",
-    "generator"
+    "generator",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -49,5 +50,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/nebula-db",
   "version": "0.6.0",
-  "description": "Fast, flexible, serverless embedded NoSQL database for modern applications",
+  "description": "NebulaDB \u2014 fast, flexible embedded NoSQL database for browser, Node.js, and Edge. TypeScript-first, reactive, zero-config.",
   "repository": {
     "type": "git",
     "url": "https://github.com/Nom-nom-hub/NebulaDB.git",
@@ -32,7 +32,8 @@
     "reactive",
     "browser",
     "node",
-    "edge"
+    "edge",
+    "nebula-db"
   ],
   "author": "Nom-nom-hub",
   "license": "MIT",
@@ -48,5 +49,9 @@
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^3.1.2"
+  },
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
   }
 }

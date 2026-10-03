@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/adapter-filesystem",
   "version": "0.6.0",
-  "description": "Filesystem storage adapter for NebulaDB",
+  "description": "Filesystem adapter for NebulaDB \u2014 file-based persistence for Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -27,5 +27,13 @@
     "filesystem",
     "file"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }

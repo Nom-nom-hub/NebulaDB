@@ -1,7 +1,7 @@
 {
   "name": "@nebula-db/plugin-geospatial",
   "version": "0.6.0",
-  "description": "Geo-spatial indexing for NebulaDB with GeoJSON support",
+  "description": "Geospatial plugin for NebulaDB \u2014 geo-indexes, $near queries, and bounding box search",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -21,5 +21,13 @@
     "location",
     "geojson"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "homepage": "https://nom-nom-hub.github.io/NebulaDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nom-nom-hub/NebulaDB/issues"
+  }
 }
