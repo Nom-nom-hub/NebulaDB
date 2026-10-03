@@ -1,186 +1,296 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0;url=docs/index.html">
-  <meta name="description" content="NebulaDB v0.4.0 Cirrus — Enterprise-grade sync, encryption, and edge deployment" />
-  <title>NebulaDB v0.4.0 Cirrus</title>
+  <meta name="description" content="NebulaDB — Fast. Flexible. Secure. The embedded TypeScript-first database for the modern stack. Runs in the browser, Node.js, and Edge.">
+  <title>NebulaDB — The Embedded Database for the Modern Stack</title>
   <style>
+    :root {
+      --bg: #0a0a12;
+      --bg2: #12121e;
+      --bg3: #1a1a2e;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --text: #e8e8f0;
+      --muted: #8a8a9e;
+      --border: #23233a;
+      --green: #22c55e;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: #e0e0e0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 3em;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #00d4ff, #0099ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .version {
-      font-size: 1.5em;
-      color: #22d3ee;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.1em;
-      margin-bottom: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
-      color: #b0b0b0;
+      overflow-x: hidden;
     }
-    .features {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin: 40px 0;
-      text-align: left;
+    .stars {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; opacity: 0.4;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 30% 60%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 50% 10%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 70% 40%, #fff 100%, transparent 100%),
+        radial-gradient(1px 1px at 90% 80%, #fff 100%, transparent 100%),
+        radial-gradient(2px 2px at 20% 80%, #00d4ff 100%, transparent 100%),
+        radial-gradient(2px 2px at 80% 15%, #7c3aed 100%, transparent 100%);
+      background-size: 800px 800px;
     }
-    .feature {
-      background: rgba(255,255,255,0.05);
-      padding: 20px;
-      border-radius: 8px;
-      border-left: 3px solid #00d4ff;
+    nav {
+      position: relative; z-index: 1;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px; max-width: 1200px; margin: 0 auto;
     }
-    .feature h3 {
-      color: #22d3ee;
-      margin-bottom: 8px;
+    .nav-logo { font-size: 1.4em; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .nav-logo img { width: 36px; height: 36px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.95em; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; padding: 10px 24px; border-radius: 8px;
+      text-decoration: none; font-weight: 600; font-size: 0.95em;
     }
-    .feature p {
-      font-size: 0.95em;
-      margin: 0;
+    .hero {
+      position: relative; z-index: 1;
+      text-align: center; padding: 80px 20px 60px;
+      max-width: 900px; margin: 0 auto;
     }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-      margin: 40px 0;
+    .badge {
+      display: inline-block; padding: 6px 16px; border-radius: 20px;
+      background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3);
+      color: var(--accent); font-size: 0.85em; font-weight: 600; margin-bottom: 24px;
     }
-    .stat {
-      background: rgba(0, 212, 255, 0.1);
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 212, 255, 0.3);
+    .hero h1 {
+      font-size: 3.5em; font-weight: 800; line-height: 1.15; margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 20%, var(--accent) 60%, var(--accent2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .stat-value {
-      font-size: 2em;
-      color: #00d4ff;
-      font-weight: bold;
-    }
-    .stat-label {
-      color: #888;
-      font-size: 0.9em;
-      margin-top: 5px;
-    }
-    .buttons {
-      margin: 30px 0;
-    }
-    a {
-      display: inline-block;
-      padding: 12px 30px;
-      margin: 10px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
+    .hero p { font-size: 1.25em; color: var(--muted); max-width: 640px; margin: 0 auto 36px; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
     .btn-primary {
-      background: linear-gradient(135deg, #00d4ff, #0099ff);
-      color: #000;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+      background: linear-gradient(135deg, var(--accent), #0099ff);
+      color: #04121a; padding: 14px 32px; border-radius: 10px;
+      text-decoration: none; font-weight: 700; font-size: 1.05em;
     }
     .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      color: #00d4ff;
-      border: 1px solid #00d4ff;
+      border: 1px solid var(--border); color: var(--text);
+      padding: 14px 32px; border-radius: 10px; text-decoration: none;
+      font-weight: 600; font-size: 1.05em; background: var(--bg2);
     }
-    .btn-secondary:hover {
-      background: rgba(0, 212, 255, 0.1);
+    .stats {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; gap: 60px;
+      padding: 40px 20px; flex-wrap: wrap;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      max-width: 1000px; margin: 0 auto;
     }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2em; font-weight: 800; color: var(--accent); }
+    .stat-label { color: var(--muted); font-size: 0.9em; }
+    section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
+    section h2 { font-size: 2.2em; font-weight: 800; text-align: center; margin-bottom: 16px; }
+    section .subtitle { text-align: center; color: var(--muted); margin-bottom: 48px; font-size: 1.1em; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .feature {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .feature:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .feature-icon { font-size: 2em; margin-bottom: 16px; }
+    .feature h3 { font-size: 1.2em; margin-bottom: 10px; }
+    .feature p { color: var(--muted); font-size: 0.95em; }
+    .code-block {
+      background: #0d0d18; border: 1px solid var(--border); border-radius: 16px;
+      padding: 32px; overflow-x: auto; margin: 0 auto; max-width: 720px;
+    }
+    .code-block pre { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.92em; line-height: 1.7; }
+    .code-block .k { color: #c792ea; } .code-block .s { color: #c3e88d; }
+    .code-block .f { color: #82aaff; } .code-block .c { color: #5a5a72; }
+    .adapters { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .adapter {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; text-align: center;
+      transition: border-color 0.2s;
+    }
+    .adapter:hover { border-color: var(--accent2); }
+    .adapter-name { font-weight: 700; margin-bottom: 4px; }
+    .adapter-desc { color: var(--muted); font-size: 0.82em; }
+    .plugins { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .plugin {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+    }
+    .plugin h4 { margin-bottom: 8px; }
+    .plugin p { color: var(--muted); font-size: 0.88em; }
+    .plugin .tag {
+      display: inline-block; font-size: 0.72em; padding: 3px 10px; border-radius: 12px;
+      margin-top: 12px; font-weight: 600;
+    }
+    .tag.tested { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+    .tag.beta { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
+    .install {
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 16px;
+      padding: 48px; text-align: center; max-width: 720px; margin: 0 auto;
+    }
+    .install code {
+      display: inline-block; background: #0d0d18; padding: 16px 32px;
+      border-radius: 10px; font-family: monospace; font-size: 1.1em;
+      margin: 24px 0; border: 1px solid var(--border); color: var(--accent);
+    }
+    footer {
+      position: relative; z-index: 1; text-align: center;
+      padding: 40px 20px; color: var(--muted); font-size: 0.9em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
     @media (max-width: 768px) {
-      h1 { font-size: 2em; }
-      .features { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: repeat(2, 1fr); }
+      .hero h1 { font-size: 2.2em; }
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      section { padding: 48px 20px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>NebulaDB</h1>
-    <div class="version">✨ v0.4.0 "Cirrus" — Now Live! ✨</div>
-    
-    <p><strong>Enterprise-grade sync, encryption, and edge deployment</strong></p>
-    <p>Production-ready database with zero breaking changes from v0.3.0</p>
+  <div class="stars"></div>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-value">248</div>
-        <div class="stat-label">Tests Passing</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">85.3%</div>
-        <div class="stat-label">Code Coverage</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">4-8x</div>
-        <div class="stat-label">Performance Gain</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">0</div>
-        <div class="stat-label">Breaking Changes</div>
-      </div>
+  <nav>
+    <div class="nav-logo"><img src="assets/nebulalogo.png" alt="NebulaDB"> NebulaDB</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#code">Quick Start</a>
+      <a href="#adapters">Adapters</a>
+      <a href="#plugins">Plugins</a>
+      <a href="docs/">Docs</a>
     </div>
+    <a class="nav-cta" href="https://github.com/Nom-nom-hub/NebulaDB">GitHub →</a>
+  </nav>
 
-    <div class="features">
-      <div class="feature">
-        <h3>🔄 Real-Time Sync</h3>
-        <p>Multi-strategy conflict resolution, P2P sync, offline queues, and sync servers with webhooks.</p>
-      </div>
-      <div class="feature">
-        <h3>🔒 AES-256-GCM Encryption</h3>
-        <p>Transparent encryption at rest, field-level encryption, HIPAA/PCI/GDPR compliant.</p>
-      </div>
-      <div class="feature">
-        <h3>⚡ Query Optimizer</h3>
-        <p>Automatic index selection, cost estimation, query plan caching.</p>
-      </div>
-      <div class="feature">
-        <h3>🌐 Edge Deployment</h3>
-        <p>Deno KV and Cloudflare D1 adapters for edge computing.</p>
-      </div>
+  <div class="hero">
+    <div class="badge">v0.6.0 "Cumulus" — now with Cloud &amp; Edge support</div>
+    <h1>The embedded database<br>for the modern stack</h1>
+    <p>Fast. Flexible. Secure. TypeScript-first, schema-optional NoSQL that runs in the browser, Node.js, and Edge — no server required.</p>
+    <div class="hero-buttons">
+      <a class="btn-primary" href="https://github.com/Nom-nom-hub/NebulaDB">Get Started</a>
+      <a class="btn-secondary" href="docs/">Read the Docs</a>
     </div>
-
-    <div class="buttons">
-      <a href="docs/index.html" class="btn-primary">📖 View Full Website</a>
-      <a href="https://github.com/Nom-nom-hub/NebulaDB" class="btn-secondary">⭐ GitHub</a>
-      <a href="RELEASE_NOTES_v0.4.0.md" class="btn-secondary">📰 Release Notes</a>
-    </div>
-
-    <p style="margin-top: 50px; color: #666; font-size: 0.9em;">
-      Redirecting to full website in 3 seconds... <br>
-      <a href="docs/index.html" style="color: #00d4ff;">Click here if not redirected</a>
-    </p>
   </div>
 
-  <script>
-    setTimeout(() => {
-      window.location.href = 'docs/index.html';
-    }, 3000);
-  </script>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Packages</div></div>
+    <div class="stat"><div class="stat-num">14</div><div class="stat-label">Storage Adapters</div></div>
+    <div class="stat"><div class="stat-num">424</div><div class="stat-label">Tests Passing</div></div>
+    <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">Open Source</div></div>
+  </div>
+
+  <section id="features">
+    <h2>Built for developers</h2>
+    <p class="subtitle">Everything you need, nothing you don't.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>TypeScript-First</h3>
+        <p>Fully typed APIs with inference. Your editor knows your schema before you do. No more runtime surprises.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌍</div>
+        <h3>Runs Everywhere</h3>
+        <p>Browser, Node.js, Deno, Cloudflare Workers, Vercel Edge, AWS Lambda. Same code, zero friction.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔄</div>
+        <h3>Reactive Live Queries</h3>
+        <p>Subscribe to data changes in real time. Your UI updates the moment your data does.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔌</div>
+        <h3>Pluggable Everything</h3>
+        <p>Swap storage adapters, add auth, encryption, sync, or geospatial — all through a clean plugin API.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔍</div>
+        <h3>Smart Indexing</h3>
+        <p>Full-text search, geo-indexes, compound indexes, and an AI-assisted query optimizer.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Security by Default</h3>
+        <p>Transparent encryption at rest, field-level encryption, audit logging, and access control.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="code">
+    <h2>Get running in seconds</h2>
+    <p class="subtitle">No server. No config. Just code.</p>
+    <div class="code-block"><pre><span class="k">import</span> { <span class="f">createDb</span> } <span class="k">from</span> <span class="s">'@nebula-db/core'</span>;
+<span class="k">import</span> { <span class="f">MemoryAdapter</span> } <span class="k">from</span> <span class="s">'@nebula-db/adapter-memory'</span>;
+
+<span class="c">// Create a database</span>
+<span class="k">const</span> db = <span class="f">createDb</span>({ adapter: <span class="k">new</span> <span class="f">MemoryAdapter</span>() });
+<span class="k">const</span> users = db.<span class="f">collection</span>(<span class="s">'users'</span>);
+
+<span class="c">// Insert and query with full type safety</span>
+<span class="k">await</span> users.<span class="f">insert</span>({ name: <span class="s">'Ada'</span>, role: <span class="s">'admin'</span> });
+<span class="k">const</span> admins = <span class="k">await</span> users.<span class="f">find</span>({ role: <span class="s">'admin'</span> });
+
+<span class="c">// Reactive — subscribe to changes</span>
+users.<span class="f">subscribe</span>({}, (docs) =&gt; {
+  console.<span class="f">log</span>(<span class="s">'Updated:'</span>, docs);
+});</pre></div>
+  </section>
+
+  <section id="adapters">
+    <h2>14 storage adapters</h2>
+    <p class="subtitle">Pick your persistence. Swap anytime.</p>
+    <div class="adapters">
+      <div class="adapter"><div class="adapter-name">Memory</div><div class="adapter-desc">In-memory, zero setup</div></div>
+      <div class="adapter"><div class="adapter-name">SQLite</div><div class="adapter-desc">Local file persistence</div></div>
+      <div class="adapter"><div class="adapter-name">IndexedDB</div><div class="adapter-desc">Browser storage</div></div>
+      <div class="adapter"><div class="adapter-name">LocalStorage</div><div class="adapter-desc">Simple browser KV</div></div>
+      <div class="adapter"><div class="adapter-name">Filesystem</div><div class="adapter-desc">Node.js file-based</div></div>
+      <div class="adapter"><div class="adapter-name">PostgreSQL</div><div class="adapter-desc">Production SQL</div></div>
+      <div class="adapter"><div class="adapter-name">MongoDB</div><div class="adapter-desc">Document store</div></div>
+      <div class="adapter"><div class="adapter-name">MySQL</div><div class="adapter-desc">Classic relational</div></div>
+      <div class="adapter"><div class="adapter-name">Redis</div><div class="adapter-desc">Blazing cache layer</div></div>
+      <div class="adapter"><div class="adapter-name">Cloudflare D1</div><div class="adapter-desc">Edge SQL</div></div>
+      <div class="adapter"><div class="adapter-name">Vercel KV</div><div class="adapter-desc">Serverless Redis</div></div>
+      <div class="adapter"><div class="adapter-name">Deno KV</div><div class="adapter-desc">Deno native</div></div>
+      <div class="adapter"><div class="adapter-name">AWS Lambda</div><div class="adapter-desc">Serverless persistent</div></div>
+      <div class="adapter"><div class="adapter-name">Hybrid</div><div class="adapter-desc">Local + cloud fallback</div></div>
+    </div>
+  </section>
+
+  <section id="plugins">
+    <h2>Powerful plugins</h2>
+    <p class="subtitle">Extend NebulaDB for your use case.</p>
+    <div class="plugins">
+      <div class="plugin"><h4>🔐 Auth</h4><p>User management, sessions, role-based access control.</p><span class="tag beta">Beta</span></div>
+      <div class="plugin"><h4>🛡️ Encryption</h4><p>Transparent encryption at rest and field-level encryption.</p><span class="tag tested">Tested</span></div>
+      <div class="plugin"><h4>📝 Audit</h4><p>Comprehensive operation logging for compliance and debugging.</p><span class="tag beta">Beta</span></div>
+      <div class="plugin"><h4>💾 Backup</h4><p>Full and incremental backups with multiple storage targets.</p><span class="tag beta">Beta</span></div>
+      <div class="plugin"><h4>📡 Streaming</h4><p>Real-time metrics, aggregations, and windowed computations.</p><span class="tag beta">Beta</span></div>
+      <div class="plugin"><h4>🔄 Sync</h4><p>Local-to-remote sync with conflict resolution and offline queue.</p><span class="tag tested">Tested</span></div>
+      <div class="plugin"><h4>🗺️ Geospatial</h4><p>Geo-indexes, $near queries, and bounding box searches.</p><span class="tag beta">Beta</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="install">
+      <h2>Install it</h2>
+      <p class="subtitle">One command. Zero config.</p>
+      <code>npm install @nebula-db/nebula-db</code>
+      <p style="color: var(--muted); font-size: 0.95em; margin-top: 16px;">MIT licensed. Open source. <a href="https://github.com/Nom-nom-hub/NebulaDB" style="color: var(--accent);">Star us on GitHub →</a></p>
+    </div>
+  </section>
+
+  <footer>
+    NebulaDB is open source under the <a href="https://github.com/Nom-nom-hub/NebulaDB/blob/main/LICENSE">MIT License</a>.<br>
+    Built with ♥ by <a href="https://github.com/Nom-nom-hub">Nom-nom-hub</a> and contributors.
+  </footer>
 </body>
 </html>
